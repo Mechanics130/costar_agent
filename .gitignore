@@ -19,6 +19,9 @@ relationship-graph/scenarios/
 relationship-roleplay/scenarios/
 relationship-ingestion/incremental-scenarios/
 relationship-ingestion/flomo-import/output/
+relationship-ingestion/samples/relationship-ingestion.response.realtest.json
+relationship-view/scenarios/
+relationship-view/views/smoke/
 
 # Generated long-lived views / briefings
 relationship-view/views/*.md
