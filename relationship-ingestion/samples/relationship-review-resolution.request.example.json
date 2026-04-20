@@ -1,0 +1,180 @@
+{
+  "skill": "relationship-review-resolution",
+  "version": "0.1.0",
+  "operator": "lenny",
+  "notes": "样例：确认一个新增人物、自动通过一个稳定更新、忽略一个噪音候选。",
+  "profile_store_path": "D:/Lenny_Bcontext/skill-system/relationship-ingestion/runtime/stores/sample-review-store.json",
+  "ingestion_result": {
+    "skill": "relationship-ingestion",
+    "version": "0.1.0",
+    "resolved_people": [
+      {
+        "person_name": "剑锋",
+        "resolution_action": "update",
+        "matched_existing_person_id": "person_jian_feng",
+        "matched_existing_person_name": "剑锋",
+        "confidence": "high"
+      },
+      {
+        "person_name": "贵彬",
+        "resolution_action": "create",
+        "matched_existing_person_id": null,
+        "matched_existing_person_name": null,
+        "confidence": "high"
+      }
+    ],
+    "profile_updates": [
+      {
+        "person_name": "贵彬",
+        "person_ref": "贵彬",
+        "resolution_action": "create",
+        "tags": ["算法侧", "天气Agent执行层"],
+        "traits": ["务实直接", "不擅长组织政治"],
+        "preferences": [],
+        "boundaries": [],
+        "intent": "希望雁然或剑锋去推动分工厘清，自己已推到极限。",
+        "attitude": {
+          "label": "谨慎偏悲观",
+          "reason": "已经接受天气项目可能被压低优先级。"
+        },
+        "relationship_stage": "初识",
+        "risk_flags": ["如果后续分工继续不清，执行层会快速失去信心。"],
+        "summary": "天气Agent执行层核心接口人。",
+        "matched_excerpt_indices": [1],
+        "evidence": ["与斌哥今天上午已聊过多轮，基本聊不通。"],
+        "profile_tier": "active"
+      }
+    ],
+    "person_profiles": [
+      {
+        "person_name": "剑锋",
+        "person_ref": "person_jian_feng",
+        "resolution_action": "update",
+        "profile_tier": "key",
+        "confidence": "high",
+        "aliases": ["JF"],
+        "compiled_truth": {
+          "summary": "理性调停型技术负责人。",
+          "current_judgment": "对天气项目和 demo 的取舍非常清醒，更倾向优先厘清分工和优先级。",
+          "relationship_stage": "稳定联系",
+          "intent": "推动分工厘清，避免天气和 demo 同时做导致两边都做不好。",
+          "attitude": {
+            "label": "理性谨慎",
+            "reason": "对上层真实优先级有保留判断。"
+          },
+          "traits": ["数据导向", "说话留余地", "理性克制"],
+          "tags": ["算法负责人", "技术侧"],
+          "preferences": ["同步真实决策动态"],
+          "boundaries": ["不喜欢只谈愿景不谈约束"],
+          "risk_flags": ["如果分工继续模糊，天气项目可能被降级。"],
+          "open_questions": ["决策权到底在斌哥还是更上层？"],
+          "next_actions": ["关注剑锋向上沟通后的结果"]
+        },
+        "timeline": [],
+        "evidence_summary": {
+          "excerpt_count": 1,
+          "source_count": 1,
+          "last_updated_at": "",
+          "key_evidence": ["数据导向，大量用数据和逻辑说话。"]
+        },
+        "linked_relationships": {
+          "detected_as": true,
+          "matched_existing_person_id": "person_jian_feng",
+          "matched_existing_person_name": "剑锋"
+        }
+      }
+    ],
+    "review_bundle": {
+      "confirmation_required": true,
+      "pending_count": 4,
+      "required_candidate_count": 3,
+      "candidates": [
+        {
+          "person_name": "剑锋",
+          "priority": "high",
+          "needs_confirmation": false,
+          "confirmation_status": "pending",
+          "suggested_action": "update",
+          "confidence": "high",
+          "fields_to_confirm": [],
+          "evidence_preview": ["关注剑锋向浩总和陈卓的优先级沟通结果。"],
+          "questions": ["如果天气继续推进，剑锋会给出怎样的技术边界？"]
+        },
+        {
+          "person_name": "贵彬",
+          "priority": "high",
+          "needs_confirmation": true,
+          "confirmation_status": "pending",
+          "suggested_action": "create",
+          "confidence": "high",
+          "fields_to_confirm": [
+            {
+              "field": "compiled_truth.summary",
+              "label": "人物摘要",
+              "current_value": "天气Agent执行层核心接口人。"
+            }
+          ],
+          "evidence_preview": ["与斌哥今天上午已聊过多轮，基本聊不通。"],
+          "questions": []
+        },
+        {
+          "person_name": "萌萌",
+          "priority": "medium",
+          "needs_confirmation": true,
+          "confirmation_status": "pending",
+          "suggested_action": "review",
+          "confidence": "low",
+          "fields_to_confirm": [
+            {
+              "field": "compiled_truth.summary",
+              "label": "人物摘要",
+              "current_value": "资料中提到了该人物，但尚未形成稳定档案，建议人工确认。"
+            }
+          ],
+          "evidence_preview": ["雁然会去找萌萌同步天气项目进展和风险。"],
+          "questions": ["萌萌在项目中的角色是什么？"]
+        },
+        {
+          "person_name": "郑浩",
+          "priority": "high",
+          "needs_confirmation": true,
+          "confirmation_status": "pending",
+          "suggested_action": "create",
+          "confidence": "medium",
+          "fields_to_confirm": [
+            {
+              "field": "compiled_truth.summary",
+              "label": "人物摘要",
+              "current_value": "天气Agent执行链路里的新增协作者，但当前信息不足。"
+            }
+          ],
+          "evidence_preview": ["对外卖补贴体系不熟悉，难以独立推进策略方案。"],
+          "questions": ["郑浩未来是继续参与天气项目，还是会被调去做 demo？"]
+        }
+      ]
+    }
+  },
+  "review_decisions": [
+    {
+      "person_name": "贵彬",
+      "final_action": "create",
+      "resolved_person_ref": "person_gui_bin",
+      "resolved_person_name": "贵彬",
+      "profile_tier": "active",
+      "notes": "确认纳入天气项目执行层关键接口人。",
+      "overrides": {
+        "tags": ["算法侧", "天气Agent执行层", "信息黑洞受害者"],
+        "next_actions": ["保持对贵彬的信息同步，减少执行层信息盲区。"]
+      }
+    },
+    {
+      "person_name": "萌萌",
+      "final_action": "ignore",
+      "notes": "本轮先不建档，只作为背景人物保留在纪要里。"
+    }
+  ],
+  "options": {
+    "write_store": false,
+    "auto_commit_safe_updates": true
+  }
+}

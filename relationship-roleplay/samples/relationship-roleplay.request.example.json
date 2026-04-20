@@ -1,0 +1,36 @@
+{
+  "skill": "relationship-roleplay",
+  "version": "0.1.0",
+  "target_profile": {
+    "person_name": "剑锋",
+    "person_ref": "person_jianfeng",
+    "compiled_truth": {
+      "summary": "算法负责人，判断理性克制，偏好数据和明确分工，不喜欢空泛表态。",
+      "relationship_stage": "稳定联系",
+      "intent": "希望推动分工厘清，避免多线并行导致两边都做不好。",
+      "attitude": {
+        "label": "偏谨慎",
+        "reason": "愿意推进，但前提是方向明确、收益可信、组织关系理顺。"
+      }
+    },
+    "timeline": [
+      {
+        "date": "2026-04-13",
+        "event_summary": "在天气 Agent 分工沟通中，多次强调数据上限和决策权边界。"
+      }
+    ]
+  },
+  "conversation_goal": "和他模拟一次分工对齐对话，判断该如何推进天气Agent后续合作。",
+  "conversation_topic": "天气Agent分工与投入优先级",
+  "scenario_context": "一对一沟通，希望既拿到真实判断，又不要让对方感到被施压。",
+  "starting_user_message": "我想先听听你对现在这条线值不值得继续推进的真实判断。",
+  "constraints": [
+    "不要上来就追问",
+    "优先拿到真实判断",
+    "避免空泛讨论愿景"
+  ],
+  "options": {
+    "save_run_artifacts": true,
+    "simulation_turns": 3
+  }
+}

@@ -1,0 +1,401 @@
+{
+  "skill": "relationship-capture",
+  "version": "0.1.0",
+  "status": "success",
+  "stage": "commit",
+  "receipt": {
+    "reviewed_candidates": 2,
+    "operator": "lenny",
+    "written": false,
+    "profile_store_path": "D:/Lenny_Bcontext/skill-system/relationship-ingestion/runtime/stores/sample-review-store.json",
+    "view_store_path": "D:\\Lenny_Bcontext\\skill-system\\relationship-view\\runtime\\stores\\relationship-view-store.json",
+    "remaining_unresolved": 0
+  },
+  "processing_feedback": {
+    "detected_people_count": 2,
+    "updated_people_count": 1,
+    "new_candidate_count": 1,
+    "ignored_noise_count": 0,
+    "review_pending_count": 2,
+    "highlights": [
+      "已识别并建议更新 剑锋",
+      "发现新的建档候选人 贵彬"
+    ]
+  },
+  "confirmation_request": {
+    "required": false,
+    "pending_count": 0,
+    "required_candidate_count": 0,
+    "top_candidates": [],
+    "message": "本轮确认结果已完成提交。"
+  },
+  "next_action": {
+    "type": "complete",
+    "message": "本轮关系人档案已经完成写回，可以继续查看档案或生成 briefing。"
+  },
+  "user_feedback": {
+    "headline": "本轮已完成关系人档案提交，共提交 2 位",
+    "summary_lines": [
+      "新建 1 位",
+      "更新 1 位",
+      "忽略 1 位",
+      "暂缓 0 位",
+      "本轮未刷新持续视图"
+    ],
+    "highlights": [
+      "已新建 贵彬",
+      "已更新 剑锋"
+    ]
+  },
+  "ingestion_result": {
+    "skill": "relationship-ingestion",
+    "version": "0.1.0",
+    "resolved_people": [
+      {
+        "person_name": "剑锋",
+        "resolution_action": "update",
+        "matched_existing_person_id": "person_jian_feng",
+        "matched_existing_person_name": "剑锋",
+        "confidence": "high"
+      },
+      {
+        "person_name": "贵彬",
+        "resolution_action": "create",
+        "matched_existing_person_id": null,
+        "matched_existing_person_name": null,
+        "confidence": "high"
+      }
+    ],
+    "profile_updates": [
+      {
+        "person_name": "贵彬",
+        "person_ref": "贵彬",
+        "resolution_action": "create",
+        "summary": "天气Agent执行层核心接口人。"
+      }
+    ],
+    "person_profiles": [
+      {
+        "person_name": "剑锋",
+        "person_ref": "person_jian_feng",
+        "resolution_action": "update",
+        "profile_tier": "key",
+        "confidence": "high",
+        "compiled_truth": {
+          "summary": "理性调停型技术负责人。"
+        },
+        "timeline": [],
+        "evidence_summary": {
+          "excerpt_count": 1,
+          "source_count": 1,
+          "last_updated_at": "",
+          "key_evidence": [
+            "数据导向，大量用数据和逻辑说话。"
+          ]
+        },
+        "linked_relationships": {
+          "detected_as": true,
+          "matched_existing_person_id": "person_jian_feng",
+          "matched_existing_person_name": "剑锋"
+        }
+      }
+    ],
+    "review_bundle": {
+      "confirmation_required": true,
+      "pending_count": 2,
+      "required_candidate_count": 1,
+      "candidates": [
+        {
+          "person_name": "贵彬",
+          "priority": "high",
+          "needs_confirmation": true,
+          "suggested_action": "create",
+          "questions": [],
+          "fields_to_confirm": [],
+          "evidence_preview": [
+            "与斌哥今天上午已聊过多轮，基本聊不通。"
+          ]
+        },
+        {
+          "person_name": "萌萌",
+          "priority": "medium",
+          "needs_confirmation": true,
+          "suggested_action": "review",
+          "questions": [
+            "萌萌在项目中的角色是什么？"
+          ],
+          "fields_to_confirm": [],
+          "evidence_preview": [
+            "雁然会去找萌萌同步天气项目进展和风险。"
+          ]
+        }
+      ]
+    },
+    "interaction_summary": {
+      "summary": "天气 Agent 分工沟通。"
+    },
+    "detected_people": [
+      {
+        "person_name": "剑锋"
+      },
+      {
+        "person_name": "贵彬"
+      }
+    ],
+    "relationship_edges": [],
+    "todos": [],
+    "evidence": [],
+    "review_flags": []
+  },
+  "review_resolution_result": {
+    "skill": "relationship-review-resolution",
+    "version": "0.1.0",
+    "status": "success",
+    "ingestion_skill": "relationship-ingestion",
+    "processed_at": "2026-04-20T06:30:52.539Z",
+    "review_summary": {
+      "decision_count": 2,
+      "committed_count": 2,
+      "created_count": 1,
+      "updated_count": 1,
+      "ignored_count": 1,
+      "deferred_count": 0,
+      "unresolved_count": 0,
+      "auto_committed_count": 1
+    },
+    "committed_profiles": [
+      {
+        "person_name": "剑锋",
+        "person_ref": "person_jian_feng",
+        "resolution_action": "update",
+        "profile_tier": "key",
+        "confidence": "high",
+        "aliases": [],
+        "compiled_truth": {
+          "summary": "理性调停型技术负责人。",
+          "current_judgment": "理性调停型技术负责人。",
+          "relationship_stage": "待判断",
+          "intent": "待判断",
+          "attitude": {
+            "label": "待判断",
+            "reason": ""
+          },
+          "traits": [],
+          "tags": [],
+          "preferences": [],
+          "boundaries": [],
+          "risk_flags": [],
+          "open_questions": [],
+          "next_actions": []
+        },
+        "timeline": [],
+        "evidence_summary": {
+          "excerpt_count": 1,
+          "source_count": 1,
+          "last_updated_at": "2026-04-20T06:30:52.539Z",
+          "key_evidence": [
+            "数据导向，大量用数据和逻辑说话。"
+          ]
+        },
+        "linked_relationships": {
+          "detected_as": true,
+          "matched_existing_person_id": "person_jian_feng",
+          "matched_existing_person_name": "剑锋"
+        }
+      },
+      {
+        "person_name": "贵彬",
+        "person_ref": "person_gui_bin",
+        "resolution_action": "create",
+        "profile_tier": "active",
+        "confidence": "high",
+        "aliases": [],
+        "compiled_truth": {
+          "summary": "天气Agent执行层核心接口人。",
+          "current_judgment": "天气Agent执行层核心接口人。",
+          "relationship_stage": "待判断",
+          "intent": "待判断",
+          "attitude": {
+            "label": "待判断",
+            "reason": ""
+          },
+          "traits": [],
+          "tags": [],
+          "preferences": [],
+          "boundaries": [],
+          "risk_flags": [],
+          "open_questions": [
+            "用户备注：确认纳入天气项目执行层关键接口人。"
+          ],
+          "next_actions": []
+        },
+        "timeline": [],
+        "evidence_summary": {
+          "excerpt_count": 1,
+          "source_count": 0,
+          "last_updated_at": "2026-04-20T06:30:52.539Z",
+          "key_evidence": [
+            "与斌哥今天上午已聊过多轮，基本聊不通。"
+          ]
+        },
+        "linked_relationships": {
+          "detected_as": true,
+          "matched_existing_person_id": null,
+          "matched_existing_person_name": "贵彬"
+        }
+      }
+    ],
+    "created_people": [
+      {
+        "person_name": "贵彬",
+        "person_ref": "person_gui_bin",
+        "profile_tier": "active",
+        "source": "review"
+      }
+    ],
+    "updated_people": [
+      {
+        "person_name": "剑锋",
+        "person_ref": "person_jian_feng",
+        "profile_tier": "key",
+        "source": "auto"
+      }
+    ],
+    "ignored_people": [
+      {
+        "person_name": "萌萌",
+        "reason": "本轮先不建档。",
+        "source": "review"
+      }
+    ],
+    "deferred_people": [],
+    "unresolved_candidates": [],
+    "profile_store_delta": {
+      "upserts": [
+        {
+          "person_name": "剑锋",
+          "person_ref": "person_jian_feng",
+          "resolution_action": "update",
+          "profile_tier": "key",
+          "confidence": "high",
+          "aliases": [],
+          "compiled_truth": {
+            "summary": "理性调停型技术负责人。",
+            "current_judgment": "理性调停型技术负责人。",
+            "relationship_stage": "待判断",
+            "intent": "待判断",
+            "attitude": {
+              "label": "待判断",
+              "reason": ""
+            },
+            "traits": [],
+            "tags": [],
+            "preferences": [],
+            "boundaries": [],
+            "risk_flags": [],
+            "open_questions": [],
+            "next_actions": []
+          },
+          "timeline": [],
+          "evidence_summary": {
+            "excerpt_count": 1,
+            "source_count": 1,
+            "last_updated_at": "2026-04-20T06:30:52.539Z",
+            "key_evidence": [
+              "数据导向，大量用数据和逻辑说话。"
+            ]
+          },
+          "linked_relationships": {
+            "detected_as": true,
+            "matched_existing_person_id": "person_jian_feng",
+            "matched_existing_person_name": "剑锋"
+          }
+        },
+        {
+          "person_name": "贵彬",
+          "person_ref": "person_gui_bin",
+          "resolution_action": "create",
+          "profile_tier": "active",
+          "confidence": "high",
+          "aliases": [],
+          "compiled_truth": {
+            "summary": "天气Agent执行层核心接口人。",
+            "current_judgment": "天气Agent执行层核心接口人。",
+            "relationship_stage": "待判断",
+            "intent": "待判断",
+            "attitude": {
+              "label": "待判断",
+              "reason": ""
+            },
+            "traits": [],
+            "tags": [],
+            "preferences": [],
+            "boundaries": [],
+            "risk_flags": [],
+            "open_questions": [
+              "用户备注：确认纳入天气项目执行层关键接口人。"
+            ],
+            "next_actions": []
+          },
+          "timeline": [],
+          "evidence_summary": {
+            "excerpt_count": 1,
+            "source_count": 0,
+            "last_updated_at": "2026-04-20T06:30:52.539Z",
+            "key_evidence": [
+              "与斌哥今天上午已聊过多轮，基本聊不通。"
+            ]
+          },
+          "linked_relationships": {
+            "detected_as": true,
+            "matched_existing_person_id": null,
+            "matched_existing_person_name": "贵彬"
+          }
+        }
+      ],
+      "ignored_people": [
+        {
+          "person_name": "萌萌",
+          "reason": "本轮先不建档。",
+          "source": "review"
+        }
+      ],
+      "deferred_people": [],
+      "auto_committed_people": [
+        "剑锋"
+      ],
+      "store_path": "D:/Lenny_Bcontext/skill-system/relationship-ingestion/runtime/stores/sample-review-store.json",
+      "written": false,
+      "total_profiles_after_write": 2
+    },
+    "notes": "用样例 review request 验证 capture 的提交反馈层。"
+  },
+  "view_refresh_result": {
+    "attempted": false,
+    "refreshed_count": 0,
+    "reason": "profile_store_not_written",
+    "refreshed_views": [],
+    "view_store_path": "D:\\Lenny_Bcontext\\skill-system\\relationship-view\\runtime\\stores\\relationship-view-store.json",
+    "markdown_dir": "D:\\Lenny_Bcontext\\skill-system\\relationship-view\\views",
+    "result": null
+  },
+  "commit_feedback": {
+    "committed_count": 2,
+    "created_count": 1,
+    "updated_count": 1,
+    "ignored_count": 1,
+    "deferred_count": 0,
+    "unresolved_count": 0,
+    "created_people": [
+      "贵彬"
+    ],
+    "updated_people": [
+      "剑锋"
+    ],
+    "ignored_people": [
+      "萌萌"
+    ],
+    "deferred_people": []
+  },
+  "notes": "用样例 review request 验证 capture 的提交反馈层。"
+}

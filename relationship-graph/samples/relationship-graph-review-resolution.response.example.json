@@ -1,0 +1,67 @@
+{
+  "skill": "relationship-graph-review-resolution",
+  "version": "0.1.0",
+  "status": "success",
+  "graph_skill": "relationship-graph",
+  "processed_at": "2026-04-20T10:40:00.000Z",
+  "review_summary": {
+    "decision_count": 1,
+    "confirmed_count": 0,
+    "rejected_count": 1,
+    "downgraded_count": 0,
+    "reclassified_count": 0,
+    "deferred_count": 0,
+    "unresolved_count": 0
+  },
+  "confirmed_edges": [],
+  "rejected_edges": [
+    {
+      "source_person_name": "剑锋",
+      "source_person_ref": "person_jianfeng",
+      "target_person_name": "贵彬",
+      "target_person_ref": "person_gui_bin",
+      "final_action": "reject",
+      "corrected_relation_type": null,
+      "note": "当前只看到同场会议共现，先不作为稳定关系边保留。",
+      "reviewed_at": "2026-04-20T10:40:00.000Z"
+    }
+  ],
+  "downgraded_edges": [],
+  "reclassified_edges": [],
+  "deferred_edges": [],
+  "unresolved_candidates": [],
+  "graph_review_store_delta": {
+    "upserts": [
+      {
+        "edge_key": "person_gui_bin::person_jianfeng",
+        "source_person_ref": "person_jianfeng",
+        "source_person_name": "剑锋",
+        "target_person_ref": "person_gui_bin",
+        "target_person_name": "贵彬",
+        "final_action": "reject",
+        "corrected_relation_type": null,
+        "note": "当前只看到同场会议共现，先不作为稳定关系边保留。",
+        "operator": "lenny",
+        "reviewed_at": "2026-04-20T10:40:00.000Z",
+        "relation_type": "same_source_context",
+        "relation_score": 7
+      }
+    ],
+    "store_path": "D:\\Lenny_Bcontext\\skill-system\\relationship-graph\\runtime\\stores\\relationship-graph-review-store.sample.json",
+    "written": false,
+    "total_decisions_after_write": 1
+  },
+  "commit_feedback": {
+    "headline": "关系边决议已写回 graph review store",
+    "summary_lines": [
+      "已确认 0 条关系边",
+      "已拒绝 1 条关系边",
+      "仍待处理 0 条关系边"
+    ],
+    "next_action": {
+      "type": "rerun_graph",
+      "message": "建议重新运行 graph skill，查看人工确认后的最新网络结果"
+    }
+  },
+  "notes": "sample decision"
+}

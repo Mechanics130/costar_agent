@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Relationship View Input",
+  "type": "object",
+  "required": ["profile_store_path"],
+  "properties": {
+    "mode": {
+      "type": "string",
+      "enum": ["get_person_view", "refresh_person_view", "refresh_people_views"]
+    },
+    "person_name": {
+      "type": "string"
+    },
+    "person_ref": {
+      "type": "string"
+    },
+    "people": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "person_name": { "type": "string" },
+          "person_ref": { "type": "string" }
+        }
+      }
+    },
+    "profile_store_path": {
+      "type": "string"
+    },
+    "graph_review_store_path": {
+      "type": "string"
+    },
+    "view_store_path": {
+      "type": "string"
+    },
+    "options": {
+      "type": "object",
+      "properties": {
+        "write_store": { "type": "boolean" },
+        "write_markdown": { "type": "boolean" },
+        "save_run_artifacts": { "type": "boolean" },
+        "refresh_limit": { "type": "integer", "minimum": 1 },
+        "related_people_limit": { "type": "integer", "minimum": 1 },
+        "timeline_limit": { "type": "integer", "minimum": 1 },
+        "graph_max_nodes": { "type": "integer", "minimum": 3 },
+        "graph_max_edges": { "type": "integer", "minimum": 3 },
+        "graph_min_relation_score": { "type": "integer", "minimum": 1 },
+        "markdown_dir": { "type": "string" }
+      }
+    }
+  }
+}
