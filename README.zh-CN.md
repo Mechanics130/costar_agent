@@ -61,3 +61,6 @@ CoStar 目前以 `capture -> profile -> briefing` 为核心闭环：
 - 英文总说明：[`README.md`](README.md)
 - 快速开始：[`START_HERE.md`](START_HERE.md)
 - 路线图：[`ROADMAP.md`](ROADMAP.md)
+- 产品介绍：[`docs/pitch-zh.md`](docs/pitch-zh.md)
+- 对比说明：[`docs/comparison.md`](docs/comparison.md)
+- 架构说明：[`docs/architecture.md`](docs/architecture.md)

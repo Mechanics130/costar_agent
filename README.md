@@ -62,6 +62,17 @@ If you are using OpenClaw, the fastest path is:
 2. Run `integrations/openclaw/bootstrap-costar.ps1`
 3. Let the bootstrap script write your local model config and install the adapter wrapper
 
+## Launch Docs
+
+If you want to share CoStar with someone else, start with:
+
+- [English pitch](docs/pitch-en.md)
+- [Chinese pitch](docs/pitch-zh.md)
+- [Comparison notes](docs/comparison.md)
+- [Architecture overview](docs/architecture.md)
+- [Launch plan](docs/launch-plan.md)
+- [Examples](examples/README.md)
+
 ## Command Line
 
 Once the repo is cloned, you can use the `costar` CLI:

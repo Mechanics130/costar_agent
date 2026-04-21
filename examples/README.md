@@ -1,8 +1,16 @@
 # Examples by Codex
 
-This folder will hold small end-to-end stories for public testing.
+This folder contains small end-to-end stories for public testing.
 
-The live skill samples already live under each skill directory:
+## Available examples
+
+- [01 - Capture to Briefing](01-capture-to-briefing/README.md)
+- [02 - Profile Refresh](02-profile-refresh/README.md)
+- [03 - Graph Review](03-graph-review/README.md)
+
+## How they relate to the skill samples
+
+The live sample inputs and outputs still live under each skill directory:
 
 - `relationship-capture/samples/`
 - `relationship-ingestion/samples/`
@@ -12,11 +20,9 @@ The live skill samples already live under each skill directory:
 - `relationship-graph/samples/`
 - `relationship-view/samples/`
 
-Each example should show:
+Each example story shows:
 
-1. input
-2. command
-3. expected output
-4. what to check manually
-
-The first public examples will be added in Wave 3.
+1. the scenario
+2. the command to run
+3. what output to inspect
+4. what to validate manually
