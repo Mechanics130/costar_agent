@@ -106,20 +106,20 @@ relationship-ingestion/
 如果你想不经过页面，直接本地跑一个请求文件，也可以用：
 
 ```powershell
-node D:\Lenny_Bcontext\skill-system\relationship-ingestion\runtime\run-relationship-ingestion.mjs `
-  D:\Lenny_Bcontext\skill-system\relationship-ingestion\samples\relationship-ingestion.request.example.json
+node relationship-ingestion\runtime\run-relationship-ingestion.mjs `
+  relationship-ingestion\samples\relationship-ingestion.request.example.json
 ```
 
 模型配置可以直接参考：
 
-`D:\Lenny_Bcontext\skill-system\relationship-ingestion\runtime\model-config.template.json`
+`relationship-ingestion\runtime\model-config.template.json`
 
 当前 CLI runner 已兼容 `UTF-8` 和 `UTF-8 with BOM` 的 JSON 请求文件，避免 PowerShell 或其他工具默认写出 BOM 时导致运行失败。
 
 如果你想直接测试“用户确认后如何写回实体”，可以用：
 
 ```powershell
-node D:\Lenny_Bcontext\skill-system\relationship-ingestion\runtime\run-relationship-review-resolution.mjs `
-  D:\Lenny_Bcontext\skill-system\relationship-ingestion\samples\relationship-review-resolution.request.example.json `
-  D:\Lenny_Bcontext\skill-system\relationship-ingestion\samples\relationship-review-resolution.response.example.json
+node relationship-ingestion\runtime\run-relationship-review-resolution.mjs `
+  relationship-ingestion\samples\relationship-review-resolution.request.example.json `
+  relationship-ingestion\samples\relationship-review-resolution.response.example.json
 ```

@@ -69,25 +69,25 @@ relationship-capture/
 ## 运行方式
 
 ```powershell
-node D:\Lenny_Bcontext\skill-system\relationship-capture\runtime\run-relationship-capture.mjs `
-  D:\Lenny_Bcontext\skill-system\relationship-capture\samples\relationship-capture.request.ingest.example.json `
-  D:\Lenny_Bcontext\skill-system\relationship-capture\samples\relationship-capture.response.ingest.example.json
+node relationship-capture\runtime\run-relationship-capture.mjs `
+  relationship-capture\samples\relationship-capture.request.ingest.example.json `
+  relationship-capture\samples\relationship-capture.response.ingest.example.json
 ```
 
 ```powershell
-node D:\Lenny_Bcontext\skill-system\relationship-capture\runtime\run-relationship-capture.mjs `
-  D:\Lenny_Bcontext\skill-system\relationship-capture\samples\relationship-capture.request.commit.example.json `
-  D:\Lenny_Bcontext\skill-system\relationship-capture\samples\relationship-capture.response.commit.example.json
+node relationship-capture\runtime\run-relationship-capture.mjs `
+  relationship-capture\samples\relationship-capture.request.commit.example.json `
+  relationship-capture\samples\relationship-capture.response.commit.example.json
 ```
 
 本 skill 默认复用：
 
-`D:\Lenny_Bcontext\skill-system\relationship-ingestion\runtime\model-config.local.json`
+`relationship-ingestion\runtime\model-config.local.json`
 
 ## 验证
 
 ```powershell
-node D:\Lenny_Bcontext\skill-system\relationship-capture\runtime\capture-smoke.mjs
+node relationship-capture\runtime\capture-smoke.mjs
 ```
 
 当前 smoke 已覆盖：

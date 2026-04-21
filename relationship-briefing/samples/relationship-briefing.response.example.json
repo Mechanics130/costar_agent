@@ -10,8 +10,8 @@
     "source": "shared_local_file"
   },
   "target_person": {
-    "person_name": "剑锋",
-    "person_ref": "person_jianfeng",
+    "person_name": "Jordan Li",
+    "person_ref": "person_jordan_li",
     "relationship_stage": "稳定联系",
     "summary": "算法技术负责人，偏理性调停与现实判断，能提供真实优先级和资源约束信息。"
   },
@@ -19,11 +19,11 @@
     "auto_context_applied": true,
     "auto_context_interaction_count": 3,
     "auto_context_used_views": 1,
-    "auto_context_view_path": "D:/Lenny_Bcontext/skill-system/relationship-view/views/person_jianfeng.md",
+    "auto_context_view_path": "relationship-view/views/person_jordan_li.md",
     "auto_context_source": "profile_store_and_view"
   },
   "briefing": {
-    "quick_brief": "这次沟通的关键不是争取承诺，而是借剑锋拿到真实优先级、资源约束和继续推进的窗口判断。",
+    "quick_brief": "这次沟通的关键不是争取承诺，而是借Jordan Li拿到真实优先级、资源约束和继续推进的窗口判断。",
     "relationship_read": {
       "current_state": "稳定联系",
       "likely_intent": "希望分工更清晰、团队不被反复拉扯，同时避免在未定调前被动背责任。",
@@ -43,7 +43,7 @@
       "曾科团队和当前路线的重叠度是否发生变化？"
     ],
     "watchouts": [
-      "不要直接让剑锋给承诺",
+      "不要直接让Jordan Li给承诺",
       "不要用愿景和激情话术施压",
       "如果出现模糊表述，要追问事实和原话"
     ],
@@ -60,14 +60,14 @@
   },
   "briefing_file": {
     "written": true,
-    "path": "D:/Lenny_Bcontext/skill-system/relationship-briefing/briefings/2026-04-18-jianfeng-weather-agent.md",
-    "title": "2026-04-18 剑锋会前简报",
+    "path": "relationship-briefing/briefings/2026-04-18-jianfeng-weather-agent.md",
+    "title": "2026-04-18 Jordan Li会前简报",
     "slug": "2026-04-18-jianfeng-weather-agent"
   },
   "user_feedback": {
-    "headline": "已为剑锋生成会前简报",
+    "headline": "已为Jordan Li生成会前简报",
     "summary_lines": [
-      "目标人物：剑锋",
+      "目标人物：Jordan Li",
       "关系阶段：稳定联系",
       "自动召回互动数：3",
       "已补充持续视图上下文"
@@ -78,9 +78,9 @@
     }
   },
   "open_questions": [
-    "剑锋最新的上级信号是否已经足够明确？",
+    "Jordan Li最新的上级信号是否已经足够明确？",
     "当前最小可行承接方案是否需要再补充资源评估？"
   ],
   "notes": "如果对方继续给模糊反馈，优先追问事实、原话和具体时间点。",
-  "run_directory": "D:/Lenny_Bcontext/skill-system/relationship-briefing/runtime/runs/2026-04-18T02-45-55-042Z-person_jianfeng"
+  "run_directory": "relationship-briefing/runtime/runs/2026-04-18T02-45-55-042Z-person_jordan_li"
 }

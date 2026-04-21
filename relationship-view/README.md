@@ -63,15 +63,15 @@ So the design principle is:
 ## Run
 
 ```powershell
-node D:\Lenny_Bcontext\skill-system\relationship-view\runtime\run-relationship-view.mjs `
-  D:\Lenny_Bcontext\skill-system\relationship-view\samples\relationship-view.request.refresh-person.example.json `
-  D:\Lenny_Bcontext\skill-system\relationship-view\samples\relationship-view.response.refresh-person.example.json
+node relationship-view\runtime\run-relationship-view.mjs `
+  relationship-view\samples\relationship-view.request.refresh-person.example.json `
+  relationship-view\samples\relationship-view.response.refresh-person.example.json
 ```
 
 ## Smoke
 
 ```powershell
-node D:\Lenny_Bcontext\skill-system\relationship-view\runtime\view-smoke.mjs
+node relationship-view\runtime\view-smoke.mjs
 ```
 
 ## Current output shape

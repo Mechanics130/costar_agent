@@ -16,10 +16,10 @@
   "confirmed_edges": [],
   "rejected_edges": [
     {
-      "source_person_name": "剑锋",
-      "source_person_ref": "person_jianfeng",
-      "target_person_name": "贵彬",
-      "target_person_ref": "person_gui_bin",
+      "source_person_name": "Jordan Li",
+      "source_person_ref": "person_jordan_li",
+      "target_person_name": "Ryan Gu",
+      "target_person_ref": "person_ryan_gu",
       "final_action": "reject",
       "corrected_relation_type": null,
       "note": "当前只看到同场会议共现，先不作为稳定关系边保留。",
@@ -33,21 +33,21 @@
   "graph_review_store_delta": {
     "upserts": [
       {
-        "edge_key": "person_gui_bin::person_jianfeng",
-        "source_person_ref": "person_jianfeng",
-        "source_person_name": "剑锋",
-        "target_person_ref": "person_gui_bin",
-        "target_person_name": "贵彬",
+        "edge_key": "person_ryan_gu::person_jordan_li",
+        "source_person_ref": "person_jordan_li",
+        "source_person_name": "Jordan Li",
+        "target_person_ref": "person_ryan_gu",
+        "target_person_name": "Ryan Gu",
         "final_action": "reject",
         "corrected_relation_type": null,
         "note": "当前只看到同场会议共现，先不作为稳定关系边保留。",
-        "operator": "lenny",
+        "operator": "tester",
         "reviewed_at": "2026-04-20T10:40:00.000Z",
         "relation_type": "same_source_context",
         "relation_score": 7
       }
     ],
-    "store_path": "D:\\Lenny_Bcontext\\skill-system\\relationship-graph\\runtime\\stores\\relationship-graph-review-store.sample.json",
+    "store_path": "D:\\tester_Bcontext\\skill-system\\relationship-graph\\runtime\\stores\\relationship-graph-review-store.sample.json",
     "written": false,
     "total_decisions_after_write": 1
   },

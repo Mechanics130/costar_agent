@@ -10,21 +10,21 @@
   "connection_path": [],
   "graph": {
     "nodes": [
-      { "person_name": "剑锋", "person_ref": "person_jianfeng", "profile_tier": "key", "confidence": "high", "kind": "profile" },
-      { "person_name": "雁然", "person_ref": "person_yanran", "profile_tier": "key", "confidence": "high", "kind": "profile" },
-      { "person_name": "贵彬", "person_ref": "person_gui_bin", "profile_tier": "active", "confidence": "low", "kind": "profile" }
+      { "person_name": "Jordan Li", "person_ref": "person_jordan_li", "profile_tier": "key", "confidence": "high", "kind": "profile" },
+      { "person_name": "Mina Yang", "person_ref": "person_mina_yang", "profile_tier": "key", "confidence": "high", "kind": "profile" },
+      { "person_name": "Ryan Gu", "person_ref": "person_ryan_gu", "profile_tier": "active", "confidence": "low", "kind": "profile" }
     ],
     "edges": [
       {
-        "source": "person_jianfeng",
-        "target": "person_yanran",
+        "source": "person_jordan_li",
+        "target": "person_mina_yang",
         "relation_score": 106,
         "relation_type": "same_context_and_mentioned",
         "relation_reasons": ["共享资料源 4 个", "档案内容中互相提及"]
       },
       {
-        "source": "person_jianfeng",
-        "target": "person_gui_bin",
+        "source": "person_jordan_li",
+        "target": "person_ryan_gu",
         "relation_score": 7,
         "relation_type": "same_source_context",
         "relation_reasons": ["共享资料源 1 个"]
@@ -34,22 +34,22 @@
   "network_summary": {
     "profile_count": 3,
     "edge_count": 2,
-    "top_connectors": ["剑锋", "雁然"],
+    "top_connectors": ["Jordan Li", "Mina Yang"],
     "isolated_people": [],
     "graph_node_count": 3
   },
   "influence_notes": [
-    "当前网络最强的连接中心是：剑锋 / 雁然。"
+    "当前网络最强的连接中心是：Jordan Li / Mina Yang。"
   ],
   "review_bundle": {
     "required": true,
     "pending_edge_count": 1,
     "edge_candidates": [
       {
-        "source_person_name": "剑锋",
-        "source_person_ref": "person_jianfeng",
-        "target_person_name": "贵彬",
-        "target_person_ref": "person_gui_bin",
+        "source_person_name": "Jordan Li",
+        "source_person_ref": "person_jordan_li",
+        "target_person_name": "Ryan Gu",
+        "target_person_ref": "person_ryan_gu",
         "relation_type": "same_source_context",
         "relation_score": 7,
         "reason": "这条边主要来自共享资料源，还缺少更直接的互相提及或稳定协作证据。 关系分数偏低，说明证据量有限。 至少一侧人物档案置信度偏低，关系判断可能会被上游实体识别误差带偏。",
@@ -66,17 +66,17 @@
     "graph_kind": "summarize_network",
     "node_count": 3,
     "edge_count": 2,
-    "mermaid": "flowchart LR\n  person_jianfeng[\"剑锋<br/>key / high\"]\n  person_yanran[\"雁然<br/>key / high\"]\n  person_gui_bin[\"贵彬<br/>active / low\"]\n  person_jianfeng -- \"106 · same_context_and_mentioned\" --> person_yanran\n  person_jianfeng -. \"7 · same_source_context ?\" .-> person_gui_bin\n  class person_jianfeng defaultNode\n  class person_yanran defaultNode\n  class person_gui_bin defaultNode\n  classDef rootNode fill:#0b6e4f,stroke:#084c38,color:#ffffff,stroke-width:2px\n  classDef targetNode fill:#1d4ed8,stroke:#1e40af,color:#ffffff,stroke-width:2px\n  classDef defaultNode fill:#f5f5f4,stroke:#a8a29e,color:#1c1917,stroke-width:1px\n  %% Dashed edges with ? indicate relation edges that still need user confirmation."
+    "mermaid": "flowchart LR\n  person_jordan_li[\"Jordan Li<br/>key / high\"]\n  person_mina_yang[\"Mina Yang<br/>key / high\"]\n  person_ryan_gu[\"Ryan Gu<br/>active / low\"]\n  person_jordan_li -- \"106 · same_context_and_mentioned\" --> person_mina_yang\n  person_jordan_li -. \"7 · same_source_context ?\" .-> person_ryan_gu\n  class person_jordan_li defaultNode\n  class person_mina_yang defaultNode\n  class person_ryan_gu defaultNode\n  classDef rootNode fill:#0b6e4f,stroke:#084c38,color:#ffffff,stroke-width:2px\n  classDef targetNode fill:#1d4ed8,stroke:#1e40af,color:#ffffff,stroke-width:2px\n  classDef defaultNode fill:#f5f5f4,stroke:#a8a29e,color:#1c1917,stroke-width:1px\n  %% Dashed edges with ? indicate relation edges that still need user confirmation."
   },
   "user_feedback": {
-    "headline": "已完成当前关系网络摘要，剑锋 是最强连接中心之一",
+    "headline": "已完成当前关系网络摘要，Jordan Li 是最强连接中心之一",
     "summary_lines": [
       "当前共有 3 份人物档案",
       "推断出 2 条关系边",
       "其中 1 条边建议你做人工核实"
     ],
     "key_findings": [
-      "当前最强连接中心包括：剑锋 / 雁然"
+      "当前最强连接中心包括：Jordan Li / Mina Yang"
     ],
     "confidence_notes": [
       "全局网络摘要只基于当前已确认档案，不代表全部真实关系",

@@ -1,12 +1,12 @@
 {
   "skill": "relationship-profile",
   "version": "0.1.0",
-  "run_directory": "D:\\Lenny_Bcontext\\skill-system\\relationship-profile\\runtime\\runs\\2026-04-18T05-18-18-334Z-剑锋",
+  "run_directory": "D:\\tester_Bcontext\\skill-system\\relationship-profile\\runtime\\runs\\2026-04-18T05-18-18-334Z-Jordan Li",
   "status": "success",
   "mode": "get_profile",
   "target_person": {
-    "person_name": "剑锋",
-    "person_ref": "person_jianfeng",
+    "person_name": "Jordan Li",
+    "person_ref": "person_jordan_li",
     "profile_tier": "key",
     "confidence": "high",
     "relationship_stage": "稳定联系",
@@ -15,10 +15,10 @@
   },
   "profile_read": {
     "summary_card": {
-      "person_name": "剑锋",
-      "person_ref": "person_jianfeng",
+      "person_name": "Jordan Li",
+      "person_ref": "person_jordan_li",
       "summary": "算法技术负责人，数据导向的理性调停者；对天气收益预期保守（千分之四五上限）但认同'锥子效应'长期价值；清楚组织决策权不在自己手里，已做天气降级的最坏打算；需要帮他补信息差和保持方向确定性",
-      "current_judgment": "剑锋目前呈现出数据导向、不轻易表态的特点，当前处于稳定联系，其主要意图是推动分工厘清，希望天气和demo不要同时做导致两者都做不好；如果必须选，倾向于把天气放常规迭代",
+      "current_judgment": "Jordan Li目前呈现出数据导向、不轻易表态的特点，当前处于稳定联系，其主要意图是推动分工厘清，希望天气和demo不要同时做导致两者都做不好；如果必须选，倾向于把天气放常规迭代",
       "relationship_stage": "稳定联系",
       "profile_tier": "key",
       "confidence": "high",
@@ -52,19 +52,19 @@
         "清楚决策权不在自己手里，不会越权表态"
       ],
       "risk_flags": [
-        "如果天气被降优先级，剑锋可能不会主动争取而是被动接受",
+        "如果天气被降优先级，Jordan Li可能不会主动争取而是被动接受",
         "'这不是我能决定的'态度可能导致执行层面出现真空"
       ]
     },
     "action_board": {
       "next_actions": [
-        "关注剑锋向浩总和陈卓的优先级沟通结果",
-        "今晚10-11点技术接口会（与Lenny），确认M端开发接口对接是否受分工影响",
-        "与剑锋保持信息同步：帮他了解斌哥和曾科团队的真实动向，弥补他的信息缺口",
-        "如果天气降级成定局，和剑锋一起规划'锥子效应'的长期叙事——天气是跑通架构的楔子"
+        "关注Jordan Li向浩总和陈卓的优先级沟通结果",
+        "今晚10-11点技术接口会（与tester），确认M端开发接口对接是否受分工影响",
+        "与Jordan Li保持信息同步：帮他了解Ben和曾科团队的真实动向，弥补他的信息缺口",
+        "如果天气降级成定局，和Jordan Li一起规划'锥子效应'的长期叙事——天气是跑通架构的楔子"
       ],
       "open_questions": [
-        "决策权在斌哥还是更上层？剑锋暗示'斌哥也未必能决定'"
+        "决策权在Ben还是更上层？Jordan Li暗示'Ben也未必能决定'"
       ]
     },
     "evidence_digest": {
@@ -73,92 +73,92 @@
       "last_updated_at": "2026-04-18T02:09:58.762Z",
       "key_evidence": [
         "数据导向，大量用数据和逻辑说话：天气影响人群约10%，收益上限千分之四五",
-        "理性调停者角色，多次说'这很奇怪''相似度80%以上'但不直接说斌哥错了",
+        "理性调停者角色，多次说'这很奇怪''相似度80%以上'但不直接说Ben错了",
         "已做最坏打算：如果demo优先，天气降为常规迭代而非P0"
       ]
     },
     "timeline_digest": [
       {
         "date": "2026-04-13",
-        "source_title": "2026-04-13 会议纪要 - 与算法JF沟通（天气Agent分工）",
-        "relative_path": "美团Landing/天气Agent/会议记录/2026-04-13-与算法JF沟通.md",
-        "event_summary": "### 剑锋（说话人5）—— 算法/技术负责人",
+        "source_title": "2026-04-13 会议纪要 - 与算法QA沟通（天气Agent分工）",
+        "relative_path": "美团Landing/天气Agent/会议记录/2026-04-13-与算法QA沟通.md",
+        "event_summary": "### Jordan Li（说话人5）—— 算法/技术负责人",
         "matched_excerpt_index": 72
       },
       {
         "date": "2026-04-13",
-        "source_title": "2026-04-13 会议纪要 - 与算法JF沟通（天气Agent分工）",
-        "relative_path": "美团Landing/天气Agent/会议记录/2026-04-13-与算法JF沟通.md",
+        "source_title": "2026-04-13 会议纪要 - 与算法QA沟通（天气Agent分工）",
+        "relative_path": "美团Landing/天气Agent/会议记录/2026-04-13-与算法QA沟通.md",
         "event_summary": "**观点：**",
         "matched_excerpt_index": 73
       },
       {
         "date": "2026-04-13",
-        "source_title": "2026-04-13 会议纪要 - 与算法JF沟通（天气Agent分工）",
-        "relative_path": "美团Landing/天气Agent/会议记录/2026-04-13-与算法JF沟通.md",
+        "source_title": "2026-04-13 会议纪要 - 与算法QA沟通（天气Agent分工）",
+        "relative_path": "美团Landing/天气Agent/会议记录/2026-04-13-与算法QA沟通.md",
         "event_summary": "* 天气的真正价值在于\"锥子效应\"（打通架构后可复用），而非单场景大收益",
         "matched_excerpt_index": 74
       },
       {
         "date": "2026-04-13",
-        "source_title": "2026-04-13 会议纪要 - 与算法JF沟通（天气Agent分工）",
-        "relative_path": "美团Landing/天气Agent/会议记录/2026-04-13-与算法JF沟通.md",
+        "source_title": "2026-04-13 会议纪要 - 与算法QA沟通（天气Agent分工）",
+        "relative_path": "美团Landing/天气Agent/会议记录/2026-04-13-与算法QA沟通.md",
         "event_summary": "* 在成本对齐约束下，天气收益上限约千分之四五，不是\"大事\"",
         "matched_excerpt_index": 75
       },
       {
         "date": "2026-04-13",
-        "source_title": "2026-04-13 会议纪要 - 与算法JF沟通（天气Agent分工）",
-        "relative_path": "美团Landing/天气Agent/会议记录/2026-04-13-与算法JF沟通.md",
+        "source_title": "2026-04-13 会议纪要 - 与算法QA沟通（天气Agent分工）",
+        "relative_path": "美团Landing/天气Agent/会议记录/2026-04-13-与算法QA沟通.md",
         "event_summary": "* 两团队技术路线高度重叠，重复建设是实质风险",
         "matched_excerpt_index": 76
       },
       {
         "date": "2026-04-13",
-        "source_title": "2026-04-13 会议纪要 - 与算法JF沟通（天气Agent分工）",
-        "relative_path": "美团Landing/天气Agent/会议记录/2026-04-13-与算法JF沟通.md",
+        "source_title": "2026-04-13 会议纪要 - 与算法QA沟通（天气Agent分工）",
+        "relative_path": "美团Landing/天气Agent/会议记录/2026-04-13-与算法QA沟通.md",
         "event_summary": "**诉求：**",
         "matched_excerpt_index": 77
       },
       {
         "date": "2026-04-13",
-        "source_title": "2026-04-13 会议纪要 - 与算法JF沟通（天气Agent分工）",
-        "relative_path": "美团Landing/天气Agent/会议记录/2026-04-13-与算法JF沟通.md",
+        "source_title": "2026-04-13 会议纪要 - 与算法QA沟通（天气Agent分工）",
+        "relative_path": "美团Landing/天气Agent/会议记录/2026-04-13-与算法QA沟通.md",
         "event_summary": "* 希望分工清晰，不要同时干A和B导致两者都做不好",
         "matched_excerpt_index": 78
       },
       {
         "date": "2026-04-13",
-        "source_title": "2026-04-13 会议纪要 - 与算法JF沟通（天气Agent分工）",
-        "relative_path": "美团Landing/天气Agent/会议记录/2026-04-13-与算法JF沟通.md",
-        "event_summary": "* 需要斌哥明确优先级：天气 vs demo",
+        "source_title": "2026-04-13 会议纪要 - 与算法QA沟通（天气Agent分工）",
+        "relative_path": "美团Landing/天气Agent/会议记录/2026-04-13-与算法QA沟通.md",
+        "event_summary": "* 需要Ben明确优先级：天气 vs demo",
         "matched_excerpt_index": 79
       },
       {
         "date": "2026-04-13",
-        "source_title": "2026-04-13 会议纪要 - 与算法JF沟通（天气Agent分工）",
-        "relative_path": "美团Landing/天气Agent/会议记录/2026-04-13-与算法JF沟通.md",
+        "source_title": "2026-04-13 会议纪要 - 与算法QA沟通（天气Agent分工）",
+        "relative_path": "美团Landing/天气Agent/会议记录/2026-04-13-与算法QA沟通.md",
         "event_summary": "**需求：**",
         "matched_excerpt_index": 80
       },
       {
         "date": "2026-04-13",
-        "source_title": "2026-04-13 会议纪要 - 与算法JF沟通（天气Agent分工）",
-        "relative_path": "美团Landing/天气Agent/会议记录/2026-04-13-与算法JF沟通.md",
+        "source_title": "2026-04-13 会议纪要 - 与算法QA沟通（天气Agent分工）",
+        "relative_path": "美团Landing/天气Agent/会议记录/2026-04-13-与算法QA沟通.md",
         "event_summary": "* 人力确定性：核心骨干只能专注一个方向",
         "matched_excerpt_index": 81
       },
       {
         "date": "2026-04-13",
-        "source_title": "2026-04-13 会议纪要 - 与算法JF沟通（天气Agent分工）",
-        "relative_path": "美团Landing/天气Agent/会议记录/2026-04-13-与算法JF沟通.md",
+        "source_title": "2026-04-13 会议纪要 - 与算法QA沟通（天气Agent分工）",
+        "relative_path": "美团Landing/天气Agent/会议记录/2026-04-13-与算法QA沟通.md",
         "event_summary": "* 技术路线确定性：是否要和曾科团队统一底层框架",
         "matched_excerpt_index": 82
       },
       {
         "date": "2026-04-13",
-        "source_title": "2026-04-13 会议纪要 - 与算法JF沟通（天气Agent分工）",
-        "relative_path": "美团Landing/天气Agent/会议记录/2026-04-13-与算法JF沟通.md",
+        "source_title": "2026-04-13 会议纪要 - 与算法QA沟通（天气Agent分工）",
+        "relative_path": "美团Landing/天气Agent/会议记录/2026-04-13-与算法QA沟通.md",
         "event_summary": "**态度：** 理性、克制，大量用数据和逻辑说话，对天气价值的判断偏谨慎但不反对做，对分工混乱持现实态度（\"这不是我能决定的\"）",
         "matched_excerpt_index": 83
       }
@@ -166,8 +166,8 @@
   },
   "related_people": [
     {
-      "person_name": "雁然",
-      "person_ref": "person_yanran",
+      "person_name": "Mina Yang",
+      "person_ref": "person_mina_yang",
       "relation_type": "same_context_and_mentioned",
       "relation_score": 106,
       "relation_reasons": [
@@ -175,13 +175,13 @@
         "档案内容中互相提及"
       ],
       "shared_sources": [
-        "meeting-minute-2026-04-13-jf-weather-agent"
+        "meeting-minute-2026-04-13-sample-weather-agent"
       ],
       "shared_tags": []
     },
     {
-      "person_name": "贵彬",
-      "person_ref": "person_gui_bin",
+      "person_name": "Ryan Gu",
+      "person_ref": "person_ryan_gu",
       "relation_type": "same_context_and_mentioned",
       "relation_score": 103,
       "relation_reasons": [
@@ -189,7 +189,7 @@
         "档案内容中互相提及"
       ],
       "shared_sources": [
-        "meeting-minute-2026-04-13-jf-weather-agent"
+        "meeting-minute-2026-04-13-sample-weather-agent"
       ],
       "shared_tags": []
     }

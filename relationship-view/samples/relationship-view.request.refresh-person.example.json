@@ -1,7 +1,7 @@
 {
   "mode": "refresh_person_view",
-  "person_ref": "person_yuxi",
-  "profile_store_path": "D:\\Lenny_Bcontext\\skill-system\\relationship-ingestion\\incremental-scenarios\\2026-03-25-subsidy-engine-mo-input\\relationship-profile-store.incremental-2026-03-25-subsidy-engine-mo-input.json",
+  "person_ref": "person_chris_yu",
+  "profile_store_path": "D:\\tester_Bcontext\\skill-system\\relationship-ingestion\\incremental-scenarios\\2026-03-25-subsidy-engine-mo-input\\relationship-profile-store.incremental-2026-03-25-subsidy-engine-mo-input.json",
   "options": {
     "write_store": true,
     "write_markdown": true,

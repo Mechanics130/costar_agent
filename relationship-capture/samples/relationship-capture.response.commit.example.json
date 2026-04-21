@@ -5,10 +5,10 @@
   "stage": "commit",
   "receipt": {
     "reviewed_candidates": 2,
-    "operator": "lenny",
+    "operator": "tester",
     "written": false,
-    "profile_store_path": "D:/Lenny_Bcontext/skill-system/relationship-ingestion/runtime/stores/sample-review-store.json",
-    "view_store_path": "D:\\Lenny_Bcontext\\skill-system\\relationship-view\\runtime\\stores\\relationship-view-store.json",
+    "profile_store_path": "relationship-ingestion/runtime/stores/sample-review-store.json",
+    "view_store_path": "D:\\tester_Bcontext\\skill-system\\relationship-view\\runtime\\stores\\relationship-view-store.json",
     "remaining_unresolved": 0
   },
   "processing_feedback": {
@@ -18,8 +18,8 @@
     "ignored_noise_count": 0,
     "review_pending_count": 2,
     "highlights": [
-      "已识别并建议更新 剑锋",
-      "发现新的建档候选人 贵彬"
+      "已识别并建议更新 Jordan Li",
+      "发现新的建档候选人 Ryan Gu"
     ]
   },
   "confirmation_request": {
@@ -43,8 +43,8 @@
       "本轮未刷新持续视图"
     ],
     "highlights": [
-      "已新建 贵彬",
-      "已更新 剑锋"
+      "已新建 Ryan Gu",
+      "已更新 Jordan Li"
     ]
   },
   "ingestion_result": {
@@ -52,14 +52,14 @@
     "version": "0.1.0",
     "resolved_people": [
       {
-        "person_name": "剑锋",
+        "person_name": "Jordan Li",
         "resolution_action": "update",
-        "matched_existing_person_id": "person_jian_feng",
-        "matched_existing_person_name": "剑锋",
+        "matched_existing_person_id": "person_jordan_li",
+        "matched_existing_person_name": "Jordan Li",
         "confidence": "high"
       },
       {
-        "person_name": "贵彬",
+        "person_name": "Ryan Gu",
         "resolution_action": "create",
         "matched_existing_person_id": null,
         "matched_existing_person_name": null,
@@ -68,16 +68,16 @@
     ],
     "profile_updates": [
       {
-        "person_name": "贵彬",
-        "person_ref": "贵彬",
+        "person_name": "Ryan Gu",
+        "person_ref": "Ryan Gu",
         "resolution_action": "create",
         "summary": "天气Agent执行层核心接口人。"
       }
     ],
     "person_profiles": [
       {
-        "person_name": "剑锋",
-        "person_ref": "person_jian_feng",
+        "person_name": "Jordan Li",
+        "person_ref": "person_jordan_li",
         "resolution_action": "update",
         "profile_tier": "key",
         "confidence": "high",
@@ -95,8 +95,8 @@
         },
         "linked_relationships": {
           "detected_as": true,
-          "matched_existing_person_id": "person_jian_feng",
-          "matched_existing_person_name": "剑锋"
+          "matched_existing_person_id": "person_jordan_li",
+          "matched_existing_person_name": "Jordan Li"
         }
       }
     ],
@@ -106,27 +106,27 @@
       "required_candidate_count": 1,
       "candidates": [
         {
-          "person_name": "贵彬",
+          "person_name": "Ryan Gu",
           "priority": "high",
           "needs_confirmation": true,
           "suggested_action": "create",
           "questions": [],
           "fields_to_confirm": [],
           "evidence_preview": [
-            "与斌哥今天上午已聊过多轮，基本聊不通。"
+            "与Ben今天上午已聊过多轮，基本聊不通。"
           ]
         },
         {
-          "person_name": "萌萌",
+          "person_name": "Mia Meng",
           "priority": "medium",
           "needs_confirmation": true,
           "suggested_action": "review",
           "questions": [
-            "萌萌在项目中的角色是什么？"
+            "Mia Meng在项目中的角色是什么？"
           ],
           "fields_to_confirm": [],
           "evidence_preview": [
-            "雁然会去找萌萌同步天气项目进展和风险。"
+            "Mina Yang会去找Mia Meng同步天气项目进展和风险。"
           ]
         }
       ]
@@ -136,10 +136,10 @@
     },
     "detected_people": [
       {
-        "person_name": "剑锋"
+        "person_name": "Jordan Li"
       },
       {
-        "person_name": "贵彬"
+        "person_name": "Ryan Gu"
       }
     ],
     "relationship_edges": [],
@@ -165,8 +165,8 @@
     },
     "committed_profiles": [
       {
-        "person_name": "剑锋",
-        "person_ref": "person_jian_feng",
+        "person_name": "Jordan Li",
+        "person_ref": "person_jordan_li",
         "resolution_action": "update",
         "profile_tier": "key",
         "confidence": "high",
@@ -199,13 +199,13 @@
         },
         "linked_relationships": {
           "detected_as": true,
-          "matched_existing_person_id": "person_jian_feng",
-          "matched_existing_person_name": "剑锋"
+          "matched_existing_person_id": "person_jordan_li",
+          "matched_existing_person_name": "Jordan Li"
         }
       },
       {
-        "person_name": "贵彬",
-        "person_ref": "person_gui_bin",
+        "person_name": "Ryan Gu",
+        "person_ref": "person_ryan_gu",
         "resolution_action": "create",
         "profile_tier": "active",
         "confidence": "high",
@@ -235,35 +235,35 @@
           "source_count": 0,
           "last_updated_at": "2026-04-20T06:30:52.539Z",
           "key_evidence": [
-            "与斌哥今天上午已聊过多轮，基本聊不通。"
+            "与Ben今天上午已聊过多轮，基本聊不通。"
           ]
         },
         "linked_relationships": {
           "detected_as": true,
           "matched_existing_person_id": null,
-          "matched_existing_person_name": "贵彬"
+          "matched_existing_person_name": "Ryan Gu"
         }
       }
     ],
     "created_people": [
       {
-        "person_name": "贵彬",
-        "person_ref": "person_gui_bin",
+        "person_name": "Ryan Gu",
+        "person_ref": "person_ryan_gu",
         "profile_tier": "active",
         "source": "review"
       }
     ],
     "updated_people": [
       {
-        "person_name": "剑锋",
-        "person_ref": "person_jian_feng",
+        "person_name": "Jordan Li",
+        "person_ref": "person_jordan_li",
         "profile_tier": "key",
         "source": "auto"
       }
     ],
     "ignored_people": [
       {
-        "person_name": "萌萌",
+        "person_name": "Mia Meng",
         "reason": "本轮先不建档。",
         "source": "review"
       }
@@ -273,8 +273,8 @@
     "profile_store_delta": {
       "upserts": [
         {
-          "person_name": "剑锋",
-          "person_ref": "person_jian_feng",
+          "person_name": "Jordan Li",
+          "person_ref": "person_jordan_li",
           "resolution_action": "update",
           "profile_tier": "key",
           "confidence": "high",
@@ -307,13 +307,13 @@
           },
           "linked_relationships": {
             "detected_as": true,
-            "matched_existing_person_id": "person_jian_feng",
-            "matched_existing_person_name": "剑锋"
+            "matched_existing_person_id": "person_jordan_li",
+            "matched_existing_person_name": "Jordan Li"
           }
         },
         {
-          "person_name": "贵彬",
-          "person_ref": "person_gui_bin",
+          "person_name": "Ryan Gu",
+          "person_ref": "person_ryan_gu",
           "resolution_action": "create",
           "profile_tier": "active",
           "confidence": "high",
@@ -343,28 +343,28 @@
             "source_count": 0,
             "last_updated_at": "2026-04-20T06:30:52.539Z",
             "key_evidence": [
-              "与斌哥今天上午已聊过多轮，基本聊不通。"
+              "与Ben今天上午已聊过多轮，基本聊不通。"
             ]
           },
           "linked_relationships": {
             "detected_as": true,
             "matched_existing_person_id": null,
-            "matched_existing_person_name": "贵彬"
+            "matched_existing_person_name": "Ryan Gu"
           }
         }
       ],
       "ignored_people": [
         {
-          "person_name": "萌萌",
+          "person_name": "Mia Meng",
           "reason": "本轮先不建档。",
           "source": "review"
         }
       ],
       "deferred_people": [],
       "auto_committed_people": [
-        "剑锋"
+        "Jordan Li"
       ],
-      "store_path": "D:/Lenny_Bcontext/skill-system/relationship-ingestion/runtime/stores/sample-review-store.json",
+      "store_path": "relationship-ingestion/runtime/stores/sample-review-store.json",
       "written": false,
       "total_profiles_after_write": 2
     },
@@ -375,8 +375,8 @@
     "refreshed_count": 0,
     "reason": "profile_store_not_written",
     "refreshed_views": [],
-    "view_store_path": "D:\\Lenny_Bcontext\\skill-system\\relationship-view\\runtime\\stores\\relationship-view-store.json",
-    "markdown_dir": "D:\\Lenny_Bcontext\\skill-system\\relationship-view\\views",
+    "view_store_path": "D:\\tester_Bcontext\\skill-system\\relationship-view\\runtime\\stores\\relationship-view-store.json",
+    "markdown_dir": "D:\\tester_Bcontext\\skill-system\\relationship-view\\views",
     "result": null
   },
   "commit_feedback": {
@@ -387,13 +387,13 @@
     "deferred_count": 0,
     "unresolved_count": 0,
     "created_people": [
-      "贵彬"
+      "Ryan Gu"
     ],
     "updated_people": [
-      "剑锋"
+      "Jordan Li"
     ],
     "ignored_people": [
-      "萌萌"
+      "Mia Meng"
     ],
     "deferred_people": []
   },

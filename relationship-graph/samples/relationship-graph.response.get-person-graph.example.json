@@ -5,22 +5,22 @@
   "mode": "get_person_graph",
   "run_directory": null,
   "root_person": {
-    "person_name": "剑锋",
-    "person_ref": "person_jianfeng",
+    "person_name": "Jordan Li",
+    "person_ref": "person_jordan_li",
     "profile_tier": "key"
   },
   "target_person": null,
   "related_people": [
     {
-      "person_name": "雁然",
-      "person_ref": "person_yanran",
+      "person_name": "Mina Yang",
+      "person_ref": "person_mina_yang",
       "relation_type": "same_context_and_mentioned",
       "relation_score": 106,
       "relation_reasons": ["共享资料源 4 个", "档案内容中互相提及"]
     },
     {
-      "person_name": "贵彬",
-      "person_ref": "person_gui_bin",
+      "person_name": "Ryan Gu",
+      "person_ref": "person_ryan_gu",
       "relation_type": "same_source_context",
       "relation_score": 7,
       "relation_reasons": ["共享资料源 1 个"]
@@ -29,21 +29,21 @@
   "connection_path": [],
   "graph": {
     "nodes": [
-      { "person_name": "剑锋", "person_ref": "person_jianfeng", "profile_tier": "key", "confidence": "high", "kind": "root" },
-      { "person_name": "雁然", "person_ref": "person_yanran", "profile_tier": "key", "confidence": "high", "kind": "neighbor" },
-      { "person_name": "贵彬", "person_ref": "person_gui_bin", "profile_tier": "active", "confidence": "low", "kind": "neighbor" }
+      { "person_name": "Jordan Li", "person_ref": "person_jordan_li", "profile_tier": "key", "confidence": "high", "kind": "root" },
+      { "person_name": "Mina Yang", "person_ref": "person_mina_yang", "profile_tier": "key", "confidence": "high", "kind": "neighbor" },
+      { "person_name": "Ryan Gu", "person_ref": "person_ryan_gu", "profile_tier": "active", "confidence": "low", "kind": "neighbor" }
     ],
     "edges": [
       {
-        "source": "person_jianfeng",
-        "target": "person_yanran",
+        "source": "person_jordan_li",
+        "target": "person_mina_yang",
         "relation_score": 106,
         "relation_type": "same_context_and_mentioned",
         "relation_reasons": ["共享资料源 4 个", "档案内容中互相提及"]
       },
       {
-        "source": "person_jianfeng",
-        "target": "person_gui_bin",
+        "source": "person_jordan_li",
+        "target": "person_ryan_gu",
         "relation_score": 7,
         "relation_type": "same_source_context",
         "relation_reasons": ["共享资料源 1 个"]
@@ -53,23 +53,23 @@
   "network_summary": {
     "profile_count": 3,
     "edge_count": 2,
-    "top_connectors": ["剑锋", "雁然"],
+    "top_connectors": ["Jordan Li", "Mina Yang"],
     "isolated_people": [],
     "graph_node_count": 3
   },
   "influence_notes": [
-    "剑锋当前是这批关系里的关键连接点之一。",
-    "雁然是当前最强的相邻关系节点，适合作为后续优先对齐对象。"
+    "Jordan Li当前是这批关系里的关键连接点之一。",
+    "Mina Yang是当前最强的相邻关系节点，适合作为后续优先对齐对象。"
   ],
   "review_bundle": {
     "required": true,
     "pending_edge_count": 1,
     "edge_candidates": [
       {
-        "source_person_name": "剑锋",
-        "source_person_ref": "person_jianfeng",
-        "target_person_name": "贵彬",
-        "target_person_ref": "person_gui_bin",
+        "source_person_name": "Jordan Li",
+        "source_person_ref": "person_jordan_li",
+        "target_person_name": "Ryan Gu",
+        "target_person_ref": "person_ryan_gu",
         "relation_type": "same_source_context",
         "relation_score": 7,
         "reason": "这条边主要来自共享资料源，还缺少更直接的互相提及或稳定协作证据。 关系分数偏低，说明证据量有限。 至少一侧人物档案置信度偏低，关系判断可能会被上游实体识别误差带偏。",
@@ -86,18 +86,18 @@
     "graph_kind": "get_person_graph",
     "node_count": 3,
     "edge_count": 2,
-    "mermaid": "flowchart LR\n  person_jianfeng[\"剑锋<br/>key / high\"]\n  person_yanran[\"雁然<br/>key / high\"]\n  person_gui_bin[\"贵彬<br/>active / low\"]\n  person_jianfeng -- \"106 · same_context_and_mentioned\" --> person_yanran\n  person_jianfeng -. \"7 · same_source_context ?\" .-> person_gui_bin\n  class person_jianfeng rootNode\n  class person_yanran defaultNode\n  class person_gui_bin defaultNode\n  classDef rootNode fill:#0b6e4f,stroke:#084c38,color:#ffffff,stroke-width:2px\n  classDef targetNode fill:#1d4ed8,stroke:#1e40af,color:#ffffff,stroke-width:2px\n  classDef defaultNode fill:#f5f5f4,stroke:#a8a29e,color:#1c1917,stroke-width:1px\n  %% Dashed edges with ? indicate relation edges that still need user confirmation."
+    "mermaid": "flowchart LR\n  person_jordan_li[\"Jordan Li<br/>key / high\"]\n  person_mina_yang[\"Mina Yang<br/>key / high\"]\n  person_ryan_gu[\"Ryan Gu<br/>active / low\"]\n  person_jordan_li -- \"106 · same_context_and_mentioned\" --> person_mina_yang\n  person_jordan_li -. \"7 · same_source_context ?\" .-> person_ryan_gu\n  class person_jordan_li rootNode\n  class person_mina_yang defaultNode\n  class person_ryan_gu defaultNode\n  classDef rootNode fill:#0b6e4f,stroke:#084c38,color:#ffffff,stroke-width:2px\n  classDef targetNode fill:#1d4ed8,stroke:#1e40af,color:#ffffff,stroke-width:2px\n  classDef defaultNode fill:#f5f5f4,stroke:#a8a29e,color:#1c1917,stroke-width:1px\n  %% Dashed edges with ? indicate relation edges that still need user confirmation."
   },
   "user_feedback": {
-    "headline": "已生成 剑锋 的局部关系图，当前最强连接人是 雁然",
+    "headline": "已生成 Jordan Li 的局部关系图，当前最强连接人是 Mina Yang",
     "summary_lines": [
       "共纳入 3 个节点",
       "识别出 2 条关系边",
       "其中 1 条边建议你先确认再当成稳定关系边"
     ],
     "key_findings": [
-      "雁然 是当前最强的一阶关系节点，关系强度 106",
-      "贵彬 也是当前局部网络中的重要相邻节点"
+      "Mina Yang 是当前最强的一阶关系节点，关系强度 106",
+      "Ryan Gu 也是当前局部网络中的重要相邻节点"
     ],
     "confidence_notes": [
       "当前关系边主要基于共享资料源、互相提及和共享标签推断",
@@ -105,7 +105,7 @@
     ],
     "next_action": {
       "type": "review_graph_edges",
-      "message": "建议优先确认 1 条关系边，然后再决定是否把 雁然 当成稳定相邻人物"
+      "message": "建议优先确认 1 条关系边，然后再决定是否把 Mina Yang 当成稳定相邻人物"
     }
   },
   "notes": ""

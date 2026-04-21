@@ -2,9 +2,9 @@
   "skill": "relationship-graph",
   "version": "0.1.0",
   "mode": "find_connection_path",
-  "profile_store_path": "D:/Lenny_Bcontext/skill-system/relationship-ingestion/incremental-scenarios/2026-04-13-jf-weather-agent/relationship-profile-store.incremental-2026-04-13-jf-weather-agent.json",
-  "person_name": "贵彬",
-  "target_person_name": "雁然",
+  "profile_store_path": "relationship-ingestion/incremental-scenarios/2026-04-13-sample-weather-agent/relationship-profile-store.incremental-2026-04-13-sample-weather-agent.json",
+  "person_name": "Ryan Gu",
+  "target_person_name": "Mina Yang",
   "options": {
     "save_run_artifacts": true,
     "max_path_length": 4,

@@ -52,15 +52,15 @@ relationship-profile/
 ## 运行方式
 
 ```powershell
-node D:\Lenny_Bcontext\skill-system\relationship-profile\runtime\run-relationship-profile.mjs `
-  D:\Lenny_Bcontext\skill-system\relationship-profile\samples\relationship-profile.request.get.example.json `
-  D:\Lenny_Bcontext\skill-system\relationship-profile\samples\relationship-profile.response.get.example.json
+node relationship-profile\runtime\run-relationship-profile.mjs `
+  relationship-profile\samples\relationship-profile.request.get.example.json `
+  relationship-profile\samples\relationship-profile.response.get.example.json
 ```
 
 ## 默认 profile store
 
 默认会复用：
 
-`D:\Lenny_Bcontext\skill-system\relationship-ingestion\runtime\stores\relationship-profile-store.json`
+`relationship-ingestion\runtime\stores\relationship-profile-store.json`
 
 如果请求里显式传了 `profile_store_path`，则优先使用请求里的路径。

@@ -1,20 +1,20 @@
 {
-  "operator": "lenny",
+  "operator": "tester",
   "notes": "用样例 review request 验证 capture 的提交反馈层。",
-  "profile_store_path": "D:/Lenny_Bcontext/skill-system/relationship-ingestion/runtime/stores/sample-review-store.json",
+  "profile_store_path": "relationship-ingestion/runtime/stores/sample-review-store.json",
   "ingestion_result": {
     "skill": "relationship-ingestion",
     "version": "0.1.0",
     "resolved_people": [
       {
-        "person_name": "剑锋",
+        "person_name": "Jordan Li",
         "resolution_action": "update",
-        "matched_existing_person_id": "person_jian_feng",
-        "matched_existing_person_name": "剑锋",
+        "matched_existing_person_id": "person_jordan_li",
+        "matched_existing_person_name": "Jordan Li",
         "confidence": "high"
       },
       {
-        "person_name": "贵彬",
+        "person_name": "Ryan Gu",
         "resolution_action": "create",
         "matched_existing_person_id": null,
         "matched_existing_person_name": null,
@@ -23,16 +23,16 @@
     ],
     "profile_updates": [
       {
-        "person_name": "贵彬",
-        "person_ref": "贵彬",
+        "person_name": "Ryan Gu",
+        "person_ref": "Ryan Gu",
         "resolution_action": "create",
         "summary": "天气Agent执行层核心接口人。"
       }
     ],
     "person_profiles": [
       {
-        "person_name": "剑锋",
-        "person_ref": "person_jian_feng",
+        "person_name": "Jordan Li",
+        "person_ref": "person_jordan_li",
         "resolution_action": "update",
         "profile_tier": "key",
         "confidence": "high",
@@ -48,8 +48,8 @@
         },
         "linked_relationships": {
           "detected_as": true,
-          "matched_existing_person_id": "person_jian_feng",
-          "matched_existing_person_name": "剑锋"
+          "matched_existing_person_id": "person_jordan_li",
+          "matched_existing_person_name": "Jordan Li"
         }
       }
     ],
@@ -59,22 +59,22 @@
       "required_candidate_count": 1,
       "candidates": [
         {
-          "person_name": "贵彬",
+          "person_name": "Ryan Gu",
           "priority": "high",
           "needs_confirmation": true,
           "suggested_action": "create",
           "questions": [],
           "fields_to_confirm": [],
-          "evidence_preview": ["与斌哥今天上午已聊过多轮，基本聊不通。"]
+          "evidence_preview": ["与Ben今天上午已聊过多轮，基本聊不通。"]
         },
         {
-          "person_name": "萌萌",
+          "person_name": "Mia Meng",
           "priority": "medium",
           "needs_confirmation": true,
           "suggested_action": "review",
-          "questions": ["萌萌在项目中的角色是什么？"],
+          "questions": ["Mia Meng在项目中的角色是什么？"],
           "fields_to_confirm": [],
-          "evidence_preview": ["雁然会去找萌萌同步天气项目进展和风险。"]
+          "evidence_preview": ["Mina Yang会去找Mia Meng同步天气项目进展和风险。"]
         }
       ]
     },
@@ -82,8 +82,8 @@
       "summary": "天气 Agent 分工沟通。"
     },
     "detected_people": [
-      { "person_name": "剑锋" },
-      { "person_name": "贵彬" }
+      { "person_name": "Jordan Li" },
+      { "person_name": "Ryan Gu" }
     ],
     "relationship_edges": [],
     "todos": [],
@@ -92,15 +92,15 @@
   },
   "review_decisions": [
     {
-      "person_name": "贵彬",
+      "person_name": "Ryan Gu",
       "final_action": "create",
-      "resolved_person_ref": "person_gui_bin",
-      "resolved_person_name": "贵彬",
+      "resolved_person_ref": "person_ryan_gu",
+      "resolved_person_name": "Ryan Gu",
       "profile_tier": "active",
       "notes": "确认纳入天气项目执行层关键接口人。"
     },
     {
-      "person_name": "萌萌",
+      "person_name": "Mia Meng",
       "final_action": "ignore",
       "notes": "本轮先不建档。"
     }

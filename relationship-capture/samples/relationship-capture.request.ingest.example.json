@@ -17,31 +17,31 @@
       "source_count": 1,
       "excerpt_count": 1,
       "dropped_excerpt_count": 0,
-      "target_people": ["李婧", "陈妍"],
-      "focus_people": ["李婧"],
-      "focus_instruction": "优先判断李婧是否值得长期建档。"
+      "target_people": ["Ava Chen", "Bella Xu"],
+      "focus_people": ["Ava Chen"],
+      "focus_instruction": "优先判断Ava Chen是否值得长期建档。"
     },
     "interaction_summary": {
-      "summary": "用户与李婧、陈妍沟通品牌合作。"
+      "summary": "用户与Ava Chen、Bella Xu沟通品牌合作。"
     },
     "detected_people": [
-      { "person_name": "李婧" },
-      { "person_name": "陈妍" }
+      { "person_name": "Ava Chen" },
+      { "person_name": "Bella Xu" }
     ],
     "resolved_people": [
-      { "person_name": "李婧", "resolution_action": "update" },
-      { "person_name": "陈妍", "resolution_action": "create" }
+      { "person_name": "Ava Chen", "resolution_action": "update" },
+      { "person_name": "Bella Xu", "resolution_action": "create" }
     ],
     "profile_updates": [],
     "person_profiles": [
       {
-        "person_name": "李婧",
+        "person_name": "Ava Chen",
         "compiled_truth": {
           "summary": "务实型合作对象，重视 ROI 和执行细节。"
         }
       },
       {
-        "person_name": "陈妍",
+        "person_name": "Bella Xu",
         "compiled_truth": {
           "summary": "需要更多案例和资源排期支持的合作对象。"
         }
@@ -57,11 +57,11 @@
       "required_candidate_count": 1,
       "candidates": [
         {
-          "person_name": "陈妍",
+          "person_name": "Bella Xu",
           "priority": "high",
           "needs_confirmation": true,
           "suggested_action": "create",
-          "questions": ["是否将陈妍纳入长期合作关系档案？"],
+          "questions": ["是否将Bella Xu纳入长期合作关系档案？"],
           "fields_to_confirm": [
             {
               "field": "compiled_truth.summary",

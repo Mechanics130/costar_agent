@@ -52,10 +52,10 @@ relationship-roleplay/
 ## 运行方式
 
 ```powershell
-node D:\Lenny_Bcontext\skill-system\relationship-roleplay\runtime\run-relationship-roleplay.mjs `
-  D:\Lenny_Bcontext\skill-system\relationship-roleplay\samples\relationship-roleplay.request.example.json `
-  D:\Lenny_Bcontext\skill-system\relationship-roleplay\samples\relationship-roleplay.response.example.json
+node relationship-roleplay\runtime\run-relationship-roleplay.mjs `
+  relationship-roleplay\samples\relationship-roleplay.request.example.json `
+  relationship-roleplay\samples\relationship-roleplay.response.example.json
 ```
 
 模型配置默认复用：
-`D:\Lenny_Bcontext\skill-system\relationship-ingestion\runtime\model-config.local.json`
+`relationship-ingestion\runtime\model-config.local.json`

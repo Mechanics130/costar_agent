@@ -7,8 +7,8 @@
     "accepted_sources": 1,
     "parsed_success": 1,
     "parsed_failed": 0,
-    "focus_people": ["李婧"],
-    "target_people": ["李婧", "陈妍"],
+    "focus_people": ["Ava Chen"],
+    "target_people": ["Ava Chen", "Bella Xu"],
     "existing_people_count": 1
   },
   "processing_feedback": {
@@ -18,8 +18,8 @@
     "ignored_noise_count": 0,
     "review_pending_count": 1,
     "highlights": [
-      "已识别并建议更新 李婧",
-      "发现新的建档候选人 陈妍"
+      "已识别并建议更新 Ava Chen",
+      "发现新的建档候选人 Bella Xu"
     ]
   },
   "confirmation_request": {
@@ -28,11 +28,11 @@
     "required_candidate_count": 1,
     "top_candidates": [
       {
-        "person_name": "陈妍",
+        "person_name": "Bella Xu",
         "suggested_action": "create",
         "priority": "high",
         "needs_confirmation": true,
-        "questions": ["是否将陈妍纳入长期合作关系档案？"],
+        "questions": ["是否将Bella Xu纳入长期合作关系档案？"],
         "fields_to_confirm": [
           {
             "field": "compiled_truth.summary",
@@ -58,8 +58,8 @@
       "当前需要你确认 1 位关系人"
     ],
     "highlights": [
-      "已识别并建议更新 李婧",
-      "发现新的建档候选人 陈妍"
+      "已识别并建议更新 Ava Chen",
+      "发现新的建档候选人 Bella Xu"
     ]
   },
   "ingestion_result": {

@@ -4,13 +4,13 @@
   "status": "success",
   "mode": "refresh_person_view",
   "target_person": {
-    "person_name": "雨溪",
-    "person_ref": "person_yuxi",
+    "person_name": "Chris Yu",
+    "person_ref": "person_chris_yu",
     "profile_tier": "key"
   },
   "person_view": {
-    "person_name": "雨溪",
-    "person_ref": "person_yuxi",
+    "person_name": "Chris Yu",
+    "person_ref": "person_chris_yu",
     "profile_tier": "key",
     "confidence": "high",
     "refreshed_at": "2026-04-20T12:00:00.000Z",
@@ -47,8 +47,8 @@
     ],
     "related_people": [
       {
-        "person_name": "雁然",
-        "person_ref": "person_yanran",
+        "person_name": "Mina Yang",
+        "person_ref": "person_mina_yang",
         "relation_type": "same_context_and_mentioned",
         "relation_score": 57
       }
@@ -58,12 +58,12 @@
       "edge_count": 3,
       "pending_edge_count": 2,
       "strongest_connection": {
-        "person_name": "雁然",
-        "person_ref": "person_yanran",
+        "person_name": "Mina Yang",
+        "person_ref": "person_mina_yang",
         "relation_type": "same_context_and_mentioned",
         "relation_score": 57
       },
-      "mermaid": "flowchart LR\n  person_yuxi[\"雨溪\"]\n  person_yanran[\"雁然\"]\n  person_yuxi --> person_yanran"
+      "mermaid": "flowchart LR\n  person_chris_yu[\"Chris Yu\"]\n  person_mina_yang[\"Mina Yang\"]\n  person_chris_yu --> person_mina_yang"
     },
     "review_snapshot": {
       "required": true,
@@ -72,23 +72,23 @@
       "review_notes": ["当前仍有待确认关系边。"]
     },
     "user_feedback": {
-      "headline": "已生成雨溪的局部关系图"
+      "headline": "已生成Chris Yu的局部关系图"
     },
-    "markdown_path": "D:\\Lenny_Bcontext\\skill-system\\relationship-view\\views\\person_yuxi.md",
+    "markdown_path": "D:\\tester_Bcontext\\skill-system\\relationship-view\\views\\person_chris_yu.md",
     "source_context": {
-      "profile_store_path": "D:\\Lenny_Bcontext\\skill-system\\relationship-ingestion\\incremental-scenarios\\2026-03-25-subsidy-engine-mo-input\\relationship-profile-store.incremental-2026-03-25-subsidy-engine-mo-input.json",
-      "graph_review_store_path": "D:\\Lenny_Bcontext\\skill-system\\relationship-graph\\runtime\\stores\\relationship-graph-review-store.json"
+      "profile_store_path": "D:\\tester_Bcontext\\skill-system\\relationship-ingestion\\incremental-scenarios\\2026-03-25-subsidy-engine-mo-input\\relationship-profile-store.incremental-2026-03-25-subsidy-engine-mo-input.json",
+      "graph_review_store_path": "D:\\tester_Bcontext\\skill-system\\relationship-graph\\runtime\\stores\\relationship-graph-review-store.json"
     }
   },
   "refreshed_views": [
     {
-      "person_name": "雨溪",
-      "person_ref": "person_yuxi",
+      "person_name": "Chris Yu",
+      "person_ref": "person_chris_yu",
       "profile_tier": "key",
       "confidence": "high",
       "refreshed_at": "2026-04-20T12:00:00.000Z",
       "pending_edge_count": 2,
-      "markdown_path": "D:\\Lenny_Bcontext\\skill-system\\relationship-view\\views\\person_yuxi.md"
+      "markdown_path": "D:\\tester_Bcontext\\skill-system\\relationship-view\\views\\person_chris_yu.md"
     }
   ],
   "view_store_overview": {
@@ -97,20 +97,20 @@
     "updated_at": "2026-04-20T12:00:00.000Z"
   },
   "view_store_delta": {
-    "store_path": "D:\\Lenny_Bcontext\\skill-system\\relationship-view\\runtime\\stores\\relationship-view-store.json",
+    "store_path": "D:\\tester_Bcontext\\skill-system\\relationship-view\\runtime\\stores\\relationship-view-store.json",
     "written": true,
     "markdown_written_count": 1,
     "total_views_after_write": 3,
     "refreshed_people": [
       {
-        "person_name": "雨溪",
-        "person_ref": "person_yuxi",
-        "markdown_path": "D:\\Lenny_Bcontext\\skill-system\\relationship-view\\views\\person_yuxi.md"
+        "person_name": "Chris Yu",
+        "person_ref": "person_chris_yu",
+        "markdown_path": "D:\\tester_Bcontext\\skill-system\\relationship-view\\views\\person_chris_yu.md"
       }
     ]
   },
   "user_feedback": {
-    "headline": "已刷新 雨溪 的持续关系视图",
+    "headline": "已刷新 Chris Yu 的持续关系视图",
     "summary_lines": [
       "本次刷新人物数：1",
       "其中待确认关系边总数：2",

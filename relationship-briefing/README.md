@@ -59,7 +59,7 @@ relationship-briefing/
 
 同时 runtime 会写一份持久化 markdown 文件到：
 
-`D:\Lenny_Bcontext\skill-system\relationship-briefing\briefings\`
+`relationship-briefing\briefings\`
 
 返回中会包含：
 
@@ -70,11 +70,11 @@ relationship-briefing/
 ## 运行方式
 
 ```powershell
-node D:\Lenny_Bcontext\skill-system\relationship-briefing\runtime\run-relationship-briefing.mjs `
-  D:\Lenny_Bcontext\skill-system\relationship-briefing\samples\relationship-briefing.request.example.json `
-  D:\Lenny_Bcontext\skill-system\relationship-briefing\samples\relationship-briefing.response.example.json
+node relationship-briefing\runtime\run-relationship-briefing.mjs `
+  relationship-briefing\samples\relationship-briefing.request.example.json `
+  relationship-briefing\samples\relationship-briefing.response.example.json
 ```
 
 模型配置默认复用：
 
-`D:\Lenny_Bcontext\skill-system\relationship-ingestion\runtime\model-config.local.json`
+`relationship-ingestion\runtime\model-config.local.json`

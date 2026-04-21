@@ -7,10 +7,10 @@
     "review_bundle": {
       "edge_candidates": [
         {
-          "source_person_name": "剑锋",
-          "source_person_ref": "person_jianfeng",
-          "target_person_name": "贵彬",
-          "target_person_ref": "person_gui_bin",
+          "source_person_name": "Jordan Li",
+          "source_person_ref": "person_jordan_li",
+          "target_person_name": "Ryan Gu",
+          "target_person_ref": "person_ryan_gu",
           "relation_type": "same_source_context",
           "relation_score": 7,
           "reason": "这条边主要来自共享资料源，还缺少更直接的互相提及或稳定协作证据。",
@@ -22,14 +22,14 @@
   },
   "review_decisions": [
     {
-      "source_person_ref": "person_jianfeng",
-      "target_person_ref": "person_gui_bin",
+      "source_person_ref": "person_jordan_li",
+      "target_person_ref": "person_ryan_gu",
       "final_action": "reject",
       "note": "当前只看到同场会议共现，先不作为稳定关系边保留。"
     }
   ],
-  "graph_review_store_path": "D:\\Lenny_Bcontext\\skill-system\\relationship-graph\\runtime\\stores\\relationship-graph-review-store.sample.json",
-  "operator": "lenny",
+  "graph_review_store_path": "D:\\tester_Bcontext\\skill-system\\relationship-graph\\runtime\\stores\\relationship-graph-review-store.sample.json",
+  "operator": "tester",
   "notes": "sample decision",
   "options": {
     "write_store": false

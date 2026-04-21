@@ -108,24 +108,24 @@ relationship-graph/
 ### 1. 运行 graph
 
 ```powershell
-node D:\Lenny_Bcontext\skill-system\relationship-graph\runtime\run-relationship-graph.mjs `
-  D:\Lenny_Bcontext\skill-system\relationship-graph\samples\relationship-graph.request.get-person-graph.example.json `
-  D:\Lenny_Bcontext\skill-system\relationship-graph\samples\relationship-graph.response.get-person-graph.example.json
+node relationship-graph\runtime\run-relationship-graph.mjs `
+  relationship-graph\samples\relationship-graph.request.get-person-graph.example.json `
+  relationship-graph\samples\relationship-graph.response.get-person-graph.example.json
 ```
 
 ### 2. 运行 graph review resolution
 
 ```powershell
-node D:\Lenny_Bcontext\skill-system\relationship-graph\runtime\run-relationship-graph-review-resolution.mjs `
-  D:\Lenny_Bcontext\skill-system\relationship-graph\samples\relationship-graph-review-resolution.request.example.json `
-  D:\Lenny_Bcontext\skill-system\relationship-graph\samples\relationship-graph-review-resolution.response.example.json
+node relationship-graph\runtime\run-relationship-graph-review-resolution.mjs `
+  relationship-graph\samples\relationship-graph-review-resolution.request.example.json `
+  relationship-graph\samples\relationship-graph-review-resolution.response.example.json
 ```
 
 ### 3. 运行本地冒烟检查
 
 ```powershell
-node D:\Lenny_Bcontext\skill-system\relationship-graph\runtime\graph-smoke.mjs
-node D:\Lenny_Bcontext\skill-system\relationship-graph\runtime\graph-review-resolution-smoke.mjs
+node relationship-graph\runtime\graph-smoke.mjs
+node relationship-graph\runtime\graph-review-resolution-smoke.mjs
 ```
 
 ## 当前阶段的边界
