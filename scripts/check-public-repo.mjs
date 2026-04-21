@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { readFile } from "node:fs/promises";
-import { existsSync, readdirSync, statSync } from "node:fs";
+import { existsSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
 
@@ -36,6 +36,8 @@ const requiredFiles = [
   "LICENSE",
   "NOTICE",
   "package.json",
+  "package-lock.json",
+  "eslint.config.mjs",
   "README.md",
   "README.zh-CN.md",
   "ROADMAP.md",

@@ -38,3 +38,6 @@ real-use-logs/*.md
 # OS / editor noise
 .DS_Store
 Thumbs.db
+
+# Local installs
+node_modules/

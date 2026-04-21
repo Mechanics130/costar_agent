@@ -140,7 +140,7 @@ function buildViewRefreshAfterCommit(request, reviewResult) {
     };
   }
 
-  if (!Boolean(reviewResult?.profile_store_delta?.written)) {
+  if (reviewResult?.profile_store_delta?.written !== true) {
     return {
       attempted: false,
       refreshed_count: 0,

@@ -443,7 +443,7 @@ function applyProfileDecision(baseProfile, candidate, decision) {
   return profile;
 }
 
-function finalizeCommittedProfile({ profile, finalAction, processedAt, origin }) {
+function finalizeCommittedProfile({ profile, finalAction, processedAt, _origin }) {
   const committed = clone(profile);
   committed.resolution_action = normalizeResolutionAction(finalAction === "update" ? "update" : "create");
   committed.confidence = normalizeConfidence(committed.confidence || "medium");

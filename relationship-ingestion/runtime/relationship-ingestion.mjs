@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+﻿// SPDX-License-Identifier: Apache-2.0
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -697,37 +697,6 @@ function scoreExcerptBlockForPolicy(block, source, request, policy) {
   return score;
 }
 
-function buildRelationshipIngestionMessages({ request, prepared }) {
-  const prompt = readTextFile(promptPath);
-  const excerptLines = prepared.excerpts
-    .map((excerpt) => `${excerpt.excerpt_index}. [${excerpt.source_title}] ${excerpt.text}`)
-    .join("\n\n");
-
-  return [
-    { role: "system", content: prompt },
-    {
-      role: "user",
-      content: [
-        `目标：${request.goal}`,
-        `重点抽取人物：${request.focus_people.length ? request.focus_people.join("、") : request.target_people.length ? request.target_people.join("、") : "未指定，请从资料中识别值得建档的人物"}`,
-        request.focus_people.length
-          ? "优先规则：如果用户明确指定了重点关注人物，请优先围绕这些人输出识别结果、档案、证据和待办。如果证据不足，请在 review_flags 里标出原因，不要被其他高频人物稀释。"
-          : "优先规则：未指定重点关注人物，请从资料中识别值得建档的人物。",
-        request.focus_instruction ? `关注说明：${request.focus_instruction}` : null,
-        `已有联系人：${request.existing_people.length ? request.existing_people.map((person) => person.name).join("、") : "暂无"}`,
-        `资料来源数：${request.sources.length}`,
-        `节选数：${prepared.truncation.used_excerpt_count}`,
-        prepared.truncation.dropped_excerpt_count > 0
-          ? `注意：资料过长，已有 ${prepared.truncation.dropped_excerpt_count} 段未送入模型。`
-          : "已送入全部资料节选。",
-        "",
-        "以下是待分析资料：",
-        excerptLines
-      ].filter(Boolean).join("\n")
-    }
-  ];
-}
-
 async function callOpenAICompatibleModel({ config, messages }) {
   const payload = {
     model: config.model,
@@ -758,25 +727,6 @@ async function callOpenAICompatibleModel({ config, messages }) {
   }
 
   return response.json();
-}
-
-function buildAttemptPlans(options) {
-  const baseTotal = options.max_total_excerpt_chars;
-  const baseExcerpt = options.max_excerpt_chars;
-  const baseCount = options.max_excerpt_count;
-  const plans = [
-    { label: "primary", totalFactor: 1, excerptFactor: 1 },
-    { label: "compact", totalFactor: 0.72, excerptFactor: 0.8 },
-    { label: "focused", totalFactor: 0.5, excerptFactor: 0.65 }
-  ];
-
-  return plans.map((plan, index) => ({
-    index: index + 1,
-    label: plan.label,
-    max_total_excerpt_chars: Math.max(4000, Math.trunc(baseTotal * plan.totalFactor)),
-    max_excerpt_chars: Math.max(400, Math.trunc(baseExcerpt * plan.excerptFactor)),
-    max_excerpt_count: Math.max(3, Math.trunc(baseCount * plan.excerptFactor))
-  }));
 }
 
 function buildRelationshipIngestionMessagesWithPolicy({ request, prepared, policy }) {
@@ -2278,4 +2228,5 @@ export const __internal = {
   scoreSourceForPolicy,
   resolveAttemptStrategy
 };
+
 

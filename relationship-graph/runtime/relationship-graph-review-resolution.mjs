@@ -7,7 +7,6 @@ import { getRelationshipGraphSkillInfo } from "./relationship-graph.mjs";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const skillRoot = path.resolve(__dirname, "..");
-const storesDir = path.join(__dirname, "stores");
 const { default_review_store_path: defaultReviewStorePath } = getRelationshipGraphSkillInfo();
 
 const SKILL_NAME = "relationship-graph-review-resolution";
