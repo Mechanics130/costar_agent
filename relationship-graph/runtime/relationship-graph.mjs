@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: Apache-2.0
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -1031,3 +1032,4 @@ function clampInteger(value, fallback, min, max) {
   }
   return Math.max(min, Math.min(max, Math.round(candidate)));
 }
+

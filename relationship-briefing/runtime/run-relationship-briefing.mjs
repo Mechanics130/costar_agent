@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: Apache-2.0
 import { readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { runRelationshipBriefing } from "./relationship-briefing.mjs";
@@ -31,3 +32,4 @@ async function main() {
 }
 
 main();
+

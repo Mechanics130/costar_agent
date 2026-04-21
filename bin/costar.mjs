@@ -1,7 +1,9 @@
 #!/usr/bin/env node
+// SPDX-License-Identifier: Apache-2.0
 
 import { spawnSync } from "node:child_process";
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
+import readline from "node:readline";
 import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
@@ -17,7 +19,7 @@ Usage:
   costar <command> [args]
 
 Commands:
-  init         Create local model config or show bootstrap guidance
+  init         Create local model config with a wizard or env defaults
   capture      Run relationship-capture
   ingestion    Run relationship-ingestion
   profile      Run relationship-profile
@@ -29,9 +31,24 @@ Commands:
   help         Show this help
 
 Examples:
+  costar init
   costar init --base-url https://api.example.com/v1 --model gpt-4.1 --api-key sk-...
   costar briefing relationship-briefing/samples/relationship-briefing.request.example.json
 `);
+}
+
+function trimOrEmpty(value) {
+  return typeof value === "string" ? value.trim() : "";
+}
+
+function getEnvDefault(names) {
+  for (const name of names) {
+    const value = trimOrEmpty(process.env[name]);
+    if (value) {
+      return value;
+    }
+  }
+  return "";
 }
 
 function writeModelConfig(values) {
@@ -66,9 +83,131 @@ function parseInitFlags(rest) {
     } else if (token === "--api-key") {
       values.apiKey = next;
       i += 1;
+    } else if (token === "--yes" || token === "-y") {
+      values.yes = true;
     }
   }
   return values;
+}
+
+function promptLine(rl, label, fallback) {
+  const suffix = fallback ? ` [${fallback}]` : "";
+  return new Promise((resolve) => {
+    rl.question(`${label}${suffix}: `, (answer) => {
+      const value = answer.trim();
+      resolve(value || fallback || "");
+    });
+  });
+}
+
+function promptSecret(label, fallback) {
+  if (!process.stdin.isTTY) {
+    return Promise.resolve(fallback || "");
+  }
+  return new Promise((resolve) => {
+    process.stdout.write(`${label}${fallback ? " [keep existing]" : ""}: `);
+    const stdin = process.stdin;
+    const wasRaw = stdin.isRaw;
+    let buffer = "";
+
+    const finish = (value) => {
+      stdin.off("data", onData);
+      if (typeof wasRaw === "boolean") {
+        stdin.setRawMode(wasRaw);
+      }
+      process.stdout.write("\n");
+      resolve(value);
+    };
+
+    const onData = (chunk) => {
+      const char = chunk.toString("utf8");
+      if (char === "\u0003") {
+        stdin.off("data", onData);
+        process.exit(130);
+      }
+      if (char === "\r" || char === "\n") {
+        finish(buffer.trim() || fallback || "");
+        return;
+      }
+      if (char === "\u007f" || char === "\b") {
+        buffer = buffer.slice(0, -1);
+        return;
+      }
+      if (char === "\u001b") {
+        return;
+      }
+      buffer += char;
+    };
+
+    stdin.setRawMode(true);
+    stdin.resume();
+    stdin.on("data", onData);
+  });
+}
+
+async function runInit(rest) {
+  const flags = parseInitFlags(rest);
+  const envDefaults = {
+    baseUrl: getEnvDefault(["OPENAI_BASE_URL", "COSTAR_BASE_URL"]),
+    model: getEnvDefault(["OPENAI_MODEL", "COSTAR_MODEL"]),
+    apiKey: getEnvDefault(["OPENAI_API_KEY", "COSTAR_API_KEY"]),
+  };
+
+  const directConfig = flags.baseUrl && flags.model && flags.apiKey;
+  if (directConfig) {
+    writeModelConfig({
+      baseUrl: flags.baseUrl,
+      model: flags.model,
+      apiKey: flags.apiKey,
+    });
+    console.log("Next: run a sample skill command such as `costar capture <request.json>`.");
+    return;
+  }
+
+  if (!process.stdin.isTTY) {
+    const missing = [];
+    if (!envDefaults.baseUrl) missing.push("--base-url / OPENAI_BASE_URL");
+    if (!envDefaults.model) missing.push("--model / OPENAI_MODEL");
+    if (!envDefaults.apiKey) missing.push("--api-key / OPENAI_API_KEY");
+    if (missing.length > 0) {
+      console.error(`Missing required config values: ${missing.join(", ")}`);
+      printHelp();
+      process.exit(1);
+    }
+    writeModelConfig({
+      baseUrl: envDefaults.baseUrl,
+      model: envDefaults.model,
+      apiKey: envDefaults.apiKey,
+    });
+    console.log("Next: run a sample skill command such as `costar capture <request.json>`.");
+    return;
+  }
+
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+
+  try {
+    const baseUrl = flags.baseUrl || (await promptLine(rl, "OpenAI-compatible base URL", envDefaults.baseUrl || "https://api.example.com/v1"));
+    const model = flags.model || (await promptLine(rl, "Model name", envDefaults.model || "your-model-name"));
+    const apiKey = flags.apiKey || (await promptSecret("API key", envDefaults.apiKey));
+
+    if (!baseUrl || !model || !apiKey) {
+      console.error("Missing required config values.");
+      printHelp();
+      process.exit(1);
+    }
+
+    writeModelConfig({
+      baseUrl,
+      model,
+      apiKey,
+    });
+    console.log("Next: run a sample skill command such as `costar capture <request.json>`.");
+  } finally {
+    rl.close();
+  }
 }
 
 function runScript(script, scriptArgs) {
@@ -90,18 +229,7 @@ if (command === "doctor") {
 }
 
 if (command === "init") {
-  const flags = parseInitFlags(args.slice(1));
-  if (!flags.baseUrl || !flags.model || !flags.apiKey) {
-    console.log("Missing required flags.");
-    printHelp();
-    process.exit(1);
-  }
-  writeModelConfig({
-    baseUrl: flags.baseUrl,
-    model: flags.model,
-    apiKey: flags.apiKey,
-  });
-  console.log("Next: run a sample skill command such as `costar capture <request.json>`.");
+  await runInit(args.slice(1));
   process.exit(0);
 }
 
@@ -122,3 +250,5 @@ if (!commandMap[command]) {
 }
 
 runScript(commandMap[command], args.slice(1));
+
+

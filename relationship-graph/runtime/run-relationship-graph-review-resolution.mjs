@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: Apache-2.0
 import { readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { runRelationshipGraphReviewResolution } from "./relationship-graph-review-resolution.mjs";
@@ -27,3 +28,4 @@ main().catch((error) => {
   console.error(error instanceof Error ? error.message : String(error));
   process.exitCode = 1;
 });
+

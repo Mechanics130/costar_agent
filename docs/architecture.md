@@ -1,4 +1,4 @@
-# CoStar Architecture by Codex
+# CoStar Architecture
 
 ```mermaid
 flowchart LR

@@ -1,4 +1,4 @@
-# CoStar Comparison Notes by Codex
+# CoStar Comparison Notes
 
 ## Compared with Dex / Clay
 
@@ -33,10 +33,6 @@ CoStar should be described as:
 
 - an open-core skill engine
 - a self-hostable relationship context layer
-- a chief-of-staff style system for confirmed people memory
+- a durable people-memory system
 
-It should not be described as:
-
-- a generic note-taking app
-- a generic CRM clone
-- a thin prompt wrapper
+If you want to use chief-of-staff language, keep it as a one-line metaphor in the main README, not as the core positioning for the engine repo.

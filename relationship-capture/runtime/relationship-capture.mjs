@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: Apache-2.0
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -1044,3 +1045,4 @@ function appendReceiptSummary(lines, captureResult) {
     }
   }
 }
+

@@ -1,0 +1,43 @@
+{
+  "skill": "relationship-graph",
+  "version": "0.1.0",
+  "graph_result": {
+    "graph": {
+      "nodes": [
+        { "person_name": "Jordan Li", "person_ref": "person_jordan_li" },
+        { "person_name": "Ava Chen", "person_ref": "person_ava_chen" },
+        { "person_name": "Mina Yang", "person_ref": "person_mina_yang" }
+      ],
+      "edges": [
+        {
+          "source_person_ref": "person_jordan_li",
+          "target_person_ref": "person_ava_chen",
+          "relation_type": "shared_context",
+          "score": 68
+        },
+        {
+          "source_person_ref": "person_jordan_li",
+          "target_person_ref": "person_mina_yang",
+          "relation_type": "weak_link",
+          "score": 34
+        }
+      ]
+    }
+  },
+  "review_decisions": [
+    {
+      "source_person_ref": "person_jordan_li",
+      "source_person_name": "Jordan Li",
+      "target_person_ref": "person_mina_yang",
+      "target_person_name": "Mina Yang",
+      "final_action": "defer",
+      "note": "The evidence is still weak, so keep this edge under review."
+    }
+  ],
+  "graph_review_store_path": "graph-review-store.example.json",
+  "operator": "Test User",
+  "notes": "Use this review step to show that the graph can be trusted and refined.",
+  "options": {
+    "write_store": true
+  }
+}

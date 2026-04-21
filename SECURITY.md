@@ -1,4 +1,4 @@
-# Security Policy for CoStar by Codex
+# Security Policy for CoStar
 
 CoStar handles relationship context, so privacy matters.
 
@@ -13,12 +13,19 @@ Please report:
 
 ## How to report
 
-For now, please use a private channel or a direct issue to the maintainers
-instead of posting sensitive details in a public issue.
+Please use a private GitHub Security Advisory when possible:
+
+- [Open a private security advisory](https://github.com/Mechanics130/costar_agent/security/advisories/new)
+
+If you cannot use a GitHub advisory, contact the maintainers at:
+
+- `security@costar.dev`
+
+Please do not post sensitive details in a public issue.
 
 ## What not to share publicly
 
-- `model-config.local.json`
+- `relationship-ingestion/runtime/model-config.local.json`
 - real meeting notes
 - real contact exports
 - internal customer / project codenames

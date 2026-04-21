@@ -23,8 +23,16 @@
   "keywords": [
     "co-star",
     "chief-of-staff",
+    "relationship-memory",
     "relationship-context",
+    "people-context",
+    "people-memory",
+    "briefing",
+    "graph",
+    "roleplay",
+    "context-engine",
     "open-core",
-    "skill-engine"
+    "skill-engine",
+    "openclaw"
   ]
 }

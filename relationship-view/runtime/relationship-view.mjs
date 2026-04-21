@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: Apache-2.0
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -795,3 +796,4 @@ function persistRunArtifacts({ request, response }) {
   writeFileSync(path.join(runDirectory, "response.json"), `${JSON.stringify(response, null, 2)}\n`, "utf8");
   return runDirectory;
 }
+

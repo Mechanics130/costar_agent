@@ -34,6 +34,10 @@ It does **not** include:
 
 If you are using OpenClaw, you can skip most manual setup by running:
 
+`node bin/costar.mjs init`
+
+If you want the OpenClaw adapter wiring too, run:
+
 `integrations/openclaw/bootstrap-costar.ps1`
 
 You can also inspect the CLI first:
@@ -46,7 +50,7 @@ node bin/costar.mjs --help
 
 1. Clone the repo.
 2. Run the bootstrap helper if you want a local model config.
-3. Or create `relationship-ingestion/runtime/model-config.local.json` yourself from the template.
+3. Or let `costar init` guide you through `relationship-ingestion/runtime/model-config.local.json`.
 4. Run a sample command from the repo root:
 
 ```powershell

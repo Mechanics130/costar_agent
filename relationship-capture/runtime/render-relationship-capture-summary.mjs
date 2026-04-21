@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: Apache-2.0
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { renderRelationshipCaptureSummaryMarkdown } from "./relationship-capture.mjs";
@@ -33,3 +34,4 @@ function deriveTitle(filePath) {
     .replace(/\./g, " ")
     .trim();
 }
+

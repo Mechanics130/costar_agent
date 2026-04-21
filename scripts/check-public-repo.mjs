@@ -1,27 +1,35 @@
+// SPDX-License-Identifier: Apache-2.0
+
 import { readFile } from "node:fs/promises";
 import { existsSync, readdirSync, statSync } from "node:fs";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
 
 const repoRoot = process.cwd();
-const sampleDirs = [
-  "relationship-capture/samples",
-  "relationship-ingestion/samples",
-  "relationship-profile/samples",
-  "relationship-briefing/samples",
-  "relationship-roleplay/samples",
-  "relationship-graph/samples",
-  "relationship-view/samples",
-];
+const scannerFile = path.join(repoRoot, "scripts/check-public-repo.mjs");
+const textExtensions = new Set([
+  ".md",
+  ".json",
+  ".mjs",
+  ".js",
+  ".yml",
+  ".yaml",
+  ".toml",
+  ".txt",
+]);
 
 const bannedPatterns = [
-  "天气Agent",
-  "外卖补贴",
-  "信息黑洞",
-  "lenny-bcontext",
+  "by Codex",
+  "build-history",
+  "skill-system-main",
+  "launch-plan",
+  "launch-notes",
+  "lenny-bcontext.local",
+  "api.z.ai",
   "tester_Bcontext",
   "D:\\\\tester_Bcontext",
   "D:\\\\Lenny_Bcontext",
+  "E:\\\\codex",
 ];
 
 const requiredFiles = [
@@ -33,8 +41,14 @@ const requiredFiles = [
   "ROADMAP.md",
   "CONTRIBUTING.md",
   "SECURITY.md",
+  "CODE_OF_CONDUCT.md",
   "CHANGELOG.md",
   "bin/costar.mjs",
+];
+
+const forbiddenFiles = [
+  "docs/launch-plan.md",
+  "docs/launch-notes.md",
 ];
 
 function fail(message) {
@@ -48,40 +62,69 @@ function checkFileExists(relPath) {
   }
 }
 
-function listJsonFiles(dir) {
-  const absDir = path.join(repoRoot, dir);
-  if (!existsSync(absDir)) {
-    fail(`Missing sample directory: ${dir}`);
-    return [];
+function checkFileMissing(relPath) {
+  if (existsSync(path.join(repoRoot, relPath))) {
+    fail(`Forbidden file still present: ${relPath}`);
   }
-  const entries = [];
-  for (const name of readdirSync(absDir)) {
-    const abs = path.join(absDir, name);
-    if (statSync(abs).isFile() && name.endsWith(".json")) {
-      entries.push(abs);
+}
+
+function collectTextFiles(dir = repoRoot, files = []) {
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    if (entry.name === ".git" || entry.name === "node_modules") {
+      continue;
+    }
+    const abs = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      collectTextFiles(abs, files);
+      continue;
+    }
+    if (abs === scannerFile) {
+      continue;
+    }
+    if (textExtensions.has(path.extname(entry.name).toLowerCase())) {
+      files.push(abs);
     }
   }
-  return entries;
+  return files;
 }
 
 for (const file of requiredFiles) {
   checkFileExists(file);
 }
 
+for (const file of forbiddenFiles) {
+  checkFileMissing(file);
+}
+
 const pkg = JSON.parse(await readFile(path.join(repoRoot, "package.json"), "utf8"));
 if (pkg.name !== "costar") fail("package.json name should be costar");
 if (pkg.license !== "Apache-2.0") fail("package.json license should be Apache-2.0");
+if (!pkg.engines || pkg.engines.node !== ">=18") {
+  fail("package.json should declare node >=18");
+}
 
 for (const file of [
   "bin/costar.mjs",
   "scripts/check-public-repo.mjs",
   "relationship-capture/runtime/run-relationship-capture.mjs",
+  "relationship-capture/runtime/relationship-capture.mjs",
+  "relationship-capture/runtime/render-relationship-capture-summary.mjs",
   "relationship-ingestion/runtime/run-relationship-ingestion.mjs",
+  "relationship-ingestion/runtime/run-relationship-review-resolution.mjs",
+  "relationship-ingestion/runtime/relationship-ingestion.mjs",
+  "relationship-ingestion/runtime/relationship-review-resolution.mjs",
   "relationship-profile/runtime/run-relationship-profile.mjs",
+  "relationship-profile/runtime/relationship-profile.mjs",
   "relationship-briefing/runtime/run-relationship-briefing.mjs",
+  "relationship-briefing/runtime/relationship-briefing.mjs",
   "relationship-roleplay/runtime/run-relationship-roleplay.mjs",
+  "relationship-roleplay/runtime/relationship-roleplay.mjs",
   "relationship-graph/runtime/run-relationship-graph.mjs",
+  "relationship-graph/runtime/run-relationship-graph-review-resolution.mjs",
+  "relationship-graph/runtime/relationship-graph.mjs",
+  "relationship-graph/runtime/relationship-graph-review-resolution.mjs",
   "relationship-view/runtime/run-relationship-view.mjs",
+  "relationship-view/runtime/relationship-view.mjs",
 ]) {
   const result = spawnSync(process.execPath, ["--check", path.join(repoRoot, file)], {
     stdio: "pipe",
@@ -92,18 +135,11 @@ for (const file of [
   }
 }
 
-for (const dir of sampleDirs) {
-  for (const file of listJsonFiles(dir)) {
-    const content = await readFile(file, "utf8");
-    try {
-      JSON.parse(content);
-    } catch (error) {
-      fail(`Invalid JSON in ${path.relative(repoRoot, file)}: ${error.message}`);
-    }
-    for (const pattern of bannedPatterns) {
-      if (content.includes(pattern)) {
-        fail(`Public sample still contains banned pattern "${pattern}" in ${path.relative(repoRoot, file)}`);
-      }
+for (const file of collectTextFiles()) {
+  const content = await readFile(file, "utf8");
+  for (const pattern of bannedPatterns) {
+    if (content.includes(pattern)) {
+      fail(`Public file still contains banned pattern "${pattern}" in ${path.relative(repoRoot, file)}`);
     }
   }
 }

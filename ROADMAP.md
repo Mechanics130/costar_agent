@@ -1,4 +1,4 @@
-# CoStar Roadmap by Codex
+# CoStar Roadmap
 
 This roadmap describes the public distribution branch milestones and the
 remaining work needed to turn CoStar into a cleaner open-core product.
@@ -7,7 +7,7 @@ remaining work needed to turn CoStar into a cleaner open-core product.
 
 - Wave 1: complete as of 2026-04-21
 - Wave 2: complete as of 2026-04-21
-- Wave 3: in progress
+- Wave 3: in progress, with most public-facing docs already done
 
 ## Wave 1 - Public release hygiene
 
@@ -40,27 +40,32 @@ Completed items:
 
 Target window: 2026-04-23 to 2026-05-09
 
-Remaining items:
+Completed items:
 
-1. Demo asset pack
-   - `assets/demo.gif`
-   - `assets/architecture.png`
-   - `assets/social-card.png`
-
-2. Examples pack
+1. Examples pack
    - `examples/` with a few end-to-end user stories
    - README links from each example back to the sample skill
 
-3. Public comparison note
+2. Public comparison note
    - CoStar vs Dex / Clay / Notion / ChatGPT direct usage
 
-4. Product shell handoff note
+3. Product shell handoff note
    - clear separation between the open-core engine and the consumer UI layer
 
-5. Launch notes
-   - Chinese launch copy
-   - English launch copy
-   - platform-specific positioning
+4. Public pitch docs
+   - English pitch
+   - Chinese pitch
+
+5. Interactive bootstrap
+   - `costar init`
+   - environment-aware local config generation
+
+Remaining items:
+
+- Demo asset pack
+  - `assets/demo.gif`
+  - `assets/architecture.png`
+  - `assets/social-card.png`
 
 ## Wave 3 exit criterion
 

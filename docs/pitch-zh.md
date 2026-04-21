@@ -1,4 +1,4 @@
-# CoStar 产品介绍 by Codex
+# CoStar 产品介绍
 
 ## 100字版
 

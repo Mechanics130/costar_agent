@@ -1,4 +1,4 @@
-# Product Shell Handoff by Codex
+# Product Shell Handoff
 
 CoStar is the open-core engine. The consumer UI is a separate layer.
 

@@ -1,4 +1,4 @@
-# Contributing to CoStar by Codex
+# Contributing to CoStar
 
 Thanks for taking a look at CoStar.
 
@@ -23,6 +23,6 @@ If you change a runtime file, also run the relevant skill sample directly.
 ## Repo boundaries
 
 - `main` should stay clean and user-facing.
-- Development history, validation assets, and private scenario outputs belong in
-  `build-history`.
+- Development history, validation assets, and private scenario outputs belong
+  outside the public distribution branch.
 - Real user data should stay local unless it is explicitly approved for sharing.

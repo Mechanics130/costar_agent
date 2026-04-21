@@ -1,4 +1,4 @@
-# CoStar Pitch by Codex
+# CoStar Pitch
 
 ## 100-word version
 
@@ -63,9 +63,8 @@ teams who want to own their own context stack. A separate hosted consumer layer
 can sit on top of this engine for non-technical users.
 
 That split is important. Builders get control and extensibility. End users get a
-simple co-star experience that feels like a reliable chief of staff. The engine
-does the hard work in the background, while the product layer turns that into a
-clean experience.
+simple chief-of-staff-style experience that feels reliable without exposing the
+engine details.
 
 If you are trying to build a relationship CRM, a personal chief of staff, a
 people-memory layer, or a self-hostable context engine, CoStar gives you the

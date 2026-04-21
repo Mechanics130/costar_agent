@@ -9,7 +9,7 @@ evaluate, and share CoStar.
 - [Pitch in Chinese](pitch-zh.md)
 - [Comparison notes](comparison.md)
 - [Architecture overview](architecture.md)
-- [Launch plan](launch-plan.md)
+- [Examples](../examples/README.md)
 
 ## Why these docs exist
 

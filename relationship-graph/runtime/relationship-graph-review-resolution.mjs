@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: Apache-2.0
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -365,3 +366,4 @@ function normalizeGraphReviewAction(value) {
 function edgeKey(left, right) {
   return [left, right].map((item) => normalizeString(item)).sort().join("::");
 }
+

@@ -1,4 +1,4 @@
-# Example 01 - Capture to Briefing by Codex
+# Example 01 - Capture to Briefing
 
 This example shows the shortest useful loop:
 
@@ -9,23 +9,18 @@ This example shows the shortest useful loop:
 You have a fresh meeting note and want a usable briefing before the next
 conversation.
 
-## Input
+## Files
 
-Use the sample request in:
-
-- `relationship-capture/samples/relationship-capture.request.ingest.example.json`
+- `input.json`
+- `briefing-input.json`
+- `expected-output.md`
 
 ## Run
 
 ```powershell
-node bin/costar.mjs capture relationship-capture/samples/relationship-capture.request.ingest.example.json
+node bin/costar.mjs capture examples/01-capture-to-briefing/input.json
+node bin/costar.mjs briefing examples/01-capture-to-briefing/briefing-input.json
 ```
-
-Then inspect:
-
-- the capture response
-- the updated profile sample
-- the briefing sample
 
 ## What to check
 
@@ -33,3 +28,9 @@ Then inspect:
 - Did it identify the right people?
 - Did it ask for confirmation when needed?
 - Is the briefing short enough to read before a meeting?
+
+## Why this example matters
+
+- It shows the first moment of value for a new user.
+- It demonstrates how capture turns into something you can actually use.
+- It keeps the story small enough to understand in one pass.
