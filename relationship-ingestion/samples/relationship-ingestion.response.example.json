@@ -3,11 +3,11 @@
   "version": "0.1.0",
   "status": "success",
   "source": "llm",
-  "source_label": "大模型抽取 / glm-5.1",
+  "source_label": "LLM extraction / example-model",
   "model": {
     "provider": "openai-compatible",
-    "base_url": "https://api.z.ai/api/coding/paas/v4",
-    "model": "glm-5.1",
+    "base_url": "https://api.example.com/v1",
+    "model": "example-model",
     "temperature": 0.1,
     "configured": true,
     "source": "local_file"
@@ -354,5 +354,5 @@
     ]
   },
   "notes": "已按重点关注人物优先提取Ava Chen，并生成待用户确认的人物结果。",
-  "run_directory": "D:\\tester_Bcontext\\skill-system\\relationship-ingestion\\runtime\\runs\\2026-04-17T05-19-47-253Z-demo-run-001"
+  "run_directory": "relationship-ingestion/runtime/runs/2026-04-17T05-19-47-253Z-demo-run-001"
 }

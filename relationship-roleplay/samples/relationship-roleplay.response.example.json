@@ -4,76 +4,76 @@
   "status": "success",
   "model": {
     "provider": "openai-compatible",
-    "base_url": "https://api.z.ai/api/coding/paas/v4",
-    "model": "glm-5.1",
+    "base_url": "https://api.example.com/v1",
+    "model": "example-model",
     "temperature": 0.1,
     "source": "shared_local_file"
   },
   "target_person": {
     "person_name": "Jordan Li",
     "person_ref": "person_jordan_li",
-    "relationship_stage": "稳定联系",
-    "summary": "算法负责人，判断理性克制，偏好数据和明确分工，不喜欢空泛表态。"
+    "relationship_stage": "stable contact",
+    "summary": "A rational lead who prefers data and clear boundaries."
   },
   "simulation": {
     "persona_read": {
-      "current_state": "愿意讨论，但会先看分工是否真实清晰。",
-      "likely_intent": "先确认这件事是不是值得继续投入，以及谁真正拍板。",
-      "attitude": "偏谨慎，但不是消极。",
-      "response_style": "先讲判断，再讲边界，不会轻易做情绪化表态。"
+      "current_state": "Willing to discuss, but will first check whether the scope is actually clear.",
+      "likely_intent": "Confirm whether the project is worth continued investment and who can actually decide.",
+      "attitude": "Cautious, but not negative.",
+      "response_style": "State the judgment first, then the boundary."
     },
-    "opening_assessment": "如果开场足够克制，先让他讲真实判断，他大概率会进入理性分析状态。",
+    "opening_assessment": "If the opening is restrained and asks for a real judgment first, he will likely stay analytical.",
     "simulated_turns": [
       {
         "turn": 1,
-        "user_move": "我想先听听你对现在这条线值不值得继续推进的真实判断。",
-        "likely_response": "我觉得不是不能做，但前提是分工得先清楚，不然最后两边都做不扎实。",
-        "why": "他通常先给出保守判断，再补充分工和资源边界。",
+        "user_move": "I want to hear your honest judgment on whether this line is worth continuing.",
+        "likely_response": "I think it is possible, but the scope has to be clear first or both sides will end up underpowered.",
+        "why": "He usually gives a cautious judgment first, then adds scope and resource boundaries.",
         "risk_level": "low"
       },
       {
         "turn": 2,
-        "user_move": "如果只能保一个方向，你现在更倾向保什么？",
-        "likely_response": "如果真要选，我会更倾向保主线能跑通的那一边，天气这边除非能证明长期价值，不然优先级不会太高。",
-        "why": "他偏向数据和长期复用价值，而不是情绪化支持。",
+        "user_move": "If you had to keep only one direction, which would you keep?",
+        "likely_response": "If I had to choose, I would keep the direction that can actually run end to end unless the other side can prove long-term leverage.",
+        "why": "He favors data and long-term reusable value, not emotional support.",
         "risk_level": "medium"
       },
       {
         "turn": 3,
-        "user_move": "那如果我来补信息和横向对齐，什么条件下你会愿意继续投入？",
-        "likely_response": "至少要把拍板人、技术路径和收益边界讲清楚，不然我很难往前推。",
-        "why": "这是他最典型的推进条件：方向明确、收益可信、责任边界清楚。",
+        "user_move": "If I fill the information gaps and align sideways, under what conditions would you keep investing?",
+        "likely_response": "At minimum, the decision owner, technical path, and benefit boundary need to be clear.",
+        "why": "This is his typical condition for moving forward: clear direction, believable returns, and clear ownership.",
         "risk_level": "low"
       }
     ],
     "likely_pushbacks": [
-      "如果继续说愿景而不给真实边界，他会收缩表达。",
-      "如果把组织分工问题推给他拍板，他会明确后退。"
+      "If you keep talking vision without real boundaries, he will get more reserved.",
+      "If you push the organizational decision back onto him, he will step back."
     ],
     "recommended_replies": [
-      "先接住他的谨慎，不要立刻反驳收益上限。",
-      "把问题落到可验证条件：谁拍板、谁投入、先跑哪一段。"
+      "Acknowledge the caution first; do not argue the upside too early.",
+      "Reduce the conversation to verifiable conditions: who decides, who invests, and what runs first."
     ],
     "danger_zones": [
-      "直接要求他表态站队。",
-      "在没有更多事实前，用情绪压他支持这条线。"
+      "Forcing him to take sides.",
+      "Pressuring him emotionally before the facts are clear."
     ],
     "if_conversation_goes_well": [
-      "拿到他对推进条件的清单。",
-      "识别出谁是真正需要继续对齐的决策人。"
+      "Get his list of conditions for continuing.",
+      "Identify the real decision makers who still need alignment."
     ]
   },
   "coach_feedback": {
     "keep_doing": [
-      "先问判断，再问条件。",
-      "把话题停留在事实、边界和分工上。"
+      "Ask for the judgment first, then the conditions.",
+      "Keep the discussion on facts, boundaries, and ownership."
     ],
     "avoid": [
-      "不要让对话变成站队表态。",
-      "不要在收益还不清晰时强推承诺。"
+      "Do not turn the conversation into a loyalty test.",
+      "Do not push for commitments before the return is clear."
     ],
     "recovery_moves": [
-      "如果他开始收缩，回到“我先确认边界，不急着要结论”。"
+      "If he starts to withdraw, say: 'I am just trying to confirm the boundaries; no need for a final answer yet.'"
     ]
   },
   "open_questions": [],

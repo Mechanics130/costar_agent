@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://lenny-bcontext.local/schemas/relationship-briefing.input.schema.json",
+  "$id": "https://costar.dev/schemas/relationship-briefing.input.schema.json",
   "title": "Relationship Briefing Input",
   "type": "object",
   "additionalProperties": false,

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://lenny-bcontext.local/schemas/model-config.schema.json",
+  "$id": "https://costar.dev/schemas/model-config.schema.json",
   "title": "Model Config",
   "type": "object",
   "additionalProperties": false,

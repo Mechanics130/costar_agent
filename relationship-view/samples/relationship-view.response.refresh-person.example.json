@@ -15,34 +15,35 @@
     "confidence": "high",
     "refreshed_at": "2026-04-20T12:00:00.000Z",
     "summary_card": {
-      "summary": "补贴引擎三层架构的核心设计者和输出者。",
-      "current_judgment": "当前处于稳定联系，适合持续跟进其架构输出和对齐进展。",
-      "relationship_stage": "稳定联系",
-      "intent": "输出可落地的三层架构方案，并通过演示拉齐团队认知。",
+      "summary": "Core architect of the sample project.",
+      "current_judgment": "Stable contact and suitable for continued follow-up.",
+      "relationship_stage": "stable contact",
+      "intent": "Ship a practical architecture and keep the team aligned.",
       "attitude": {
-        "label": "偏积极",
-        "reason": "主动输出方案并配合推进。"
+        "label": "positive",
+        "reason": "Actively contributes and supports follow-through."
       },
-      "tags": ["框架负责人", "架构设计者"],
-      "traits": ["专业细致", "逻辑清晰"],
-      "preferences": ["长期对照桶做效果评估"],
+      "tags": ["framework owner", "architecture designer"],
+      "traits": ["careful", "clear thinker"],
+      "preferences": ["likes to keep a comparison baseline"],
       "boundaries": [],
-      "risk_flags": ["三层与两层架构尚未最终确定"],
+      "risk_flags": ["the final architecture is not yet locked"],
       "open_questions": [],
-      "next_actions": ["跟进架构演示结果"]
+      "next_actions": ["follow up on the architecture demo"]
     },
     "evidence_summary": {
       "excerpt_count": 3,
       "source_count": 1,
       "last_updated_at": "2026-04-19T11:42:19.609Z",
-      "key_evidence": ["输出三层架构设计"]
+      "key_evidence": ["Produced the architecture proposal"]
     },
     "timeline_highlights": [
       {
         "date": "待判断",
-        "source_title": "260325会议纪要-补贴引擎默毛输入",
-        "source_id": "meeting-minute-2026-03-25-subsidy-engine-mo-input",
-        "event_summary": "输出三层架构设计。"
+        "source_title": "2026-03-25 sample meeting note",
+        "source_id": "meeting-minute-2026-03-25-sample",
+        "event_summary": "Produced the architecture proposal.",
+        "matched_excerpt_index": 1
       }
     ],
     "related_people": [
@@ -69,15 +70,15 @@
       "required": true,
       "pending_edge_count": 2,
       "edge_candidates": [],
-      "review_notes": ["当前仍有待确认关系边。"]
+      "review_notes": ["There are still pending relationship edges."]
     },
     "user_feedback": {
-      "headline": "已生成Chris Yu的局部关系图"
+      "headline": "Generated a local relationship graph for Chris Yu"
     },
-    "markdown_path": "D:\\tester_Bcontext\\skill-system\\relationship-view\\views\\person_chris_yu.md",
+    "markdown_path": "relationship-view/views/person_chris_yu.md",
     "source_context": {
-      "profile_store_path": "D:\\tester_Bcontext\\skill-system\\relationship-ingestion\\incremental-scenarios\\2026-03-25-subsidy-engine-mo-input\\relationship-profile-store.incremental-2026-03-25-subsidy-engine-mo-input.json",
-      "graph_review_store_path": "D:\\tester_Bcontext\\skill-system\\relationship-graph\\runtime\\stores\\relationship-graph-review-store.json"
+      "profile_store_path": "relationship-ingestion/incremental-scenarios/sample-profile-store.json",
+      "graph_review_store_path": "relationship-graph/runtime/stores/relationship-graph-review-store.json"
     }
   },
   "refreshed_views": [
@@ -88,7 +89,7 @@
       "confidence": "high",
       "refreshed_at": "2026-04-20T12:00:00.000Z",
       "pending_edge_count": 2,
-      "markdown_path": "D:\\tester_Bcontext\\skill-system\\relationship-view\\views\\person_chris_yu.md"
+      "markdown_path": "relationship-view/views/person_chris_yu.md"
     }
   ],
   "view_store_overview": {
@@ -97,7 +98,7 @@
     "updated_at": "2026-04-20T12:00:00.000Z"
   },
   "view_store_delta": {
-    "store_path": "D:\\tester_Bcontext\\skill-system\\relationship-view\\runtime\\stores\\relationship-view-store.json",
+    "store_path": "relationship-view/runtime/stores/relationship-view-store.json",
     "written": true,
     "markdown_written_count": 1,
     "total_views_after_write": 3,
@@ -105,20 +106,20 @@
       {
         "person_name": "Chris Yu",
         "person_ref": "person_chris_yu",
-        "markdown_path": "D:\\tester_Bcontext\\skill-system\\relationship-view\\views\\person_chris_yu.md"
+        "markdown_path": "relationship-view/views/person_chris_yu.md"
       }
     ]
   },
   "user_feedback": {
-    "headline": "已刷新 Chris Yu 的持续关系视图",
+    "headline": "Refreshed Chris Yu's persistent relationship view",
     "summary_lines": [
-      "本次刷新人物数：1",
-      "其中待确认关系边总数：2",
-      "已同步写入 markdown 视图文件"
+      "1 person refreshed",
+      "2 pending edges in total",
+      "Markdown view file written"
     ],
     "next_action": {
       "type": "inspect_markdown_views",
-      "message": "可以直接打开对应人物的 markdown 视图文件检查 summary 和 graph。"
+      "message": "Open the markdown view file directly to inspect the summary and graph."
     }
   },
   "run_directory": null,

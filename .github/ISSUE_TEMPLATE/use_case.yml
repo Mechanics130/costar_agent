@@ -1,0 +1,16 @@
+name: Test use case
+description: Share a real or mock workflow you want CoStar to handle
+labels: [test-case]
+body:
+  - type: textarea
+    id: scenario
+    attributes:
+      label: Scenario
+      description: What kind of relationship workflow are you testing?
+    validations:
+      required: true
+  - type: textarea
+    id: data
+    attributes:
+      label: Input data shape
+      description: Meeting notes, chat logs, profile data, etc.

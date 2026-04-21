@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://lenny-bcontext.local/schemas/relationship-review-resolution.output.schema.json",
+  "$id": "https://costar.dev/schemas/relationship-review-resolution.output.schema.json",
   "title": "Relationship Review Resolution Output",
   "type": "object",
   "additionalProperties": false,
@@ -28,7 +28,7 @@
     "review_summary": { "type": "object" },
     "committed_profiles": {
       "type": "array",
-      "items": { "$ref": "https://lenny-bcontext.local/schemas/relationship-profile.schema.json" }
+      "items": { "$ref": "https://costar.dev/schemas/relationship-profile.schema.json" }
     },
     "created_people": { "type": "array", "items": { "type": "object" } },
     "updated_people": { "type": "array", "items": { "type": "object" } },

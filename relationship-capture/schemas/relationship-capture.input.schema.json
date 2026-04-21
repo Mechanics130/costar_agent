@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://lenny-bcontext.local/schemas/relationship-capture.input.schema.json",
+  "$id": "https://costar.dev/schemas/relationship-capture.input.schema.json",
   "title": "Relationship Capture Input",
   "type": "object",
   "additionalProperties": false,

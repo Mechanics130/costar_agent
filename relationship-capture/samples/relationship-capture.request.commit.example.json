@@ -1,6 +1,6 @@
 {
   "operator": "tester",
-  "notes": "用样例 review request 验证 capture 的提交反馈层。",
+  "notes": "Use a sample review request to verify the capture commit feedback layer.",
   "profile_store_path": "relationship-ingestion/runtime/stores/sample-review-store.json",
   "ingestion_result": {
     "skill": "relationship-ingestion",
@@ -26,7 +26,7 @@
         "person_name": "Ryan Gu",
         "person_ref": "Ryan Gu",
         "resolution_action": "create",
-        "summary": "天气Agent执行层核心接口人。"
+        "summary": "Project Aurora execution lead."
       }
     ],
     "person_profiles": [
@@ -37,14 +37,14 @@
         "profile_tier": "key",
         "confidence": "high",
         "compiled_truth": {
-          "summary": "理性调停型技术负责人。"
+          "summary": "Rational technical lead who prefers data and clear decision boundaries."
         },
         "timeline": [],
         "evidence_summary": {
           "excerpt_count": 1,
           "source_count": 1,
           "last_updated_at": "",
-          "key_evidence": ["数据导向，大量用数据和逻辑说话。"]
+          "key_evidence": ["Uses data and logic heavily when discussing priorities."]
         },
         "linked_relationships": {
           "detected_as": true,
@@ -65,21 +65,21 @@
           "suggested_action": "create",
           "questions": [],
           "fields_to_confirm": [],
-          "evidence_preview": ["与Ben今天上午已聊过多轮，基本聊不通。"]
+          "evidence_preview": ["Ryan Gu and Alex already discussed the project several times this morning."]
         },
         {
           "person_name": "Mia Meng",
           "priority": "medium",
           "needs_confirmation": true,
           "suggested_action": "review",
-          "questions": ["Mia Meng在项目中的角色是什么？"],
+          "questions": ["What is Mia Meng's role in the project?"],
           "fields_to_confirm": [],
-          "evidence_preview": ["Mina Yang会去找Mia Meng同步天气项目进展和风险。"]
+          "evidence_preview": ["Mina Yang will sync Mia Meng on the project progress and risks."]
         }
       ]
     },
     "interaction_summary": {
-      "summary": "天气 Agent 分工沟通。"
+      "summary": "Project Aurora team alignment."
     },
     "detected_people": [
       { "person_name": "Jordan Li" },
@@ -97,12 +97,12 @@
       "resolved_person_ref": "person_ryan_gu",
       "resolved_person_name": "Ryan Gu",
       "profile_tier": "active",
-      "notes": "确认纳入天气项目执行层关键接口人。"
+      "notes": "Confirm this person as a key execution-side collaborator for Project Aurora."
     },
     {
       "person_name": "Mia Meng",
       "final_action": "ignore",
-      "notes": "本轮先不建档。"
+      "notes": "Skip for this round."
     }
   ],
   "review_options": {

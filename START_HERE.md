@@ -4,7 +4,7 @@ This guide is for people who want to try CoStar from the clean `main` branch.
 
 ## What This Repo Is
 
-CoStar is a skill-first relationship operating system. It helps you:
+CoStar is an open-core skill engine for relationship context. It helps you:
 
 - ingest materials
 - identify and update people
@@ -32,31 +32,31 @@ It does **not** include:
 - Node.js 18+ recommended
 - Your own OpenAI-compatible model endpoint
 
+If you are using OpenClaw, you can skip most manual setup by running:
+
+`integrations/openclaw/bootstrap-costar.ps1`
+
+You can also inspect the CLI first:
+
+```powershell
+node bin/costar.mjs --help
+```
+
 ## First Run
 
 1. Clone the repo.
-2. Open `relationship-ingestion/runtime/model-config.template.json`.
-3. Copy it to `relationship-ingestion/runtime/model-config.local.json`.
-4. Fill in your own `base_url`, `api_key`, and `model`.
-5. Run the ingestion sample from the repo root:
+2. Run the bootstrap helper if you want a local model config.
+3. Or create `relationship-ingestion/runtime/model-config.local.json` yourself from the template.
+4. Run a sample command from the repo root:
 
 ```powershell
-node relationship-ingestion/runtime/run-relationship-ingestion.mjs `
-  relationship-ingestion/samples/relationship-ingestion.request.example.json
+node bin/costar.mjs capture relationship-capture/samples/relationship-capture.request.ingest.example.json
 ```
 
-6. Run capture:
+5. Try briefing once you have a confirmed profile store:
 
 ```powershell
-node relationship-capture/runtime/run-relationship-capture.mjs `
-  relationship-capture/samples/relationship-capture.request.ingest.example.json
-```
-
-7. When you have a confirmed profile store, try briefing:
-
-```powershell
-node relationship-briefing/runtime/run-relationship-briefing.mjs `
-  relationship-briefing/samples/relationship-briefing.request.example.json
+node bin/costar.mjs briefing relationship-briefing/samples/relationship-briefing.request.example.json
 ```
 
 ## What To Look For

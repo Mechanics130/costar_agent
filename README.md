@@ -6,104 +6,45 @@
 
 <p align="center"><strong>I'll handle everything. You just go.</strong></p>
 
-CoStar is a skill-first relationship operating system for building and using high-trust context.
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
+[![Node](https://img.shields.io/badge/Node-18%2B-green.svg)](https://nodejs.org/)
+[![CI](https://github.com/Mechanics130/costar_agent/actions/workflows/ci.yml/badge.svg)](https://github.com/Mechanics130/costar_agent/actions/workflows/ci.yml)
 
-It is designed to help a user:
+CoStar is an open-core skill engine for durable relationship context.
 
-- ingest messy personal or work materials
-- identify and update key people
-- review and commit profile changes safely
-- keep long-lived relationship views fresh
-- generate briefing, roleplay, and graph outputs on top of confirmed context
+It helps you turn messy notes, meetings, transcripts, and history into people
+profiles, confirmed updates, briefs, roleplay simulations, graph views, and
+persistent markdown views.
 
-This repository contains the current CoStar skill core.
+If you are a developer or product builder, this repository gives you the skill
+core. If you are looking for the hosted consumer product, that lives in a
+separate UI layer built on top of CoStar.
 
 ## What CoStar Does
 
-CoStar turns raw material into durable relationship context through a staged skill pipeline:
+CoStar is designed around a simple loop:
 
 1. `capture`
-   - accepts single or batch inputs
-   - recalls relevant existing context automatically
-   - gives the user clear feedback on what was found and what needs review
+   - accept single or batch inputs
+   - recall relevant existing context automatically
+   - show the user what was found and what needs review
 
-2. `ingestion`
-   - resolves people
-   - extracts profile updates, intent, attitude, tags, and evidence
-   - proposes `create / update / review / ignore`
+2. `profile`
+   - read, search, and patch person profiles
+   - support both cold-start and mature profiles
 
-3. `review -> commit`
-   - lets a user confirm or defer uncertain updates
-   - writes approved changes back to the profile store
+3. `briefing`
+   - generate meeting prep from confirmed context
+   - keep it short enough to read before a conversation
 
-4. `view`
-   - refreshes persistent person views instead of producing one-off slices
+## Advanced Skills
 
-5. downstream use
-   - `briefing`
-   - `roleplay`
-   - `graph`
+These skills are already included, but they are not the headline loop:
 
-## Included Skills
-
-The current skill set in this repository:
-
-- `relationship-ingestion`
-- `relationship-capture`
-- `relationship-profile`
-- `relationship-briefing`
 - `relationship-roleplay`
 - `relationship-graph`
 - `relationship-view`
-
-## Branch Strategy
-
-This repository is intentionally split by branch.
-
-### `main`
-
-`main` is the clean distribution branch.
-
-It keeps:
-
-- core runtimes
-- prompts
-- schemas
-- example inputs and outputs
-- minimal repo metadata
-
-It does **not** keep:
-
-- process-heavy build notes
-- validation workspaces
-- generated run artifacts
-- real-data scenario outputs
-
-### `build-history`
-
-`build-history` keeps development context and validation materials, such as:
-
-- build plans
-- acceptance checklists
-- Claude test manual
-- smoke and acceptance scripts
-- support utilities used during development
-
-## Repository Layout
-
-```text
-skill-system/
-  assets/branding/            Brand assets for GitHub and docs
-  relationship-ingestion/     Core extraction and review-resolution engine
-  relationship-capture/       User-facing ingestion orchestration layer
-  relationship-profile/       Durable profile read/update skill
-  relationship-briefing/      Brief generation from confirmed context
-  relationship-roleplay/      Structured simulated dialogue skill
-  relationship-graph/         Relationship graph and pathfinding skill
-  relationship-view/          Persistent markdown views and refresh logic
-  real-use-logs/              Real usage logs and templates
-  scripts/                    Repo support scripts
-```
+- `relationship-ingestion`
 
 ## Quick Start
 
@@ -111,61 +52,64 @@ If you are a test user, start here:
 
 - [START_HERE.md](START_HERE.md)
 
-### 1. Prepare model config
+If you are a Chinese reader, see:
 
-Use the template at:
+- [README.zh-CN.md](README.zh-CN.md)
 
-- `relationship-ingestion/runtime/model-config.template.json`
+If you are using OpenClaw, the fastest path is:
 
-Create your local model config as:
+1. Read `integrations/openclaw/README.md`
+2. Run `integrations/openclaw/bootstrap-costar.ps1`
+3. Let the bootstrap script write your local model config and install the adapter wrapper
+
+## Command Line
+
+Once the repo is cloned, you can use the `costar` CLI:
+
+```powershell
+node bin/costar.mjs --help
+```
+
+Available commands:
+
+- `costar init`
+- `costar capture`
+- `costar ingestion`
+- `costar profile`
+- `costar briefing`
+- `costar roleplay`
+- `costar graph`
+- `costar view`
+- `costar doctor`
+
+## Repository Layout
+
+```text
+skill-system-main/
+  assets/branding/            Brand assets for GitHub and docs
+  bin/                        Costar CLI entrypoint
+  examples/                   Small public example stories
+  integrations/openclaw/      OpenClaw adapter and bootstrap helpers
+  relationship-ingestion/     Core extraction and review-resolution engine
+  relationship-capture/       User-facing ingestion orchestration layer
+  relationship-profile/       Durable profile read/update skill
+  relationship-briefing/      Brief generation from confirmed context
+  relationship-roleplay/      Structured simulated dialogue skill
+  relationship-graph/         Relationship graph and pathfinding skill
+  relationship-view/          Persistent markdown views and refresh logic
+```
+
+## Safety
+
+Do not commit:
 
 - `relationship-ingestion/runtime/model-config.local.json`
+- runtime run outputs
+- validation workspaces
+- private real-data scenarios
 
-This local credential file is ignored by git.
+Keep your own private data local unless you explicitly want to share a test case.
 
-### 2. Run a skill directly
+## Roadmap
 
-Examples:
-
-```powershell
-node relationship-ingestion/runtime/run-relationship-ingestion.mjs ^
-  relationship-ingestion/samples/relationship-ingestion.request.example.json
-```
-
-```powershell
-node relationship-capture/runtime/run-relationship-capture.mjs ^
-  relationship-capture/samples/relationship-capture.request.ingest.example.json
-```
-
-```powershell
-node relationship-briefing/runtime/run-relationship-briefing.mjs ^
-  relationship-briefing/samples/relationship-briefing.request.example.json
-```
-
-### 3. Use the validation branch when needed
-
-If you want the full build context, acceptance materials, and validation scripts, switch to:
-
-- `build-history`
-
-## Versioning Rules
-
-This repo intentionally excludes local and generated artifacts such as:
-
-- local model credentials
-- runtime stores
-- runtime runs
-- validation run workspaces
-- generated briefings
-- generated person views
-- real scenario outputs from private data
-
-That keeps `main` reusable and safe to share.
-
-## Status
-
-CoStar has already validated the core closed loop locally:
-
-`capture -> ingestion -> review -> commit -> view -> briefing / roleplay / graph`
-
-The current focus is improving quality under real usage while keeping the skill layer clean and inspectable.
+See [ROADMAP.md](ROADMAP.md) for the current delivery plan and target dates.

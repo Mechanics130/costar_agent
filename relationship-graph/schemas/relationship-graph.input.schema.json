@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://lenny-bcontext.local/schemas/relationship-graph.input.schema.json",
+  "$id": "https://costar.dev/schemas/relationship-graph.input.schema.json",
   "title": "Relationship Graph Input",
   "type": "object",
   "additionalProperties": false,

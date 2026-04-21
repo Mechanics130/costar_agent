@@ -1,0 +1,30 @@
+{
+  "name": "costar",
+  "version": "0.1.0",
+  "description": "CoStar is an open-core skill engine for durable relationship context.",
+  "type": "module",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=18"
+  },
+  "bin": {
+    "costar": "bin/costar.mjs"
+  },
+  "scripts": {
+    "check": "node scripts/check-public-repo.mjs",
+    "test": "node scripts/check-public-repo.mjs",
+    "doctor": "node scripts/check-public-repo.mjs",
+    "help": "node bin/costar.mjs --help"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Mechanics130/costar_agent.git"
+  },
+  "keywords": [
+    "co-star",
+    "chief-of-staff",
+    "relationship-context",
+    "open-core",
+    "skill-engine"
+  ]
+}
