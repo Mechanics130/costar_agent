@@ -1,22 +1,24 @@
 # Relationship Graph Skill
 
-这个目录是 `relationship-graph` 的独立工作区。
+This directory is the standalone workspace for `relationship-graph`.
 
-它负责在已经确认过的人物档案之上，构建和读取最小可用的人脉关系图谱能力，包括：
+It builds and reads the minimum viable relationship graph capability on top of
+confirmed person profiles, including:
 
-- 单人物局部网络 `get_person_graph`
-- 两个人之间的连接路径 `find_connection_path`
-- 全局网络摘要 `summarize_network`
-- 关系边人工确认写回 `relationship-graph-review-resolution`
+- single-person local network queries via `get_person_graph`
+- path finding between two people via `find_connection_path`
+- global network summaries via `summarize_network`
+- manual relationship-edge review and write-back via
+  `relationship-graph-review-resolution`
 
-当前版本仍然是 `skill` 层实现，不是产品原型。
-它的重点是：
+This remains a skill-layer implementation, not a product prototype.
+Its focus is:
 
-- 让我们快速判断图谱识别对不对
-- 明确哪些关系边证据不够强，需要用户确认
-- 让确认结果真正影响后续 graph 输出
+- quickly checking whether the graph extraction is correct
+- surfacing weak edges that need user confirmation
+- making confirmed decisions affect future graph outputs
 
-## 目录结构
+## Directory structure
 
 ```text
 relationship-graph/
@@ -47,55 +49,56 @@ relationship-graph/
   scenarios/
 ```
 
-## 当前输入
+## Current input
 
-`relationship-graph` 支持三种 mode：
+`relationship-graph` supports three modes:
 
 1. `get_person_graph`
 2. `find_connection_path`
 3. `summarize_network`
 
-当前主要输入来源：
+The main input sources are:
 
 - `profile_store_path`
-- 可选 `graph_review_store_path`
+- optional `graph_review_store_path`
 
-其中：
+Where:
 
-- `profile store` 负责提供人物档案和基础关系信号
-- `graph review store` 负责保存人工确认后的关系边决议
+- `profile store` provides person profiles and basic relationship signals
+- `graph review store` stores manually confirmed relationship-edge decisions
 
-## 当前输出
+## Current output
 
-`relationship-graph` 当前稳定输出四层内容：
+`relationship-graph` consistently outputs four layers:
 
 1. `graph`
-- 机器可读的节点、边、路径
+- machine-readable nodes, edges, and paths
 
 2. `user_feedback`
-- 给用户看的自然语言摘要
+- natural-language summary for users
 
 3. `review_bundle`
-- 待确认关系边
+- edges waiting for confirmation
 
 4. `render_artifacts`
-- 当前为 `mermaid`
-- 便于轻量可视化验证
+- currently `mermaid`
+- useful for lightweight visual verification
 
-## 关系边确认逻辑
+## Relationship-edge review logic
 
-当前这些边更容易进入 `review_bundle`：
+The following edges are more likely to enter `review_bundle`:
 
 - `same_source_context`
 - `shared_role`
 - `weak_link`
-- 分数偏低的边
-- 连到 `low confidence / stub` 档案的边
-- 被拿来做路径桥接、但证据仍偏弱的边
+- low-scoring edges
+- edges connected to `low confidence / stub` profiles
+- bridge edges used for path finding when the evidence is still weak
 
-人工确认后的关系边会写入 `graph review store`，后续 graph 再运行时会读取这些决议。
+Manually confirmed relationship edges are written into the `graph review store`.
+Future graph runs will read those decisions back.
 
-当前支持的决议包括：
+Current supported review decisions:
 
 - `confirm`
 - `reject`
@@ -103,9 +106,9 @@ relationship-graph/
 - `reclassify`
 - `defer`
 
-## 运行方式
+## Run
 
-### 1. 运行 graph
+### 1. Run graph
 
 ```powershell
 node relationship-graph\runtime\run-relationship-graph.mjs `
@@ -113,7 +116,7 @@ node relationship-graph\runtime\run-relationship-graph.mjs `
   relationship-graph\samples\relationship-graph.response.get-person-graph.example.json
 ```
 
-### 2. 运行 graph review resolution
+### 2. Run graph review resolution
 
 ```powershell
 node relationship-graph\runtime\run-relationship-graph-review-resolution.mjs `
@@ -121,27 +124,27 @@ node relationship-graph\runtime\run-relationship-graph-review-resolution.mjs `
   relationship-graph\samples\relationship-graph-review-resolution.response.example.json
 ```
 
-### 3. 运行本地冒烟检查
+### 3. Run local smoke checks
 
 ```powershell
 node relationship-graph\runtime\graph-smoke.mjs
 node relationship-graph\runtime\graph-review-resolution-smoke.mjs
 ```
 
-## 当前阶段的边界
+## Current boundary
 
-当前 graph 还不是最终的人脉图谱系统。
+This is not yet the final relationship graph system.
 
-还没做的包括：
+Still missing:
 
-- 更长期的独立 graph memory 层
-- 关系边的主动新增和人工创建
-- 复杂多跳影响路径解释
-- 真正的交互式可视化界面
+- a longer-lived standalone graph memory layer
+- proactive relationship-edge creation and manual edge authoring
+- more complex multi-hop influence-path explanations
+- a true interactive visualization UI
 
-但对当前阶段已经足够：
+But it is already enough for this stage:
 
-- 能识别图谱
-- 能解释图谱
-- 能导出 Mermaid 看图
-- 能把人工确认结果写回闭环
+- it can identify graphs
+- it can explain graphs
+- it can export Mermaid for visual checks
+- it can write confirmed decisions back into a closed loop

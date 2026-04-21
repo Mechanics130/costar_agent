@@ -1,17 +1,19 @@
 # Relationship Briefing Skill
 
-这个目录是 `relationship-briefing` 的独立工作区。
+This directory is the standalone workspace for `relationship-briefing`.
 
-它负责消费已经确认过的人物档案和关系信息，生成：
+It consumes confirmed person profiles and relationship information and
+generates:
 
-- 会前 briefing
-- 沟通目标拆解
-- 注意事项
-- 建议提纲
+- pre-meeting briefings
+- communication goal breakdowns
+- watchouts
+- suggested outlines
 
-当前版本先只做单人物 briefing，不做多人会前策略整合。
+This version only handles single-person briefings. It does not yet combine
+multi-person pre-meeting strategy.
 
-## 目录结构
+## Directory structure
 
 ```text
 relationship-briefing/
@@ -32,22 +34,22 @@ relationship-briefing/
     runs/
 ```
 
-## 当前输入
+## Current input
 
-当前优先支持两种输入方式：
+The current version supports two primary input styles:
 
-1. 直接传 `target_profile`
-2. 传 `profile_store_path + person_name/person_ref`
+1. pass `target_profile` directly
+2. pass `profile_store_path + person_name/person_ref`
 
-并支持这些增强输入：
+It also supports the following enrichment inputs:
 
 - `meeting_context`
 - `recent_interactions`
-- 缺省时自动从 `profile store + relationship-view` 召回上下文
+- when omitted, it recalls context automatically from `profile store + relationship-view`
 
-## 当前输出
+## Current output
 
-当前输出会稳定产出结构化 briefing，包括：
+The runtime consistently produces structured briefing content, including:
 
 - `quick_brief`
 - `relationship_read`
@@ -57,17 +59,17 @@ relationship-briefing/
 - `questions_to_ask`
 - `next_actions`
 
-同时 runtime 会写一份持久化 markdown 文件到：
+At the same time, the runtime writes a persistent markdown file to:
 
-`relationship-briefing\briefings\`
+`relationship-briefing/briefings/`
 
-返回中会包含：
+The return payload also includes:
 
 - `context_receipt`
 - `briefing_file`
 - `user_feedback`
 
-## 运行方式
+## Run
 
 ```powershell
 node relationship-briefing\runtime\run-relationship-briefing.mjs `
@@ -75,6 +77,6 @@ node relationship-briefing\runtime\run-relationship-briefing.mjs `
   relationship-briefing\samples\relationship-briefing.response.example.json
 ```
 
-模型配置默认复用：
+The model config is reused from:
 
 `relationship-ingestion\runtime\model-config.local.json`

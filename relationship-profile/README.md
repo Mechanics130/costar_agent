@@ -1,17 +1,19 @@
 # Relationship Profile Skill
 
-这个目录是 `relationship-profile` 的独立工作区。
+This directory is the standalone workspace for `relationship-profile`.
 
-它负责消费已经确认并写回的 `profile store`，提供 4 类能力：
+It consumes the confirmed and written-back `profile store` and provides four
+core capabilities:
 
-- 单人物档案读取
-- 档案检索
-- 档案健康检查 / 维护建议
-- 受控的手工 patch 写回
+- read a single person profile
+- search across profiles
+- run profile health checks and maintenance suggestions
+- perform controlled manual patch write-back
 
-当前版本优先做稳定、可审计的 `profile service layer`，不依赖大模型也能运行。
+This version focuses on a stable, auditable `profile service layer`. It can run
+without relying on an LLM.
 
-## 目录结构
+## Directory structure
 
 ```text
 relationship-profile/
@@ -31,25 +33,25 @@ relationship-profile/
     runs/
 ```
 
-## 当前支持的模式
+## Current modes
 
 1. `get_profile`
-- 读取单个人物档案
-- 生成结构化 `profile_read`
-- 输出相关人物和档案维护建议
+- read a single person profile
+- produce a structured `profile_read`
+- return related people and maintenance suggestions
 
 2. `search_profiles`
-- 按姓名、别名、标签、summary、intent 等检索档案
+- search by name, alias, tag, summary, intent, and related fields
 
 3. `maintain_store`
-- 对整个 `profile store` 做健康检查
-- 输出 stale / low-confidence / open-questions 队列
+- run health checks across the full `profile store`
+- surface stale / low-confidence / open-question queues
 
 4. `apply_profile_patch`
-- 对已有档案做受控 patch
-- 支持 patch 后写回 `profile store`
+- apply a controlled patch to an existing profile
+- write the patched result back into the `profile store`
 
-## 运行方式
+## Run
 
 ```powershell
 node relationship-profile\runtime\run-relationship-profile.mjs `
@@ -57,10 +59,11 @@ node relationship-profile\runtime\run-relationship-profile.mjs `
   relationship-profile\samples\relationship-profile.response.get.example.json
 ```
 
-## 默认 profile store
+## Default profile store
 
-默认会复用：
+By default, this skill reuses:
 
 `relationship-ingestion\runtime\stores\relationship-profile-store.json`
 
-如果请求里显式传了 `profile_store_path`，则优先使用请求里的路径。
+If the request explicitly includes `profile_store_path`, that path takes
+priority.

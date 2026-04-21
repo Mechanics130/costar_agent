@@ -1,16 +1,16 @@
 # Relationship Ingestion Skill
 
-这个目录是 `relationship-ingestion` 的独立本地工作区，用来管理这个总 skill 的全部核心资产。
+This directory is the standalone workspace for `relationship-ingestion`.
+It contains the core assets for the skill itself, not the product shell.
 
-它和之前的产品原型目录分开，原因是：
+Why this lives separately from the UI prototypes:
 
-- 这里放的是 skill 本体，而不是页面原型
-- 这里的文件会直接服务模型调用、结构化输出和真实数据调试
-- 后面你给真实数据时，我们会把每次运行的输入输出也沉淀在这个目录里
+- this folder contains the skill implementation, not a page mockup
+- the files here are used directly for model calls, structured outputs, and
+  real-data debugging
+- when we test with real materials, we keep each run's input and output here
 
----
-
-## 目录结构
+## Directory structure
 
 ```text
 relationship-ingestion/
@@ -38,85 +38,83 @@ relationship-ingestion/
     stores/
 ```
 
----
+## What this version does
 
-## 当前版本做什么
+This version runs the first main loop end to end:
 
-当前版本负责把这条主链路先跑通：
+`raw material -> normalization -> person detection -> information extraction ->
+profile update suggestions -> structured output`
 
-`原始资料 -> 标准化 -> 人物识别 -> 信息提炼 -> 档案更新建议 -> 结构化输出`
+It also begins the second loop:
 
-同时已经开始补第二条闭环：
+`review bundle -> user confirmation -> committed profiles -> profile store delta`
 
-`review bundle -> 用户确认决议 -> committed profiles -> profile store delta`
-
-这一版先服务：
+This stage primarily serves:
 
 - `capture`
 - `profile`
 - `briefing`
 
-`roleplay` 还不在第一阶段主闭环里。
+`roleplay` is not part of the first-stage main loop yet.
 
----
-
-## 本地文件管理规则
+## Local file management rules
 
 ### `prompts/`
 
-放模型系统提示词，不和代码混在一起，方便单独迭代 prompt。
+Stores the model system prompts separately from code, so prompt iteration stays
+clean and isolated.
 
 ### `schemas/`
 
-放输入、输出和模型配置 schema。
+Stores input, output, and model-config schemas.
 
-后面无论是前端、后端、还是真实数据调试，都围绕这套 schema 工作。
+No matter whether we are working on the frontend, the backend, or real-data
+debugging, everything should follow this schema layer.
 
 ### `samples/`
 
-放最小样例请求和返回结果，方便我们每次改完 skill 后快速对照。
+Stores the smallest example requests and responses, so we can compare behavior
+quickly after each change.
 
 ### `runtime/model-config.local.json`
 
-如果你后面在页面或接口里配置了自己的模型 API，会保存到这里。
+If you configure your own model API later, the local configuration will be
+saved here.
 
 ### `runtime/runs/`
 
-每次真实运行 skill 时，都会自动创建一个 run 目录，里面至少保存：
+Every real execution creates its own run directory, which should at least keep:
 
 - `request.json`
 - `response.json`
 
 ### `runtime/stores/`
 
-放本地 profile store。当前 review resolution runtime 已经支持把确认后的档案 upsert 到这个 store。
+Stores the local `profile store`.
+When the review-resolution runtime is used, confirmed records can be upserted
+into this store.
 
----
+## Current runtime entry points
 
-## 当前运行入口
+You can run the skill directly from the CLI runner in this folder.
 
-当前 `mvp-app/server.mjs` 已经会把：
-
-- `POST /api/skills/relationship-ingestion`
-- `GET /api/config/model`
-- `POST /api/config/model`
-
-这些接口路由到这里的 runtime 逻辑。
-
-如果你想不经过页面，直接本地跑一个请求文件，也可以用：
+If you want to skip any UI layer and run a request file locally, you can use:
 
 ```powershell
 node relationship-ingestion\runtime\run-relationship-ingestion.mjs `
   relationship-ingestion\samples\relationship-ingestion.request.example.json
 ```
 
-模型配置可以直接参考：
+The model config template is:
 
 `relationship-ingestion\runtime\model-config.template.json`
 
-当前 CLI runner 已兼容 `UTF-8` 和 `UTF-8 with BOM` 的 JSON 请求文件，避免 PowerShell 或其他工具默认写出 BOM 时导致运行失败。
+The current CLI runner accepts both plain UTF-8 JSON and UTF-8-with-BOM JSON
+request files, which helps avoid failures when PowerShell or another tool writes
+files with a BOM by default.
 
-如果你想直接测试“用户确认后如何写回实体”，可以用：
+If you want to test the "user confirms, then we write back the entity" flow
+directly, you can run:
 
 ```powershell
 node relationship-ingestion\runtime\run-relationship-review-resolution.mjs `

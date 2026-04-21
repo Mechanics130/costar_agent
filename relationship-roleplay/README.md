@@ -1,17 +1,19 @@
 # Relationship Roleplay Skill
 
-这个目录是 `relationship-roleplay` 的独立工作区。
+This directory is the standalone workspace for `relationship-roleplay`.
 
-它负责消费已经确认过的人物档案与关系信息，生成：
+It consumes confirmed person profiles and relationship information and
+generates:
 
-- 定向对话模拟
-- 可能回应与阻力判断
-- 建议回复与推进策略
-- 对话教练反馈
+- focused dialogue simulations
+- likely responses and pushback detection
+- recommended replies and progression strategy
+- coach-style feedback
 
-当前版本先只做单人物 roleplay，不做多人会谈模拟，也不做实时对话介入。
+This version only handles single-person roleplay. It does not yet simulate
+group meetings or intervene in live conversations.
 
-## 目录结构
+## Directory structure
 
 ```text
 relationship-roleplay/
@@ -31,15 +33,16 @@ relationship-roleplay/
     runs/
 ```
 
-## 当前输入
+## Current input
 
-当前优先支持两种输入方式：
-1. 直接传 `target_profile`
-2. 传 `profile_store_path + person_name/person_ref`
+The current version supports two primary input styles:
 
-## 当前输出
+1. pass `target_profile` directly
+2. pass `profile_store_path + person_name/person_ref`
 
-当前输出会稳定产出结构化 roleplay 结果，包括：
+## Current output
+
+The runtime consistently produces structured roleplay results, including:
 
 - `persona_read`
 - `opening_assessment`
@@ -49,7 +52,7 @@ relationship-roleplay/
 - `danger_zones`
 - `coach_feedback`
 
-## 运行方式
+## Run
 
 ```powershell
 node relationship-roleplay\runtime\run-relationship-roleplay.mjs `
@@ -57,5 +60,6 @@ node relationship-roleplay\runtime\run-relationship-roleplay.mjs `
   relationship-roleplay\samples\relationship-roleplay.response.example.json
 ```
 
-模型配置默认复用：
+The model config is reused from:
+
 `relationship-ingestion\runtime\model-config.local.json`
