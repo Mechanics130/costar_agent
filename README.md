@@ -107,6 +107,10 @@ skill-system/
 
 ## Quick Start
 
+If you are a test user, start here:
+
+- [START_HERE.md](START_HERE.md)
+
 ### 1. Prepare model config
 
 Use the template at:
