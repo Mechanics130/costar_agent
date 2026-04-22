@@ -21,7 +21,8 @@ const textExtensions = new Set([
 const bannedPatterns = [
   "by Codex",
   "build-history",
-  "skill-system-main",
+  "CoStar_Agent-Lenny",
+  "costar_agent-lenny1",
   "launch-plan",
   "launch-notes",
   "lenny-bcontext.local",
