@@ -17,9 +17,11 @@ Please use a private GitHub Security Advisory when possible:
 
 - [Open a private security advisory](https://github.com/Mechanics130/costar_agent/security/advisories/new)
 
-If you cannot use a GitHub advisory, contact the maintainers at:
+If you cannot use a GitHub advisory, open a regular GitHub issue that asks for
+a private security follow-up.
 
-- `security@costar.dev`
+Do not include sensitive details in the issue body. Share only enough context
+for the maintainers to establish a safer channel.
 
 Please do not post sensitive details in a public issue.
 

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://costar.dev/schemas/relationship-profile.schema.json",
+  "$id": "https://raw.githubusercontent.com/Mechanics130/costar_agent/main/relationship-ingestion/schemas/relationship-profile.schema.json",
   "title": "Relationship Person Profile",
   "type": "object",
   "additionalProperties": false,

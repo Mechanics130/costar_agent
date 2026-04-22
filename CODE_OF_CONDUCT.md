@@ -59,9 +59,12 @@ representative at an online or offline event.
 ## Enforcement
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
-reported to the project maintainers responsible for enforcement at
-`conduct@costar.dev`.
-All complaints will be reviewed and investigated promptly and fairly.
+reported to the project maintainers by opening a GitHub issue that requests a
+private moderation follow-up.
+
+Do not include sensitive personal details in the public issue. Share only the
+minimum needed so the maintainers can continue the conversation in a safer
+channel. All complaints will be reviewed and investigated promptly and fairly.
 
 All project maintainers are obligated to respect the privacy and security of the
 reporter of any incident.

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://costar.dev/schemas/relationship-briefing.input.schema.json",
+  "$id": "https://raw.githubusercontent.com/Mechanics130/costar_agent/main/relationship-briefing/schemas/relationship-briefing.input.schema.json",
   "title": "Relationship Briefing Input",
   "type": "object",
   "additionalProperties": false,

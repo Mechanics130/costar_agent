@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://costar.dev/schemas/relationship-ingestion.output.schema.json",
+  "$id": "https://raw.githubusercontent.com/Mechanics130/costar_agent/main/relationship-ingestion/schemas/relationship-ingestion.output.schema.json",
   "title": "Relationship Ingestion Output",
   "type": "object",
   "additionalProperties": false,

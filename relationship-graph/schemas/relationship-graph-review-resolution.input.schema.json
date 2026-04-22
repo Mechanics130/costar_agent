@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://costar.dev/schemas/relationship-graph-review-resolution.input.schema.json",
+  "$id": "https://raw.githubusercontent.com/Mechanics130/costar_agent/main/relationship-graph/schemas/relationship-graph-review-resolution.input.schema.json",
   "title": "Relationship Graph Review Resolution Input",
   "type": "object",
   "additionalProperties": false,
