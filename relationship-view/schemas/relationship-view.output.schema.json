@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Relationship View Output",
+  "type": "object",
+  "required": [
+    "skill",
+    "version",
+    "status",
+    "mode",
+    "person_view",
+    "view_store_overview",
+    "user_feedback"
+  ],
+  "properties": {
+    "skill": { "type": "string" },
+    "version": { "type": "string" },
+    "status": { "type": "string" },
+    "mode": { "type": "string" },
+    "target_person": {
+      "type": ["object", "null"]
+    },
+    "person_view": {
+      "type": ["object", "null"]
+    },
+    "refreshed_views": {
+      "type": "array"
+    },
+    "view_store_overview": {
+      "type": "object"
+    },
+    "view_store_delta": {
+      "type": ["object", "null"]
+    },
+    "user_feedback": {
+      "type": ["object", "null"]
+    },
+    "run_directory": {
+      "type": ["string", "null"]
+    },
+    "notes": { "type": "string" }
+  }
+}

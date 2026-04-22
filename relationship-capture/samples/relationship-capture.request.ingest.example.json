@@ -1,0 +1,77 @@
+{
+  "request_id": "capture-ingest-sample-001",
+  "notes": "用样例 ingestion 结果验证用户反馈层，不重新调用模型。",
+  "ingestion_result": {
+    "skill": "relationship-ingestion",
+    "version": "0.1.0",
+    "status": "success",
+    "source": "llm",
+    "source_label": "sample",
+    "policy": {
+      "policy_key": "single-focused-update",
+      "metrics": {
+        "existing_people_count": 1
+      }
+    },
+    "source_summary": {
+      "source_count": 1,
+      "excerpt_count": 1,
+      "dropped_excerpt_count": 0,
+      "target_people": ["Ava Chen", "Bella Xu"],
+      "focus_people": ["Ava Chen"],
+      "focus_instruction": "优先判断Ava Chen是否值得长期建档。"
+    },
+    "interaction_summary": {
+      "summary": "用户与Ava Chen、Bella Xu沟通品牌合作。"
+    },
+    "detected_people": [
+      { "person_name": "Ava Chen" },
+      { "person_name": "Bella Xu" }
+    ],
+    "resolved_people": [
+      { "person_name": "Ava Chen", "resolution_action": "update" },
+      { "person_name": "Bella Xu", "resolution_action": "create" }
+    ],
+    "profile_updates": [],
+    "person_profiles": [
+      {
+        "person_name": "Ava Chen",
+        "compiled_truth": {
+          "summary": "务实型合作对象，重视 ROI 和执行细节。"
+        }
+      },
+      {
+        "person_name": "Bella Xu",
+        "compiled_truth": {
+          "summary": "需要更多案例和资源排期支持的合作对象。"
+        }
+      }
+    ],
+    "relationship_edges": [],
+    "todos": [],
+    "evidence": [],
+    "review_flags": [],
+    "review_bundle": {
+      "confirmation_required": true,
+      "pending_count": 1,
+      "required_candidate_count": 1,
+      "candidates": [
+        {
+          "person_name": "Bella Xu",
+          "priority": "high",
+          "needs_confirmation": true,
+          "suggested_action": "create",
+          "questions": ["是否将Bella Xu纳入长期合作关系档案？"],
+          "fields_to_confirm": [
+            {
+              "field": "compiled_truth.summary",
+              "label": "人物摘要",
+              "current_value": "需要更多案例和资源排期支持的合作对象。"
+            }
+          ],
+          "evidence_preview": ["如果能提供案例和排期，她愿意继续推进。"]
+        }
+      ]
+    }
+  }
+}

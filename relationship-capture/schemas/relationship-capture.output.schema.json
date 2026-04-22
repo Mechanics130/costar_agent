@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://costar.dev/schemas/relationship-capture.output.schema.json",
+  "title": "Relationship Capture Output",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "skill",
+    "version",
+    "status",
+    "stage",
+    "receipt",
+    "processing_feedback",
+    "confirmation_request",
+    "next_action",
+    "user_feedback",
+    "view_refresh_result"
+  ],
+  "properties": {
+    "skill": { "type": "string", "const": "relationship-capture" },
+    "version": { "type": "string" },
+    "status": { "type": "string", "enum": ["success", "needs_review"] },
+    "stage": { "type": "string", "enum": ["ingestion", "commit"] },
+    "receipt": { "type": "object" },
+    "processing_feedback": { "type": "object" },
+    "confirmation_request": { "type": "object" },
+    "next_action": { "type": "object" },
+    "user_feedback": { "type": "object" },
+    "ingestion_result": { "type": ["object", "null"] },
+    "review_resolution_result": { "type": ["object", "null"] },
+    "view_refresh_result": { "type": ["object", "null"] },
+    "commit_feedback": { "type": ["object", "null"] },
+    "notes": { "type": "string" }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "request_id": "demo-run-001",
+  "goal": "从资料中识别值得建立或更新的人物档案，并提炼后续跟进建议",
+  "target_people": ["Ava Chen", "Bella Xu"],
+  "focus_people": ["Ava Chen"],
+  "focus_instruction": "这次先重点判断Ava Chen是否值得作为长期合作对象建档，并优先提炼她的偏好、边界和后续跟进建议。",
+  "existing_people": [
+    {
+      "person_id": "person_ava_chen",
+      "name": "Ava Chen",
+      "aliases": ["婧姐"],
+      "tags": ["品牌合作"],
+      "summary": "和我保持月度沟通，偏重品牌合作与内容联动。"
+    }
+  ],
+  "sources": [
+    {
+      "source_id": "minute-2026-04-15",
+      "title": "品牌合作沟通纪要",
+      "source_type": "meeting_minutes",
+      "channel": "feishu-minutes",
+      "relative_path": "minutes/brand-coop-2026-04-15.md",
+      "content": "昨天和Ava Chen、Bella Xu一起沟通了品牌合作。Ava Chen更关心投入产出，希望先从一次小范围联动试起。Bella Xu提到如果能提供以往案例和资源排期，她愿意下周继续推进。Ava Chen明确表示不喜欢太泛的方案，希望下次直接给两套可执行方案。"
+    }
+  ],
+  "options": {
+    "save_run_artifacts": true,
+    "require_evidence": true
+  }
+}

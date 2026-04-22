@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://costar.dev/schemas/relationship-briefing.input.schema.json",
+  "title": "Relationship Briefing Input",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["conversation_goal"],
+  "properties": {
+    "skill": { "type": "string", "const": "relationship-briefing" },
+    "version": { "type": "string" },
+    "person_name": { "type": "string" },
+    "person_ref": { "type": "string" },
+    "profile_store_path": { "type": "string" },
+    "target_profile": { "type": "object" },
+    "conversation_goal": { "type": "string" },
+    "conversation_topic": { "type": "string" },
+    "conversation_context": { "type": "string" },
+    "meeting_context": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "topic": { "type": "string" },
+        "goal": { "type": "string" },
+        "scheduled_time": { "type": "string" },
+        "attendees": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "location": { "type": "string" },
+        "notes": { "type": "string" }
+      }
+    },
+    "recent_interactions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "interaction_id": { "type": "string" },
+          "date": { "type": "string" },
+          "source_title": { "type": "string" },
+          "source_id": { "type": "string" },
+          "summary": { "type": "string" }
+        }
+      }
+    },
+    "constraints": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "model_config": { "type": "object" },
+    "options": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "save_run_artifacts": { "type": "boolean" },
+        "write_briefing_file": { "type": "boolean" },
+        "timeline_limit": { "type": "integer", "minimum": 1 },
+        "view_excerpt_chars": { "type": "integer", "minimum": 200 }
+      }
+    }
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "skill": "relationship-briefing",
+  "version": "0.2.0",
+  "profile_store_path": "relationship-ingestion/incremental-scenarios/2026-04-13-sample-weather-agent/relationship-profile-store.incremental-2026-04-13-sample-weather-agent.json",
+  "person_ref": "person_jordan_li",
+  "conversation_goal": "在会前快速了解Jordan Li当前判断，并准备一场聚焦天气 Agent 分工与投入优先级的对齐沟通。",
+  "conversation_topic": "天气 Agent 分工与投入优先级",
+  "conversation_context": "这是一场一对一同步，希望先拿到真实判断，再决定后续是否继续投入推进。",
+  "meeting_context": {
+    "topic": "天气 Agent 分工与投入优先级",
+    "goal": "拿到Jordan Li对当前分工、优先级和继续推进价值的真实判断",
+    "scheduled_time": "2026-04-18 10:00",
+    "attendees": ["tester", "Jordan Li"],
+    "location": "会议室 A / 线上飞书",
+    "notes": "优先拿事实判断，不要一上来就追问承诺。"
+  },
+  "constraints": [
+    "不要一上来就问责",
+    "优先拿到真实判断",
+    "避免空泛讨论愿景"
+  ],
+  "options": {
+    "save_run_artifacts": true,
+    "write_briefing_file": true,
+    "timeline_limit": 4,
+    "view_excerpt_chars": 1400
+  }
+}

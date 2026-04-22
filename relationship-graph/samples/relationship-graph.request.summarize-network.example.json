@@ -1,0 +1,12 @@
+{
+  "skill": "relationship-graph",
+  "version": "0.1.0",
+  "mode": "summarize_network",
+  "profile_store_path": "relationship-ingestion/incremental-scenarios/2026-04-13-sample-weather-agent/relationship-profile-store.incremental-2026-04-13-sample-weather-agent.json",
+  "options": {
+    "save_run_artifacts": true,
+    "max_nodes": 20,
+    "max_edges": 40,
+    "min_relation_score": 2
+  }
+}

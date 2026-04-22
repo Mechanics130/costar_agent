@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://costar.dev/schemas/relationship-review-resolution.output.schema.json",
+  "title": "Relationship Review Resolution Output",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "skill",
+    "version",
+    "status",
+    "ingestion_skill",
+    "processed_at",
+    "review_summary",
+    "committed_profiles",
+    "created_people",
+    "updated_people",
+    "ignored_people",
+    "deferred_people",
+    "unresolved_candidates",
+    "profile_store_delta"
+  ],
+  "properties": {
+    "skill": { "type": "string", "const": "relationship-review-resolution" },
+    "version": { "type": "string" },
+    "status": { "type": "string", "enum": ["success", "needs_review"] },
+    "ingestion_skill": { "type": "string", "const": "relationship-ingestion" },
+    "processed_at": { "type": "string" },
+    "review_summary": { "type": "object" },
+    "committed_profiles": {
+      "type": "array",
+      "items": { "$ref": "https://costar.dev/schemas/relationship-profile.schema.json" }
+    },
+    "created_people": { "type": "array", "items": { "type": "object" } },
+    "updated_people": { "type": "array", "items": { "type": "object" } },
+    "ignored_people": { "type": "array", "items": { "type": "object" } },
+    "deferred_people": { "type": "array", "items": { "type": "object" } },
+    "unresolved_candidates": { "type": "array", "items": { "type": "object" } },
+    "profile_store_delta": { "type": "object" },
+    "notes": { "type": "string" }
+  }
+}

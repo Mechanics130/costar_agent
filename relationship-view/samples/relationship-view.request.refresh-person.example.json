@@ -1,0 +1,13 @@
+{
+  "mode": "refresh_person_view",
+  "person_ref": "person_chris_yu",
+  "profile_store_path": "relationship-ingestion/incremental-scenarios/sample-profile-store.json",
+  "options": {
+    "write_store": true,
+    "write_markdown": true,
+    "save_run_artifacts": false,
+    "graph_max_nodes": 8,
+    "graph_max_edges": 12,
+    "graph_min_relation_score": 2
+  }
+}

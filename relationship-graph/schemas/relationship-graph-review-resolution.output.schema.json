@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://costar.dev/schemas/relationship-graph-review-resolution.output.schema.json",
+  "title": "Relationship Graph Review Resolution Output",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "skill",
+    "version",
+    "status",
+    "processed_at",
+    "review_summary",
+    "confirmed_edges",
+    "rejected_edges",
+    "downgraded_edges",
+    "reclassified_edges",
+    "deferred_edges",
+    "unresolved_candidates",
+    "graph_review_store_delta",
+    "commit_feedback"
+  ],
+  "properties": {
+    "skill": { "type": "string", "const": "relationship-graph-review-resolution" },
+    "version": { "type": "string" },
+    "status": { "type": "string", "enum": ["success", "needs_review"] },
+    "graph_skill": { "type": "string" },
+    "processed_at": { "type": "string" },
+    "review_summary": { "type": "object" },
+    "confirmed_edges": { "type": "array", "items": { "type": "object" } },
+    "rejected_edges": { "type": "array", "items": { "type": "object" } },
+    "downgraded_edges": { "type": "array", "items": { "type": "object" } },
+    "reclassified_edges": { "type": "array", "items": { "type": "object" } },
+    "deferred_edges": { "type": "array", "items": { "type": "object" } },
+    "unresolved_candidates": { "type": "array", "items": { "type": "object" } },
+    "graph_review_store_delta": { "type": "object" },
+    "commit_feedback": { "type": "object" },
+    "notes": { "type": "string" }
+  }
+}

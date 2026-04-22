@@ -1,0 +1,76 @@
+{
+  "skill": "relationship-review-resolution",
+  "version": "0.1.0",
+  "operator": "tester",
+  "notes": "Sample review decisions for a public relationship project.",
+  "ingestion_result": {
+    "skill": "relationship-ingestion",
+    "version": "0.1.0",
+    "resolved_people": [
+      {
+        "person_name": "Ava Chen",
+        "resolution_action": "update",
+        "matched_existing_person_id": "person_ava_chen",
+        "matched_existing_person_name": "Ava Chen",
+        "confidence": "high"
+      },
+      {
+        "person_name": "Bella Xu",
+        "resolution_action": "create",
+        "matched_existing_person_id": null,
+        "matched_existing_person_name": null,
+        "confidence": "high"
+      }
+    ],
+    "review_bundle": {
+      "confirmation_required": true,
+      "pending_count": 2,
+      "required_candidate_count": 1,
+      "candidates": [
+        {
+          "person_name": "Ava Chen",
+          "priority": "high",
+          "needs_confirmation": true,
+          "suggested_action": "update",
+          "questions": ["Ava Chen can accept what size pilot?"],
+          "fields_to_confirm": [],
+          "evidence_preview": ["Ava Chen prefers concrete and ROI-led plans."]
+        },
+        {
+          "person_name": "Bella Xu",
+          "priority": "medium",
+          "needs_confirmation": true,
+          "suggested_action": "create",
+          "questions": [],
+          "fields_to_confirm": [],
+          "evidence_preview": ["Bella Xu wants cases and scheduling details before proceeding."]
+        }
+      ]
+    },
+    "interaction_summary": {
+      "summary": "Relationship project collaboration check-in."
+    }
+  },
+  "review_decisions": [
+    {
+      "person_name": "Ava Chen",
+      "final_action": "update",
+      "resolved_person_ref": "person_ava_chen",
+      "resolved_person_name": "Ava Chen",
+      "profile_tier": "key",
+      "notes": "Keep as an active relationship and update the profile."
+    },
+    {
+      "person_name": "Bella Xu",
+      "final_action": "create",
+      "resolved_person_ref": "person_bella_xu",
+      "resolved_person_name": "Bella Xu",
+      "profile_tier": "active",
+      "notes": "Create a new profile for this person."
+    }
+  ],
+  "review_options": {
+    "write_store": false,
+    "auto_commit_safe_updates": true
+  }
+}

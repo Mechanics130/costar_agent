@@ -1,0 +1,43 @@
+# Secrets
+**/runtime/model-config.local.json
+**/.env.local
+
+# Local logs and scratch
+logs/temp/
+logs/*.log
+
+# Generated runtime artifacts
+**/runtime/runs/
+**/runtime/stores/
+
+# Validation workspaces
+validation-runs/
+
+# Real-data and generated scenario artifacts
+relationship-capture/scenarios/
+relationship-graph/scenarios/
+relationship-roleplay/scenarios/
+relationship-ingestion/incremental-scenarios/
+relationship-ingestion/flomo-import/output/
+relationship-ingestion/samples/relationship-ingestion.response.realtest.json
+relationship-view/scenarios/
+relationship-view/views/smoke/
+
+# Generated long-lived views / briefings
+relationship-view/views/*.md
+!relationship-view/views/.gitkeep
+relationship-briefing/briefings/*.md
+!relationship-briefing/briefings/.gitkeep
+
+# Real use logs
+real-use-logs/*.md
+!real-use-logs/README.md
+!real-use-logs/TEMPLATE.md
+!real-use-logs/INDEX.md
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+
+# Local installs
+node_modules/

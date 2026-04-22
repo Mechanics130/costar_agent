@@ -1,0 +1,82 @@
+{
+  "skill": "relationship-roleplay",
+  "version": "0.1.0",
+  "status": "success",
+  "model": {
+    "provider": "openai-compatible",
+    "base_url": "https://api.example.com/v1",
+    "model": "example-model",
+    "temperature": 0.1,
+    "source": "shared_local_file"
+  },
+  "target_person": {
+    "person_name": "Jordan Li",
+    "person_ref": "person_jordan_li",
+    "relationship_stage": "stable contact",
+    "summary": "A rational lead who prefers data and clear boundaries."
+  },
+  "simulation": {
+    "persona_read": {
+      "current_state": "Willing to discuss, but will first check whether the scope is actually clear.",
+      "likely_intent": "Confirm whether the project is worth continued investment and who can actually decide.",
+      "attitude": "Cautious, but not negative.",
+      "response_style": "State the judgment first, then the boundary."
+    },
+    "opening_assessment": "If the opening is restrained and asks for a real judgment first, he will likely stay analytical.",
+    "simulated_turns": [
+      {
+        "turn": 1,
+        "user_move": "I want to hear your honest judgment on whether this line is worth continuing.",
+        "likely_response": "I think it is possible, but the scope has to be clear first or both sides will end up underpowered.",
+        "why": "He usually gives a cautious judgment first, then adds scope and resource boundaries.",
+        "risk_level": "low"
+      },
+      {
+        "turn": 2,
+        "user_move": "If you had to keep only one direction, which would you keep?",
+        "likely_response": "If I had to choose, I would keep the direction that can actually run end to end unless the other side can prove long-term leverage.",
+        "why": "He favors data and long-term reusable value, not emotional support.",
+        "risk_level": "medium"
+      },
+      {
+        "turn": 3,
+        "user_move": "If I fill the information gaps and align sideways, under what conditions would you keep investing?",
+        "likely_response": "At minimum, the decision owner, technical path, and benefit boundary need to be clear.",
+        "why": "This is his typical condition for moving forward: clear direction, believable returns, and clear ownership.",
+        "risk_level": "low"
+      }
+    ],
+    "likely_pushbacks": [
+      "If you keep talking vision without real boundaries, he will get more reserved.",
+      "If you push the organizational decision back onto him, he will step back."
+    ],
+    "recommended_replies": [
+      "Acknowledge the caution first; do not argue the upside too early.",
+      "Reduce the conversation to verifiable conditions: who decides, who invests, and what runs first."
+    ],
+    "danger_zones": [
+      "Forcing him to take sides.",
+      "Pressuring him emotionally before the facts are clear."
+    ],
+    "if_conversation_goes_well": [
+      "Get his list of conditions for continuing.",
+      "Identify the real decision makers who still need alignment."
+    ]
+  },
+  "coach_feedback": {
+    "keep_doing": [
+      "Ask for the judgment first, then the conditions.",
+      "Keep the discussion on facts, boundaries, and ownership."
+    ],
+    "avoid": [
+      "Do not turn the conversation into a loyalty test.",
+      "Do not push for commitments before the return is clear."
+    ],
+    "recovery_moves": [
+      "If he starts to withdraw, say: 'I am just trying to confirm the boundaries; no need for a final answer yet.'"
+    ]
+  },
+  "open_questions": [],
+  "notes": "",
+  "run_directory": null
+}

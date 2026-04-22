@@ -1,0 +1,37 @@
+{
+  "skill": "relationship-graph-review-resolution",
+  "version": "0.1.0",
+  "graph_result": {
+    "skill": "relationship-graph",
+    "mode": "get_person_graph",
+    "review_bundle": {
+      "edge_candidates": [
+        {
+          "source_person_name": "Ava Chen",
+          "source_person_ref": "person_ava_chen",
+          "target_person_name": "Bella Xu",
+          "target_person_ref": "person_bella_xu",
+          "relation_type": "same_source_context",
+          "relation_score": 7,
+          "reason": "This edge mainly comes from shared source context and still needs stronger evidence.",
+          "suggested_action": "check_entity_alignment",
+          "review_priority": 6
+        }
+      ]
+    }
+  },
+  "review_decisions": [
+    {
+      "source_person_ref": "person_ava_chen",
+      "target_person_ref": "person_bella_xu",
+      "final_action": "reject",
+      "note": "This is only a co-occurrence edge for now."
+    }
+  ],
+  "graph_review_store_path": "relationship-graph/runtime/stores/relationship-graph-review-store.sample.json",
+  "operator": "tester",
+  "notes": "sample decision",
+  "options": {
+    "write_store": false
+  }
+}

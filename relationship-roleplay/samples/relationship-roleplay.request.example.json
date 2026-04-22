@@ -1,0 +1,36 @@
+{
+  "skill": "relationship-roleplay",
+  "version": "0.1.0",
+  "target_profile": {
+    "person_name": "Jordan Li",
+    "person_ref": "person_jordan_li",
+    "compiled_truth": {
+      "summary": "A rational lead who prefers data and clear boundaries.",
+      "relationship_stage": "stable contact",
+      "intent": "Clarify whether the project is worth continued investment.",
+      "attitude": {
+        "label": "cautious",
+        "reason": "Wants clear direction before moving forward."
+      }
+    },
+    "timeline": [
+      {
+        "date": "2026-04-13",
+        "event_summary": "Discussed project scope and resource allocation."
+      }
+    ]
+  },
+  "conversation_goal": "Simulate a follow-up conversation about whether the project should continue.",
+  "conversation_topic": "Project priorities and investment trade-offs",
+  "scenario_context": "A one-on-one discussion where we want a real read on judgment without creating pressure.",
+  "starting_user_message": "I want to hear your honest judgment on whether this line is worth continuing.",
+  "constraints": [
+    "Do not start with pressure",
+    "Prioritize the real judgment",
+    "Avoid vague vision talk"
+  ],
+  "options": {
+    "save_run_artifacts": true,
+    "simulation_turns": 3
+  }
+}

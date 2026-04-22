@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://costar.dev/schemas/relationship-roleplay.output.schema.json",
+  "title": "Relationship Roleplay Output",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "skill": { "type": "string" },
+    "version": { "type": "string" },
+    "status": { "type": "string" },
+    "model": { "type": "object" },
+    "target_person": { "type": "object" },
+    "simulation": { "type": "object" },
+    "coach_feedback": { "type": "object" },
+    "open_questions": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "notes": { "type": "string" },
+    "run_directory": { "type": ["string", "null"] }
+  },
+  "required": ["skill", "version", "status", "target_person", "simulation", "coach_feedback", "open_questions"]
+}

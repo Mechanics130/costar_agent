@@ -1,0 +1,72 @@
+{
+  "skill": "relationship-capture",
+  "version": "0.1.0",
+  "status": "needs_review",
+  "stage": "ingestion",
+  "receipt": {
+    "accepted_sources": 1,
+    "parsed_success": 1,
+    "parsed_failed": 0,
+    "focus_people": ["Ava Chen"],
+    "target_people": ["Ava Chen", "Bella Xu"],
+    "existing_people_count": 1
+  },
+  "processing_feedback": {
+    "detected_people_count": 2,
+    "updated_people_count": 1,
+    "new_candidate_count": 1,
+    "ignored_noise_count": 0,
+    "review_pending_count": 1,
+    "highlights": [
+      "已识别并建议更新 Ava Chen",
+      "发现新的建档候选人 Bella Xu"
+    ]
+  },
+  "confirmation_request": {
+    "required": true,
+    "pending_count": 1,
+    "required_candidate_count": 1,
+    "top_candidates": [
+      {
+        "person_name": "Bella Xu",
+        "suggested_action": "create",
+        "priority": "high",
+        "needs_confirmation": true,
+        "questions": ["是否将Bella Xu纳入长期合作关系档案？"],
+        "fields_to_confirm": [
+          {
+            "field": "compiled_truth.summary",
+            "label": "人物摘要",
+            "current_value": "需要更多案例和资源排期支持的合作对象。"
+          }
+        ],
+        "evidence_preview": ["如果能提供案例和排期，她愿意继续推进。"]
+      }
+    ],
+    "message": "这次识别后有 1 位关系人建议你先确认，再写回档案。"
+  },
+  "next_action": {
+    "type": "review",
+    "message": "请优先确认 1 位候选关系人，再继续写回档案。"
+  },
+  "user_feedback": {
+    "headline": "已完成资料整理，并识别出 1 位待确认关系人",
+    "summary_lines": [
+      "识别到 2 位人物",
+      "建议更新 1 位已有关系人",
+      "发现 1 位新候选人",
+      "当前需要你确认 1 位关系人"
+    ],
+    "highlights": [
+      "已识别并建议更新 Ava Chen",
+      "发现新的建档候选人 Bella Xu"
+    ]
+  },
+  "ingestion_result": {
+    "skill": "relationship-ingestion",
+    "version": "0.1.0"
+  },
+  "review_resolution_result": null,
+  "commit_feedback": null,
+  "notes": "用样例 ingestion 结果验证用户反馈层，不重新调用模型。"
+}

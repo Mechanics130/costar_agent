@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://costar.dev/schemas/relationship-graph.output.schema.json",
+  "title": "Relationship Graph Output",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "skill",
+    "version",
+    "status",
+    "mode",
+    "graph",
+    "network_summary",
+    "influence_notes",
+    "review_bundle",
+    "render_artifacts",
+    "user_feedback"
+  ],
+  "properties": {
+    "skill": { "type": "string", "const": "relationship-graph" },
+    "version": { "type": "string" },
+    "status": { "type": "string", "enum": ["success", "needs_review"] },
+    "mode": { "type": "string", "enum": ["get_person_graph", "find_connection_path", "summarize_network"] },
+    "run_directory": { "type": ["string", "null"] },
+    "root_person": { "type": ["object", "null"] },
+    "target_person": { "type": ["object", "null"] },
+    "related_people": {
+      "type": "array",
+      "items": { "type": "object" }
+    },
+    "connection_path": {
+      "type": "array",
+      "items": { "type": "object" }
+    },
+    "graph": {
+      "type": "object",
+      "required": ["nodes", "edges"],
+      "properties": {
+        "nodes": {
+          "type": "array",
+          "items": { "type": "object" }
+        },
+        "edges": {
+          "type": "array",
+          "items": { "type": "object" }
+        }
+      }
+    },
+    "network_summary": { "type": "object" },
+    "influence_notes": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "review_bundle": {
+      "type": "object",
+      "required": ["required", "pending_edge_count", "edge_candidates", "review_notes"],
+      "properties": {
+        "required": { "type": "boolean" },
+        "pending_edge_count": { "type": "integer", "minimum": 0 },
+        "edge_candidates": {
+          "type": "array",
+          "items": { "type": "object" }
+        },
+        "review_notes": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "render_artifacts": {
+      "type": "object",
+      "required": ["format", "graph_kind", "node_count", "edge_count", "mermaid"],
+      "properties": {
+        "format": { "type": "string", "const": "mermaid" },
+        "graph_kind": { "type": "string" },
+        "node_count": { "type": "integer", "minimum": 0 },
+        "edge_count": { "type": "integer", "minimum": 0 },
+        "mermaid": { "type": "string" }
+      }
+    },
+    "user_feedback": { "type": "object" },
+    "notes": { "type": "string" }
+  }
+}

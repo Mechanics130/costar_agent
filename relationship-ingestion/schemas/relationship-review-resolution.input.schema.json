@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://costar.dev/schemas/relationship-review-resolution.input.schema.json",
+  "title": "Relationship Review Resolution Input",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["ingestion_result", "review_decisions"],
+  "properties": {
+    "skill": { "type": "string", "const": "relationship-review-resolution" },
+    "version": { "type": "string" },
+    "operator": { "type": "string" },
+    "notes": { "type": "string" },
+    "profile_store_path": { "type": "string" },
+    "existing_profiles": {
+      "type": "array",
+        "items": { "$ref": "https://costar.dev/schemas/relationship-profile.schema.json" }
+    },
+    "ingestion_result": {
+      "type": "object",
+      "required": ["skill", "resolved_people", "person_profiles", "review_bundle"],
+      "properties": {
+        "skill": { "type": "string", "const": "relationship-ingestion" },
+        "resolved_people": { "type": "array", "items": { "type": "object" } },
+        "profile_updates": { "type": "array", "items": { "type": "object" } },
+        "person_profiles": { "type": "array", "items": { "type": "object" } },
+        "review_bundle": { "type": "object" }
+      }
+    },
+    "review_decisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["person_name", "final_action"],
+        "properties": {
+          "person_name": { "type": "string" },
+          "final_action": { "type": "string", "enum": ["create", "update", "ignore", "defer"] },
+          "resolved_person_ref": { "type": "string" },
+          "resolved_person_name": { "type": "string" },
+          "profile_tier": { "type": "string", "enum": ["stub", "active", "key", "archived"] },
+          "notes": { "type": "string" },
+          "overrides": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "summary": { "type": "string" },
+              "current_judgment": { "type": "string" },
+              "relationship_stage": { "type": "string" },
+              "intent": { "type": "string" },
+              "aliases": { "type": "array", "items": { "type": "string" } },
+              "attitude": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "label": { "type": "string" },
+                  "reason": { "type": "string" }
+                }
+              },
+              "tags": { "type": "array", "items": { "type": "string" } },
+              "traits": { "type": "array", "items": { "type": "string" } },
+              "preferences": { "type": "array", "items": { "type": "string" } },
+              "boundaries": { "type": "array", "items": { "type": "string" } },
+              "risk_flags": { "type": "array", "items": { "type": "string" } },
+              "open_questions": { "type": "array", "items": { "type": "string" } },
+              "next_actions": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        }
+      }
+    },
+    "partial_commit": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "strategy": { "type": "string", "enum": ["selection_only", "safe_updates_only", "review_required_only"] },
+        "selected_person_refs": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "selected_person_names": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "note": { "type": "string" }
+      }
+    },
+    "options": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "write_store": { "type": "boolean" },
+        "auto_commit_safe_updates": { "type": "boolean" }
+      }
+    }
+  }
+}

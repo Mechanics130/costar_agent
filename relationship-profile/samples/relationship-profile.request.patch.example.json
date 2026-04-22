@@ -1,0 +1,22 @@
+{
+  "skill": "relationship-profile",
+  "version": "0.1.0",
+  "mode": "apply_profile_patch",
+  "profile_store_path": "relationship-ingestion/incremental-scenarios/2026-04-13-sample-weather-agent/relationship-profile-store.incremental-2026-04-13-sample-weather-agent.json",
+  "person_name": "Jordan Li",
+  "profile_patch": {
+    "compiled_truth_additions": {
+      "next_actions": [
+        "会后补一轮与Jordan Li的分工确认。"
+      ]
+    },
+    "evidence_append": [
+      "用户手工补充：Jordan Li愿意继续作为关键判断对象跟进。"
+    ],
+    "note": "patch 示例：补一条后续动作。"
+  },
+  "options": {
+    "write_store": false,
+    "save_run_artifacts": true
+  }
+}

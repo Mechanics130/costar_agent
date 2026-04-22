@@ -1,0 +1,127 @@
+{
+  "skill": "relationship-view",
+  "version": "0.1.0",
+  "status": "success",
+  "mode": "refresh_person_view",
+  "target_person": {
+    "person_name": "Chris Yu",
+    "person_ref": "person_chris_yu",
+    "profile_tier": "key"
+  },
+  "person_view": {
+    "person_name": "Chris Yu",
+    "person_ref": "person_chris_yu",
+    "profile_tier": "key",
+    "confidence": "high",
+    "refreshed_at": "2026-04-20T12:00:00.000Z",
+    "summary_card": {
+      "summary": "Core architect of the sample project.",
+      "current_judgment": "Stable contact and suitable for continued follow-up.",
+      "relationship_stage": "stable contact",
+      "intent": "Ship a practical architecture and keep the team aligned.",
+      "attitude": {
+        "label": "positive",
+        "reason": "Actively contributes and supports follow-through."
+      },
+      "tags": ["framework owner", "architecture designer"],
+      "traits": ["careful", "clear thinker"],
+      "preferences": ["likes to keep a comparison baseline"],
+      "boundaries": [],
+      "risk_flags": ["the final architecture is not yet locked"],
+      "open_questions": [],
+      "next_actions": ["follow up on the architecture demo"]
+    },
+    "evidence_summary": {
+      "excerpt_count": 3,
+      "source_count": 1,
+      "last_updated_at": "2026-04-19T11:42:19.609Z",
+      "key_evidence": ["Produced the architecture proposal"]
+    },
+    "timeline_highlights": [
+      {
+        "date": "待判断",
+        "source_title": "2026-03-25 sample meeting note",
+        "source_id": "meeting-minute-2026-03-25-sample",
+        "event_summary": "Produced the architecture proposal.",
+        "matched_excerpt_index": 1
+      }
+    ],
+    "related_people": [
+      {
+        "person_name": "Mina Yang",
+        "person_ref": "person_mina_yang",
+        "relation_type": "same_context_and_mentioned",
+        "relation_score": 57
+      }
+    ],
+    "graph_snapshot": {
+      "node_count": 3,
+      "edge_count": 3,
+      "pending_edge_count": 2,
+      "strongest_connection": {
+        "person_name": "Mina Yang",
+        "person_ref": "person_mina_yang",
+        "relation_type": "same_context_and_mentioned",
+        "relation_score": 57
+      },
+      "mermaid": "flowchart LR\n  person_chris_yu[\"Chris Yu\"]\n  person_mina_yang[\"Mina Yang\"]\n  person_chris_yu --> person_mina_yang"
+    },
+    "review_snapshot": {
+      "required": true,
+      "pending_edge_count": 2,
+      "edge_candidates": [],
+      "review_notes": ["There are still pending relationship edges."]
+    },
+    "user_feedback": {
+      "headline": "Generated a local relationship graph for Chris Yu"
+    },
+    "markdown_path": "relationship-view/views/person_chris_yu.md",
+    "source_context": {
+      "profile_store_path": "relationship-ingestion/incremental-scenarios/sample-profile-store.json",
+      "graph_review_store_path": "relationship-graph/runtime/stores/relationship-graph-review-store.json"
+    }
+  },
+  "refreshed_views": [
+    {
+      "person_name": "Chris Yu",
+      "person_ref": "person_chris_yu",
+      "profile_tier": "key",
+      "confidence": "high",
+      "refreshed_at": "2026-04-20T12:00:00.000Z",
+      "pending_edge_count": 2,
+      "markdown_path": "relationship-view/views/person_chris_yu.md"
+    }
+  ],
+  "view_store_overview": {
+    "profile_count": 5,
+    "view_count": 3,
+    "updated_at": "2026-04-20T12:00:00.000Z"
+  },
+  "view_store_delta": {
+    "store_path": "relationship-view/runtime/stores/relationship-view-store.json",
+    "written": true,
+    "markdown_written_count": 1,
+    "total_views_after_write": 3,
+    "refreshed_people": [
+      {
+        "person_name": "Chris Yu",
+        "person_ref": "person_chris_yu",
+        "markdown_path": "relationship-view/views/person_chris_yu.md"
+      }
+    ]
+  },
+  "user_feedback": {
+    "headline": "Refreshed Chris Yu's persistent relationship view",
+    "summary_lines": [
+      "1 person refreshed",
+      "2 pending edges in total",
+      "Markdown view file written"
+    ],
+    "next_action": {
+      "type": "inspect_markdown_views",
+      "message": "Open the markdown view file directly to inspect the summary and graph."
+    }
+  },
+  "run_directory": null,
+  "notes": ""
+}

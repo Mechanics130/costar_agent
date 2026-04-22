@@ -1,0 +1,53 @@
+{
+  "skill": "relationship-briefing",
+  "version": "0.1.0",
+  "person_name": "Ava Chen",
+  "person_ref": "person_ava_chen",
+  "target_profile": {
+    "person_name": "Ava Chen",
+    "person_ref": "person_ava_chen",
+    "profile_tier": "active",
+    "confidence": "medium",
+    "summary": "SaaS founder who cares about ROI, execution speed, and a low-lift pilot.",
+    "tags": ["founder", "roi-focused", "partnership"],
+    "traits": ["pragmatic", "direct"],
+    "intent": "Wants proof that the partnership can drive measurable value next quarter.",
+    "attitude": "Curious but cautious.",
+    "next_actions": [
+      "Share two concrete case studies",
+      "Propose a small pilot",
+      "Keep the rollout plan simple"
+    ]
+  },
+  "conversation_goal": "Decide whether to move forward with a small pilot and confirm ROI expectations.",
+  "conversation_topic": "Partnership rollout and pilot scope",
+  "conversation_context": "This is the follow-up to the first call. We need to keep the conversation concrete, short, and execution-focused.",
+  "meeting_context": {
+    "topic": "Partnership rollout and pilot scope",
+    "goal": "Confirm whether a low-lift pilot is worth pursuing.",
+    "scheduled_time": "2026-04-22 15:00",
+    "attendees": ["Ava Chen", "Jordan Li"],
+    "location": "Zoom",
+    "notes": "The next meeting should stay focused on ROI, implementation effort, and the next concrete step."
+  },
+  "recent_interactions": [
+    {
+      "interaction_id": "example-01-call-note",
+      "date": "2026-04-20",
+      "source_title": "30-minute partnership call",
+      "source_id": "example-01-call-note",
+      "summary": "Ava Chen asked for a clearer rollout plan and proof of ROI."
+    }
+  ],
+  "constraints": [
+    "Do not overpromise on timeline",
+    "Keep the pilot low lift",
+    "Do not bury the value proposition in technical detail"
+  ],
+  "options": {
+    "save_run_artifacts": true,
+    "write_briefing_file": true,
+    "timeline_limit": 4,
+    "view_excerpt_chars": 500
+  }
+}

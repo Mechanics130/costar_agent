@@ -1,0 +1,112 @@
+{
+  "operator": "tester",
+  "notes": "Use a sample review request to verify the capture commit feedback layer.",
+  "profile_store_path": "relationship-ingestion/runtime/stores/sample-review-store.json",
+  "ingestion_result": {
+    "skill": "relationship-ingestion",
+    "version": "0.1.0",
+    "resolved_people": [
+      {
+        "person_name": "Jordan Li",
+        "resolution_action": "update",
+        "matched_existing_person_id": "person_jordan_li",
+        "matched_existing_person_name": "Jordan Li",
+        "confidence": "high"
+      },
+      {
+        "person_name": "Ryan Gu",
+        "resolution_action": "create",
+        "matched_existing_person_id": null,
+        "matched_existing_person_name": null,
+        "confidence": "high"
+      }
+    ],
+    "profile_updates": [
+      {
+        "person_name": "Ryan Gu",
+        "person_ref": "Ryan Gu",
+        "resolution_action": "create",
+        "summary": "Project Aurora execution lead."
+      }
+    ],
+    "person_profiles": [
+      {
+        "person_name": "Jordan Li",
+        "person_ref": "person_jordan_li",
+        "resolution_action": "update",
+        "profile_tier": "key",
+        "confidence": "high",
+        "compiled_truth": {
+          "summary": "Rational technical lead who prefers data and clear decision boundaries."
+        },
+        "timeline": [],
+        "evidence_summary": {
+          "excerpt_count": 1,
+          "source_count": 1,
+          "last_updated_at": "",
+          "key_evidence": ["Uses data and logic heavily when discussing priorities."]
+        },
+        "linked_relationships": {
+          "detected_as": true,
+          "matched_existing_person_id": "person_jordan_li",
+          "matched_existing_person_name": "Jordan Li"
+        }
+      }
+    ],
+    "review_bundle": {
+      "confirmation_required": true,
+      "pending_count": 2,
+      "required_candidate_count": 1,
+      "candidates": [
+        {
+          "person_name": "Ryan Gu",
+          "priority": "high",
+          "needs_confirmation": true,
+          "suggested_action": "create",
+          "questions": [],
+          "fields_to_confirm": [],
+          "evidence_preview": ["Ryan Gu and Alex already discussed the project several times this morning."]
+        },
+        {
+          "person_name": "Mia Meng",
+          "priority": "medium",
+          "needs_confirmation": true,
+          "suggested_action": "review",
+          "questions": ["What is Mia Meng's role in the project?"],
+          "fields_to_confirm": [],
+          "evidence_preview": ["Mina Yang will sync Mia Meng on the project progress and risks."]
+        }
+      ]
+    },
+    "interaction_summary": {
+      "summary": "Project Aurora team alignment."
+    },
+    "detected_people": [
+      { "person_name": "Jordan Li" },
+      { "person_name": "Ryan Gu" }
+    ],
+    "relationship_edges": [],
+    "todos": [],
+    "evidence": [],
+    "review_flags": []
+  },
+  "review_decisions": [
+    {
+      "person_name": "Ryan Gu",
+      "final_action": "create",
+      "resolved_person_ref": "person_ryan_gu",
+      "resolved_person_name": "Ryan Gu",
+      "profile_tier": "active",
+      "notes": "Confirm this person as a key execution-side collaborator for Project Aurora."
+    },
+    {
+      "person_name": "Mia Meng",
+      "final_action": "ignore",
+      "notes": "Skip for this round."
+    }
+  ],
+  "review_options": {
+    "write_store": false,
+    "auto_commit_safe_updates": true
+  }
+}

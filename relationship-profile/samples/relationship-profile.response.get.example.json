@@ -1,0 +1,103 @@
+{
+  "skill": "relationship-profile",
+  "version": "0.1.0",
+  "status": "success",
+  "mode": "get_profile",
+  "target_person": {
+    "person_name": "Jordan Li",
+    "person_ref": "person_jordan_li",
+    "profile_tier": "key",
+    "confidence": "high",
+    "relationship_stage": "stable contact",
+    "summary": "Rational technical lead who prefers data and clear decision boundaries.",
+    "last_updated_at": "2026-04-18T02:09:58.762Z"
+  },
+  "profile_read": {
+    "summary_card": {
+      "person_name": "Jordan Li",
+      "person_ref": "person_jordan_li",
+      "summary": "Rational technical lead who prefers data and clear decision boundaries.",
+      "current_judgment": "Jordan Li prefers data-backed discussions and clear scope decisions.",
+      "relationship_stage": "stable contact",
+      "profile_tier": "key",
+      "confidence": "high",
+      "resolution_action": "update"
+    },
+    "signal_board": {
+      "intent": "Clarify scope and avoid parallel work that hurts both tracks.",
+      "attitude": {
+        "label": "cautious",
+        "reason": "Willing to move forward only if priorities are clear."
+      },
+      "traits": ["data-oriented", "measured", "does not overstate"],
+      "tags": ["technical lead", "calm decision maker"],
+      "preferences": ["use data and logic"],
+      "boundaries": ["does not overreach decisions"],
+      "risk_flags": ["may accept priority downgrades passively"],
+      "open_questions": ["Who holds final decision authority?"],
+      "next_actions": ["keep him updated with clearer context"]
+    },
+    "action_board": {
+      "next_actions": [
+        "Check the priority alignment outcome with leadership",
+        "Keep the technical interface informed",
+        "Bridge information gaps with concise updates"
+      ],
+      "open_questions": [
+        "Is the final decision made by the project lead or a higher owner?"
+      ]
+    },
+    "evidence_digest": {
+      "excerpt_count": 3,
+      "source_count": 1,
+      "last_updated_at": "2026-04-18T02:09:58.762Z",
+      "key_evidence": [
+        "Uses data and logic when speaking about priorities.",
+        "Prefers clear division of work.",
+        "Will accept a fallback plan if needed."
+      ]
+    },
+    "timeline_digest": [
+      {
+        "date": "2026-04-13",
+        "source_title": "2026-04-13 meeting note - project alignment",
+        "relative_path": "examples/meeting-notes/2026-04-13-project-alignment.md",
+        "event_summary": "Algorithm and project alignment discussion.",
+        "matched_excerpt_index": 72
+      }
+    ]
+  },
+  "related_people": [
+    {
+      "person_name": "Mina Yang",
+      "person_ref": "person_mina_yang",
+      "relation_type": "same_context_and_mentioned",
+      "relation_score": 57,
+      "relation_reasons": ["Shared source context", "Mutual mention in profiles"],
+      "shared_sources": ["meeting-minute-2026-04-13-sample-project-alignment"],
+      "shared_tags": []
+    }
+  ],
+  "maintenance_report": {
+    "freshness": {
+      "last_updated_at": "2026-04-18T02:09:58.762Z",
+      "days_since_update": 0,
+      "level": "fresh"
+    },
+    "missing_fields": [],
+    "attention_flags": ["存在未闭环问题", "存在风险信号"],
+    "conflict_signals": [],
+    "recommended_actions": ["优先补齐 open_questions 对应的信息缺口。"]
+  },
+  "search_results": [],
+  "store_overview": {
+    "profile_count": 3,
+    "by_tier": { "stub": 0, "active": 1, "key": 2, "archived": 0 },
+    "by_confidence": { "low": 0, "medium": 0, "high": 3 },
+    "attention_count": 3,
+    "stale_count": 0,
+    "updated_at": "2026-04-18T05:18:18.313Z"
+  },
+  "profile_store_delta": null,
+  "notes": ""
+}

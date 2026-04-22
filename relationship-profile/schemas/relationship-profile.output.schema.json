@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://costar.dev/schemas/relationship-profile.output.schema.json",
+  "title": "Relationship Profile Output",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["skill", "version", "status", "mode", "store_overview"],
+  "properties": {
+    "skill": { "type": "string", "const": "relationship-profile" },
+    "version": { "type": "string" },
+    "status": { "type": "string", "enum": ["success", "needs_review"] },
+    "mode": {
+      "type": "string",
+      "enum": ["get_profile", "search_profiles", "maintain_store", "apply_profile_patch"]
+    },
+    "run_directory": { "type": ["string", "null"] },
+    "target_person": { "type": ["object", "null"] },
+    "profile_read": { "type": ["object", "null"] },
+    "related_people": {
+      "type": "array",
+      "items": { "type": "object" }
+    },
+    "maintenance_report": { "type": ["object", "null"] },
+    "search_results": {
+      "type": "array",
+      "items": { "type": "object" }
+    },
+    "store_overview": { "type": "object" },
+    "profile_store_delta": { "type": ["object", "null"] },
+    "notes": { "type": "string" }
+  }
+}

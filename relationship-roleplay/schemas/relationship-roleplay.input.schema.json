@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://costar.dev/schemas/relationship-roleplay.input.schema.json",
+  "title": "Relationship Roleplay Input",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "skill": { "type": "string", "const": "relationship-roleplay" },
+    "version": { "type": "string" },
+    "person_name": { "type": "string" },
+    "person_ref": { "type": "string" },
+    "profile_store_path": { "type": "string" },
+    "target_profile": { "type": "object" },
+    "conversation_goal": { "type": "string" },
+    "conversation_topic": { "type": "string" },
+    "scenario_context": { "type": "string" },
+    "starting_user_message": { "type": "string" },
+    "constraints": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "model_config": { "type": "object" },
+    "options": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "save_run_artifacts": { "type": "boolean" },
+        "simulation_turns": { "type": "integer", "minimum": 2, "maximum": 6 }
+      }
+    }
+  },
+  "required": ["conversation_goal"]
+}

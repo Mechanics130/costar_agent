@@ -1,0 +1,104 @@
+{
+  "skill": "relationship-graph",
+  "version": "0.1.0",
+  "status": "success",
+  "mode": "find_connection_path",
+  "run_directory": null,
+  "root_person": {
+    "person_name": "Ryan Gu",
+    "person_ref": "person_ryan_gu",
+    "profile_tier": "active"
+  },
+  "target_person": {
+    "person_name": "Mina Yang",
+    "person_ref": "person_mina_yang",
+    "profile_tier": "key"
+  },
+  "related_people": [],
+  "connection_path": [
+    { "person_name": "Ryan Gu", "person_ref": "person_ryan_gu", "profile_tier": "active" },
+    { "person_name": "Jordan Li", "person_ref": "person_jordan_li", "profile_tier": "key" },
+    { "person_name": "Mina Yang", "person_ref": "person_mina_yang", "profile_tier": "key" }
+  ],
+  "graph": {
+    "nodes": [
+      { "person_name": "Ryan Gu", "person_ref": "person_ryan_gu", "profile_tier": "active", "confidence": "low", "kind": "root" },
+      { "person_name": "Jordan Li", "person_ref": "person_jordan_li", "profile_tier": "key", "confidence": "high", "kind": "path" },
+      { "person_name": "Mina Yang", "person_ref": "person_mina_yang", "profile_tier": "key", "confidence": "high", "kind": "target" }
+    ],
+    "edges": [
+      {
+        "source": "person_ryan_gu",
+        "target": "person_jordan_li",
+        "relation_score": 7,
+        "relation_type": "same_source_context",
+        "relation_reasons": ["共享资料源 1 个"]
+      },
+      {
+        "source": "person_jordan_li",
+        "target": "person_mina_yang",
+        "relation_score": 106,
+        "relation_type": "same_context_and_mentioned",
+        "relation_reasons": ["共享资料源 4 个", "档案内容中互相提及"]
+      }
+    ]
+  },
+  "network_summary": {
+    "profile_count": 3,
+    "edge_count": 2,
+    "top_connectors": ["Jordan Li", "Mina Yang"],
+    "isolated_people": [],
+    "path_length": 3,
+    "graph_node_count": 3
+  },
+  "influence_notes": [
+    "Jordan Li 是当前路径里的桥接节点。"
+  ],
+  "review_bundle": {
+    "required": true,
+    "pending_edge_count": 1,
+    "edge_candidates": [
+      {
+        "source_person_name": "Ryan Gu",
+        "source_person_ref": "person_ryan_gu",
+        "target_person_name": "Jordan Li",
+        "target_person_ref": "person_jordan_li",
+        "relation_type": "same_source_context",
+        "relation_score": 7,
+        "reason": "这条边主要来自共享资料源，还缺少更直接的互相提及或稳定协作证据。 关系分数偏低，说明证据量有限。 至少一侧人物档案置信度偏低，关系判断可能会被上游实体识别误差带偏。 这条边被用于连接路径，建议确认它是否足够强，避免路径看起来存在但实际不稳。",
+        "suggested_action": "check_entity_alignment",
+        "review_priority": 7
+      }
+    ],
+    "review_notes": [
+      "以下关系边证据偏弱、主要基于共现，或节点档案置信度偏低，建议用户确认后再把它当成稳定关系。"
+    ]
+  },
+  "render_artifacts": {
+    "format": "mermaid",
+    "graph_kind": "find_connection_path",
+    "node_count": 3,
+    "edge_count": 2,
+    "mermaid": "flowchart LR\n  person_ryan_gu[\"Ryan Gu<br/>active / low\"]\n  person_jordan_li[\"Jordan Li<br/>key / high\"]\n  person_mina_yang[\"Mina Yang<br/>key / high\"]\n  person_ryan_gu -. \"7 · same_source_context ?\" .-> person_jordan_li\n  person_jordan_li -- \"106 · same_context_and_mentioned\" --> person_mina_yang\n  class person_ryan_gu rootNode\n  class person_jordan_li defaultNode\n  class person_mina_yang targetNode\n  classDef rootNode fill:#0b6e4f,stroke:#084c38,color:#ffffff,stroke-width:2px\n  classDef targetNode fill:#1d4ed8,stroke:#1e40af,color:#ffffff,stroke-width:2px\n  classDef defaultNode fill:#f5f5f4,stroke:#a8a29e,color:#1c1917,stroke-width:1px\n  %% Dashed edges with ? indicate relation edges that still need user confirmation.\n  %% This graph highlights the currently inferred path between the two people."
+  },
+  "user_feedback": {
+    "headline": "已找到 Ryan Gu 到 Mina Yang 的连接路径",
+    "summary_lines": [
+      "路径长度为 3",
+      "中间桥接节点为 Jordan Li",
+      "这条路径里有 1 条边建议你先核实"
+    ],
+    "key_findings": [
+      "Jordan Li 是当前路径中的关键桥接节点"
+    ],
+    "confidence_notes": [
+      "路径是基于当前 profile store 的已确认关系边计算得出",
+      "如果后续资料变化，路径也可能发生变化"
+    ],
+    "next_action": {
+      "type": "review_path_edges",
+      "message": "建议先确认路径上的弱边，再决定这条路径是否能用于真实触达或关系判断"
+    }
+  },
+  "notes": ""
+}

@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://costar.dev/schemas/model-config.schema.json",
+  "title": "Model Config",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["provider", "base_url", "api_key", "model"],
+  "properties": {
+    "provider": {
+      "type": "string",
+      "const": "openai-compatible"
+    },
+    "base_url": {
+      "type": "string",
+      "minLength": 1,
+      "format": "uri"
+    },
+    "api_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "model": {
+      "type": "string",
+      "minLength": 1
+    },
+    "temperature": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 2,
+      "default": 0.1
+    },
+    "max_tokens": {
+      "type": "integer",
+      "minimum": 128
+    }
+  }
+}

@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://costar.dev/schemas/relationship-profile.schema.json",
+  "title": "Relationship Person Profile",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "person_name",
+    "person_ref",
+    "resolution_action",
+    "profile_tier",
+    "confidence",
+    "aliases",
+    "compiled_truth",
+    "timeline",
+    "evidence_summary",
+    "linked_relationships"
+  ],
+  "properties": {
+    "person_name": { "type": "string" },
+    "person_ref": { "type": "string" },
+    "resolution_action": { "type": "string", "enum": ["create", "update", "ignore"] },
+    "profile_tier": { "type": "string", "enum": ["stub", "active", "key", "archived"] },
+    "confidence": { "type": "string", "enum": ["high", "medium", "low"] },
+    "aliases": { "type": "array", "items": { "type": "string" } },
+    "compiled_truth": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "summary",
+        "current_judgment",
+        "relationship_stage",
+        "intent",
+        "attitude",
+        "traits",
+        "tags",
+        "preferences",
+        "boundaries",
+        "risk_flags",
+        "open_questions",
+        "next_actions"
+      ],
+      "properties": {
+        "summary": { "type": "string" },
+        "current_judgment": { "type": "string" },
+        "relationship_stage": { "type": "string" },
+        "intent": { "type": "string" },
+        "attitude": { "type": "object" },
+        "traits": { "type": "array", "items": { "type": "string" } },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "preferences": { "type": "array", "items": { "type": "string" } },
+        "boundaries": { "type": "array", "items": { "type": "string" } },
+        "risk_flags": { "type": "array", "items": { "type": "string" } },
+        "open_questions": { "type": "array", "items": { "type": "string" } },
+        "next_actions": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "timeline": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "timeline_id",
+          "date",
+          "source_id",
+          "source_title",
+          "relative_path",
+          "event_summary",
+          "matched_excerpt_index"
+        ],
+        "properties": {
+          "timeline_id": { "type": "string" },
+          "date": { "type": "string" },
+          "source_id": { "type": "string" },
+          "source_title": { "type": "string" },
+          "relative_path": { "type": "string" },
+          "event_summary": { "type": "string" },
+          "matched_excerpt_index": { "type": "integer", "minimum": 1 }
+        }
+      }
+    },
+    "evidence_summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["excerpt_count", "source_count", "last_updated_at", "key_evidence"],
+      "properties": {
+        "excerpt_count": { "type": "integer", "minimum": 0 },
+        "source_count": { "type": "integer", "minimum": 0 },
+        "last_updated_at": { "type": "string" },
+        "key_evidence": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "linked_relationships": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["detected_as", "matched_existing_person_id", "matched_existing_person_name"],
+      "properties": {
+        "detected_as": { "type": "boolean" },
+        "matched_existing_person_id": { "type": ["string", "null"] },
+        "matched_existing_person_name": { "type": ["string", "null"] }
+      }
+    }
+  }
+}

@@ -1,0 +1,358 @@
+{
+  "skill": "relationship-ingestion",
+  "version": "0.1.0",
+  "status": "success",
+  "source": "llm",
+  "source_label": "LLM extraction / example-model",
+  "model": {
+    "provider": "openai-compatible",
+    "base_url": "https://api.example.com/v1",
+    "model": "example-model",
+    "temperature": 0.1,
+    "configured": true,
+    "source": "local_file"
+  },
+  "policy": {
+    "policy_key": "single-focused-update",
+    "input_handling": "single",
+    "context_profile": "existing_context",
+    "source_density": "light",
+    "excerpt_strategy": "focused_fast",
+    "resolution_strategy": "prefer_match_existing",
+    "latency_tier": "fast",
+    "prefer_existing_match": true,
+    "emphasize_focus_people": true,
+    "require_focus_coverage_review": true,
+    "promote_mentioned_candidates": true,
+    "source_priority_enabled": true,
+    "metrics": {
+      "source_count": 1,
+      "total_chars": 320,
+      "average_chars_per_source": 320,
+      "focus_people_count": 1,
+      "target_people_count": 2,
+      "existing_people_count": 1
+    }
+  },
+  "source_summary": {
+    "source_count": 1,
+    "excerpt_count": 1,
+    "dropped_excerpt_count": 0,
+    "target_people": ["Ava Chen", "Bella Xu"],
+    "focus_people": ["Ava Chen"],
+    "focus_instruction": "优先判断Ava Chen是否值得长期建档。"
+  },
+  "interaction_summary": {
+    "summary": "用户和Ava Chen、Bella Xu沟通品牌合作，Ava Chen更关注 ROI 和可执行性，Bella Xu愿意在补充案例和排期后继续推进。",
+    "six_elements": {
+      "time": "昨天",
+      "location": "待判断",
+      "people": ["Ava Chen", "Bella Xu"],
+      "trigger": "品牌合作沟通",
+      "process": "双方讨论了合作方式与后续推进条件。",
+      "outcome": "需要补充方案、案例与排期，再进行下一轮跟进。"
+    },
+    "key_points": [
+      "Ava Chen更关注 ROI",
+      "Ava Chen不喜欢太泛的方案",
+      "Bella Xu需要案例和排期支撑"
+    ],
+    "open_questions": [
+      "Ava Chen可接受的小范围试点规模有多大？"
+    ]
+  },
+  "detected_people": [
+    {
+      "person_name": "Ava Chen",
+      "aliases": [],
+      "confidence": "high",
+      "matched_excerpt_indices": [1],
+      "matched_source_ids": ["minute-2026-04-15"],
+      "evidence": [
+        "Ava Chen更关心投入产出，希望先从一次小范围联动试起。",
+        "Ava Chen明确表示不喜欢太泛的方案。"
+      ]
+    },
+    {
+      "person_name": "Bella Xu",
+      "aliases": [],
+      "confidence": "high",
+      "matched_excerpt_indices": [1],
+      "matched_source_ids": ["minute-2026-04-15"],
+      "evidence": [
+        "如果能提供以往案例和资源排期，她愿意下周继续推进。"
+      ]
+    }
+  ],
+  "resolved_people": [
+    {
+      "person_name": "Ava Chen",
+      "resolution_action": "update",
+      "matched_existing_person_id": "person_ava_chen",
+      "matched_existing_person_name": "Ava Chen",
+      "reasoning": "已有联系人，本次补充了更明确的合作偏好和沟通边界。",
+      "confidence": "high"
+    },
+    {
+      "person_name": "Bella Xu",
+      "resolution_action": "create",
+      "matched_existing_person_id": null,
+      "matched_existing_person_name": null,
+      "reasoning": "新识别出的合作对象，且后续仍有推进机会。",
+      "confidence": "high"
+    }
+  ],
+  "profile_updates": [
+    {
+      "person_name": "Ava Chen",
+      "person_ref": "person_ava_chen",
+      "resolution_action": "update",
+      "tags": ["品牌合作", "结果导向"],
+      "traits": ["重视 ROI", "偏好小范围试点"],
+      "preferences": ["直接给两套可执行方案"],
+      "boundaries": ["不喜欢太泛的方案"],
+      "intent": "寻找风险可控、ROI 明确的品牌合作机会。",
+      "attitude": {
+        "label": "有兴趣但谨慎",
+        "reason": "愿意试点，但要求方案更具体。"
+      },
+      "relationship_stage": "跟进中",
+      "risk_flags": ["如果方案不够落地，可能会降低合作意愿。"],
+      "summary": "务实型合作对象，重视 ROI 和执行细节。",
+      "matched_excerpt_indices": [1],
+      "evidence": [
+        "Ava Chen更关心投入产出，希望先从一次小范围联动试起。"
+      ],
+      "profile_tier": "key"
+    },
+    {
+      "person_name": "Bella Xu",
+      "person_ref": "Bella Xu",
+      "resolution_action": "create",
+      "tags": ["品牌合作", "条件驱动"],
+      "traits": ["依赖案例支撑", "推进节奏谨慎"],
+      "preferences": ["希望先看到案例和排期"],
+      "boundaries": [],
+      "intent": "在资料充分的前提下推进合作。",
+      "attitude": {
+        "label": "有兴趣但谨慎",
+        "reason": "表达了继续推进意愿，但设置了前置条件。"
+      },
+      "relationship_stage": "初识",
+      "risk_flags": ["若无法及时提供案例和排期，推进可能停滞。"],
+      "summary": "需要更多案例和资源排期支撑的合作对象。",
+      "matched_excerpt_indices": [1],
+      "evidence": [
+        "如果能提供以往案例和资源排期，她愿意下周继续推进。"
+      ],
+      "profile_tier": "active"
+    }
+  ],
+  "person_profiles": [
+    {
+      "person_name": "Ava Chen",
+      "person_ref": "person_ava_chen",
+      "resolution_action": "update",
+      "profile_tier": "key",
+      "confidence": "high",
+      "aliases": [],
+      "compiled_truth": {
+        "summary": "务实型合作对象，重视 ROI 和执行细节。",
+        "current_judgment": "Ava Chen目前呈现出重视 ROI、偏好小范围试点的特点，当前处于跟进中，其主要意图是寻找风险可控、ROI 明确的品牌合作机会。",
+        "relationship_stage": "跟进中",
+        "intent": "寻找风险可控、ROI 明确的品牌合作机会。",
+        "attitude": {
+          "label": "有兴趣但谨慎",
+          "reason": "愿意试点，但要求方案更具体。"
+        },
+        "traits": ["重视 ROI", "偏好小范围试点"],
+        "tags": ["品牌合作", "结果导向"],
+        "preferences": ["直接给两套可执行方案"],
+        "boundaries": ["不喜欢太泛的方案"],
+        "risk_flags": ["如果方案不够落地，可能会降低合作意愿。"],
+        "open_questions": ["Ava Chen可接受的小范围试点规模有多大？"],
+        "next_actions": ["准备两套更具体的合作方案"]
+      },
+      "timeline": [
+        {
+          "timeline_id": "timeline-1",
+          "date": "待判断",
+          "source_id": "minute-2026-04-15",
+          "source_title": "品牌合作沟通纪要",
+          "relative_path": "minutes/brand-coop-2026-04-15.md",
+          "event_summary": "昨天和Ava Chen、Bella Xu一起沟通了品牌合作。",
+          "matched_excerpt_index": 1
+        }
+      ],
+      "evidence_summary": {
+        "excerpt_count": 1,
+        "source_count": 1,
+        "last_updated_at": "",
+        "key_evidence": [
+          "Ava Chen更关心投入产出，希望先从一次小范围联动试起。"
+        ]
+      },
+      "linked_relationships": {
+        "detected_as": true,
+        "matched_existing_person_id": "person_ava_chen",
+        "matched_existing_person_name": "Ava Chen"
+      }
+    },
+    {
+      "person_name": "Bella Xu",
+      "person_ref": "Bella Xu",
+      "resolution_action": "create",
+      "profile_tier": "active",
+      "confidence": "high",
+      "aliases": [],
+      "compiled_truth": {
+        "summary": "需要更多案例和资源排期支撑的合作对象。",
+        "current_judgment": "Bella Xu目前呈现出依赖案例支撑、推进节奏谨慎的特点，当前处于初识，其主要意图是在资料充分的前提下推进合作。",
+        "relationship_stage": "初识",
+        "intent": "在资料充分的前提下推进合作。",
+        "attitude": {
+          "label": "有兴趣但谨慎",
+          "reason": "表达了继续推进意愿，但设置了前置条件。"
+        },
+        "traits": ["依赖案例支撑", "推进节奏谨慎"],
+        "tags": ["品牌合作", "条件驱动"],
+        "preferences": ["希望先看到案例和排期"],
+        "boundaries": [],
+        "risk_flags": ["若无法及时提供案例和排期，推进可能停滞。"],
+        "open_questions": [],
+        "next_actions": ["补充案例和排期材料"]
+      },
+      "timeline": [
+        {
+          "timeline_id": "timeline-1",
+          "date": "待判断",
+          "source_id": "minute-2026-04-15",
+          "source_title": "品牌合作沟通纪要",
+          "relative_path": "minutes/brand-coop-2026-04-15.md",
+          "event_summary": "Bella Xu表示如果有案例和排期，愿意下周继续推进。",
+          "matched_excerpt_index": 1
+        }
+      ],
+      "evidence_summary": {
+        "excerpt_count": 1,
+        "source_count": 1,
+        "last_updated_at": "",
+        "key_evidence": [
+          "如果能提供以往案例和资源排期，她愿意下周继续推进。"
+        ]
+      },
+      "linked_relationships": {
+        "detected_as": true,
+        "matched_existing_person_id": null,
+        "matched_existing_person_name": null
+      }
+    }
+  ],
+  "relationship_edges": [],
+  "todos": [
+    {
+      "todo_id": "todo-1",
+      "person_name": "Ava Chen",
+      "title": "准备两套更具体的合作方案",
+      "priority": "medium",
+      "reason": "她明确拒绝过于泛的方案。",
+      "matched_excerpt_indices": [1],
+      "evidence": ["Ava Chen明确表示不喜欢太泛的方案。"]
+    },
+    {
+      "todo_id": "todo-2",
+      "person_name": "Bella Xu",
+      "title": "补充案例和资源排期材料",
+      "priority": "medium",
+      "reason": "她把案例和排期作为继续推进的前提。",
+      "matched_excerpt_indices": [1],
+      "evidence": ["如果能提供以往案例和资源排期，她愿意下周继续推进。"]
+    }
+  ],
+  "evidence": [
+    {
+      "evidence_id": "evidence-1",
+      "excerpt_index": 1,
+      "source_id": "minute-2026-04-15",
+      "source_title": "品牌合作沟通纪要",
+      "source_relative_path": "minutes/brand-coop-2026-04-15.md",
+      "source_captured_at": "",
+      "excerpt": "昨天和Ava Chen、Bella Xu一起沟通了品牌合作。Ava Chen更关心投入产出，希望先从一次小范围联动试起。Bella Xu提到如果能提供以往案例和资源排期，她愿意下周继续推进。Ava Chen明确表示不喜欢太泛的方案，希望下次直接给两套可执行方案。"
+    }
+  ],
+  "review_flags": [
+    {
+      "level": "info",
+      "field": "interaction_summary.six_elements.location",
+      "reason": "资料未提及具体的沟通地点。"
+    }
+  ],
+  "review_bundle": {
+    "confirmation_required": true,
+    "focus_people": ["Ava Chen"],
+    "focus_instruction": "优先判断Ava Chen是否值得长期建档。",
+    "pending_count": 2,
+    "candidates": [
+      {
+        "person_name": "Ava Chen",
+        "priority": "high",
+        "confirmation_status": "pending",
+        "suggested_action": "update",
+        "confidence": "high",
+        "fields_to_confirm": [
+          {
+            "field": "resolution_action",
+            "label": "是否保留该人物",
+            "current_value": "update"
+          },
+          {
+            "field": "compiled_truth.tags",
+            "label": "人物标签",
+            "current_value": ["品牌合作", "结果导向"]
+          },
+          {
+            "field": "compiled_truth.intent",
+            "label": "意图判断",
+            "current_value": "寻找风险可控、ROI 明确的品牌合作机会。"
+          }
+        ],
+        "evidence_preview": [
+          "Ava Chen更关心投入产出，希望先从一次小范围联动试起。"
+        ],
+        "questions": [
+          "Ava Chen可接受的小范围试点规模有多大？"
+        ]
+      },
+      {
+        "person_name": "Bella Xu",
+        "priority": "medium",
+        "confirmation_status": "pending",
+        "suggested_action": "create",
+        "confidence": "high",
+        "fields_to_confirm": [
+          {
+            "field": "resolution_action",
+            "label": "是否保留该人物",
+            "current_value": "create"
+          },
+          {
+            "field": "compiled_truth.tags",
+            "label": "人物标签",
+            "current_value": ["品牌合作", "条件驱动"]
+          },
+          {
+            "field": "compiled_truth.intent",
+            "label": "意图判断",
+            "current_value": "在资料充分的前提下推进合作。"
+          }
+        ],
+        "evidence_preview": [
+          "如果能提供以往案例和资源排期，她愿意下周继续推进。"
+        ],
+        "questions": []
+      }
+    ]
+  },
+  "notes": "已按重点关注人物优先提取Ava Chen，并生成待用户确认的人物结果。",
+  "run_directory": "relationship-ingestion/runtime/runs/2026-04-17T05-19-47-253Z-demo-run-001"
+}

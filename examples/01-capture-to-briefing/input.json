@@ -1,0 +1,30 @@
+{
+  "request_id": "example-01-capture-to-briefing",
+  "goal": "Turn a first sales call into a confirmed profile and a usable briefing.",
+  "target_people": ["Ava Chen", "Jordan Li"],
+  "focus_people": ["Ava Chen"],
+  "focus_instruction": "Prioritize whether Ava Chen should be tracked as a long-term relationship.",
+  "existing_people": [
+    {
+      "person_name": "Ava Chen",
+      "person_ref": "person_ava_chen",
+      "summary": "SaaS founder who cares about ROI and execution speed.",
+      "tags": ["founder", "roi-focused"]
+    }
+  ],
+  "sources": [
+    {
+      "source_id": "example-01-call-note",
+      "source_type": "meeting_note",
+      "title": "30-minute partnership call",
+      "source_date": "2026-04-20",
+      "speaker": "Riley (note-taker)",
+      "content": "Ava Chen said she wants a clearer rollout plan, proof of ROI, and a pilot that does not require a big team. Jordan Li asked for two concrete case studies and a lighter implementation path."
+    }
+  ],
+  "options": {
+    "save_run_artifacts": true,
+    "auto_context_from_store": true,
+    "auto_context_limit": 4
+  }
+}

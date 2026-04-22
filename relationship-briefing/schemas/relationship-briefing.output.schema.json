@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://costar.dev/schemas/relationship-briefing.output.schema.json",
+  "title": "Relationship Briefing Output",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["skill", "version", "status", "target_person", "context_receipt", "briefing", "briefing_file", "user_feedback"],
+  "properties": {
+    "skill": { "type": "string", "const": "relationship-briefing" },
+    "version": { "type": "string" },
+    "status": { "type": "string", "enum": ["success", "needs_review"] },
+    "run_directory": { "type": ["string", "null"] },
+    "model": { "type": "object" },
+    "target_person": { "type": "object" },
+    "context_receipt": { "type": "object" },
+    "briefing": { "type": "object" },
+    "briefing_file": { "type": "object" },
+    "user_feedback": { "type": "object" },
+    "open_questions": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "notes": { "type": "string" }
+  }
+}

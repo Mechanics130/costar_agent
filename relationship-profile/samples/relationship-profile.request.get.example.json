@@ -1,0 +1,12 @@
+{
+  "skill": "relationship-profile",
+  "version": "0.1.0",
+  "mode": "get_profile",
+  "profile_store_path": "relationship-ingestion/incremental-scenarios/2026-04-13-sample-weather-agent/relationship-profile-store.incremental-2026-04-13-sample-weather-agent.json",
+  "person_name": "Jordan Li",
+  "options": {
+    "include_related_people": true,
+    "include_profile_health": true,
+    "save_run_artifacts": true
+  }
+}

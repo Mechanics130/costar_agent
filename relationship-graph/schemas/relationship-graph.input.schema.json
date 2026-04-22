@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://costar.dev/schemas/relationship-graph.input.schema.json",
+  "title": "Relationship Graph Input",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "skill": { "type": "string", "const": "relationship-graph" },
+    "version": { "type": "string" },
+    "mode": {
+      "type": "string",
+      "enum": ["get_person_graph", "find_connection_path", "summarize_network"]
+    },
+    "profile_store_path": { "type": "string" },
+    "graph_review_store_path": { "type": "string" },
+    "person_name": { "type": "string" },
+    "person_ref": { "type": "string" },
+    "target_person_name": { "type": "string" },
+    "target_person_ref": { "type": "string" },
+    "options": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "save_run_artifacts": { "type": "boolean" },
+        "max_nodes": { "type": "integer", "minimum": 3, "maximum": 100 },
+        "max_edges": { "type": "integer", "minimum": 3, "maximum": 200 },
+        "max_path_length": { "type": "integer", "minimum": 1, "maximum": 8 },
+        "min_relation_score": { "type": "integer", "minimum": 1, "maximum": 100 }
+      }
+    }
+  },
+  "required": ["profile_store_path"]
+}

@@ -1,0 +1,122 @@
+{
+  "skill": "relationship-review-resolution",
+  "version": "0.1.0",
+  "status": "success",
+  "ingestion_skill": "relationship-ingestion",
+  "processed_at": "2026-04-20T06:30:52.539Z",
+  "review_summary": {
+    "decision_count": 2,
+    "committed_count": 2,
+    "created_count": 1,
+    "updated_count": 1,
+    "ignored_count": 1,
+    "deferred_count": 0,
+    "unresolved_count": 0,
+    "auto_committed_count": 1
+  },
+  "committed_profiles": [
+    {
+      "person_name": "Ava Chen",
+      "person_ref": "person_ava_chen",
+      "resolution_action": "update",
+      "profile_tier": "key",
+      "confidence": "high",
+      "aliases": [],
+      "compiled_truth": {
+        "summary": "Pragmatic collaboration partner who prefers clear ROI and executable plans.",
+        "current_judgment": "Ava Chen is a cautious but interested relationship who wants concrete options.",
+        "relationship_stage": "follow-up",
+        "intent": "Find a risk-controlled, ROI-positive pilot.",
+        "attitude": {
+          "label": "interested but cautious",
+          "reason": "Will move forward if the plan is specific enough."
+        },
+        "traits": ["ROI-focused", "likes small pilots"],
+        "tags": ["brand collaboration", "results-oriented"],
+        "preferences": ["two concrete options"],
+        "boundaries": ["does not like vague proposals"],
+        "risk_flags": ["weak proposals may reduce interest"],
+        "open_questions": ["What pilot size is acceptable?"],
+        "next_actions": ["prepare two more specific options"]
+      },
+      "timeline": [],
+      "evidence_summary": {
+        "excerpt_count": 1,
+        "source_count": 1,
+        "last_updated_at": "2026-04-20T06:30:52.539Z",
+        "key_evidence": ["Ava Chen prefers concrete and ROI-led plans."]
+      },
+      "linked_relationships": {
+        "detected_as": true,
+        "matched_existing_person_id": "person_ava_chen",
+        "matched_existing_person_name": "Ava Chen"
+      }
+    },
+    {
+      "person_name": "Bella Xu",
+      "person_ref": "person_bella_xu",
+      "resolution_action": "create",
+      "profile_tier": "active",
+      "confidence": "high",
+      "aliases": [],
+      "compiled_truth": {
+        "summary": "New relationship candidate who needs cases and scheduling details before proceeding.",
+        "current_judgment": "Bella Xu is a condition-driven collaborator who needs supporting material.",
+        "relationship_stage": "initial",
+        "intent": "Proceed once sufficient material is available.",
+        "attitude": {
+          "label": "interested but cautious",
+          "reason": "Wants more proof before moving forward."
+        },
+        "traits": ["case-driven", "careful pace"],
+        "tags": ["brand collaboration", "condition-driven"],
+        "preferences": ["wants to see cases and scheduling"],
+        "boundaries": [],
+        "risk_flags": ["missing cases or timing may stall progress"],
+        "open_questions": [],
+        "next_actions": ["prepare case material and timing"]
+      },
+      "timeline": [],
+      "evidence_summary": {
+        "excerpt_count": 1,
+        "source_count": 1,
+        "last_updated_at": "2026-04-20T06:30:52.539Z",
+        "key_evidence": ["Bella Xu wants cases and scheduling details before proceeding."]
+      },
+      "linked_relationships": {
+        "detected_as": true,
+        "matched_existing_person_id": null,
+        "matched_existing_person_name": null
+      }
+    }
+  ],
+  "created_people": [
+    {
+      "person_name": "Bella Xu",
+      "person_ref": "person_bella_xu",
+      "profile_tier": "active",
+      "source": "review"
+    }
+  ],
+  "updated_people": [
+    {
+      "person_name": "Ava Chen",
+      "person_ref": "person_ava_chen",
+      "profile_tier": "key",
+      "source": "auto"
+    }
+  ],
+  "ignored_people": [],
+  "deferred_people": [],
+  "unresolved_candidates": [],
+  "profile_store_delta": {
+    "upserts": [],
+    "ignored_people": [],
+    "deferred_people": [],
+    "auto_committed_people": ["Ava Chen"],
+    "store_path": "relationship-ingestion/runtime/stores/sample-review-store.json",
+    "written": false,
+    "total_profiles_after_write": 2
+  },
+  "notes": "Sample review-resolution response for public distribution."
+}

@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://costar.dev/schemas/relationship-profile.input.schema.json",
+  "title": "Relationship Profile Input",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "skill": { "type": "string", "const": "relationship-profile" },
+    "version": { "type": "string" },
+    "mode": {
+      "type": "string",
+      "enum": ["get_profile", "search_profiles", "maintain_store", "apply_profile_patch"]
+    },
+    "person_name": { "type": "string" },
+    "person_ref": { "type": "string" },
+    "profile_store_path": { "type": "string" },
+    "target_profile": { "type": "object" },
+    "query_text": { "type": "string" },
+    "filters": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "profile_tiers": {
+          "type": "array",
+          "items": { "type": "string", "enum": ["stub", "active", "key", "archived"] }
+        },
+        "confidence_levels": {
+          "type": "array",
+          "items": { "type": "string", "enum": ["low", "medium", "high"] }
+        },
+        "tags": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "relationship_stage": { "type": "string" },
+        "needs_attention_only": { "type": "boolean" }
+      }
+    },
+    "profile_patch": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "resolution_action": { "type": "string", "enum": ["create", "update", "ignore", "review"] },
+        "profile_tier": { "type": "string", "enum": ["stub", "active", "key", "archived"] },
+        "confidence": { "type": "string", "enum": ["low", "medium", "high"] },
+        "aliases_add": { "type": "array", "items": { "type": "string" } },
+        "aliases_replace": { "type": "array", "items": { "type": "string" } },
+        "compiled_truth": { "type": "object" },
+        "compiled_truth_additions": { "type": "object" },
+        "timeline_append": { "type": "array", "items": { "type": "object" } },
+        "evidence_append": { "type": "array", "items": { "type": "string" } },
+        "note": { "type": "string" }
+      }
+    },
+    "options": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "include_related_people": { "type": "boolean" },
+        "include_profile_health": { "type": "boolean" },
+        "write_store": { "type": "boolean" },
+        "save_run_artifacts": { "type": "boolean" },
+        "related_people_limit": { "type": "integer", "minimum": 1, "maximum": 20 },
+        "timeline_limit": { "type": "integer", "minimum": 1, "maximum": 50 },
+        "search_limit": { "type": "integer", "minimum": 1, "maximum": 50 },
+        "stale_days_threshold": { "type": "integer", "minimum": 1, "maximum": 3650 }
+      }
+    }
+  }
+}

@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://costar.dev/schemas/relationship-ingestion.input.schema.json",
+  "title": "Relationship Ingestion Input",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["sources"],
+  "properties": {
+    "request_id": {
+      "type": "string"
+    },
+    "goal": {
+      "type": "string"
+    },
+    "target_people": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "focus_people": {
+      "type": "array",
+      "description": "用户明确强调要优先识别和提炼的人物。会与 target_people 合并，但会在抽取时获得更高优先级。",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "focus_instruction": {
+      "type": "string",
+      "description": "用户对重点关注人物的补充说明，例如为什么关注、希望优先提炼什么。"
+    },
+    "existing_people": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name"],
+        "properties": {
+          "person_id": { "type": "string" },
+          "name": { "type": "string", "minLength": 1 },
+          "aliases": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "tags": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "summary": { "type": "string" }
+        }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["source_id", "source_type"],
+        "properties": {
+          "source_id": { "type": "string", "minLength": 1 },
+          "title": { "type": "string" },
+          "source_type": {
+            "type": "string",
+            "enum": ["text", "markdown", "note", "transcript", "meeting_minutes", "chat_export", "pdf", "image", "audio"]
+          },
+          "channel": { "type": "string" },
+          "relative_path": { "type": "string" },
+          "content": { "type": "string" },
+          "extracted_text": { "type": "string" },
+          "captured_at": { "type": "string" },
+          "metadata": { "type": "object" }
+        }
+      }
+    },
+    "options": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "max_total_excerpt_chars": { "type": "integer", "minimum": 2000, "default": 40000 },
+        "max_excerpt_chars": { "type": "integer", "minimum": 200, "default": 1200 },
+        "max_excerpt_count": { "type": "integer", "minimum": 1, "default": 24 },
+        "save_run_artifacts": { "type": "boolean", "default": true },
+        "require_evidence": { "type": "boolean", "default": true }
+      }
+    },
+    "model_config": {
+      "$ref": "./model-config.schema.json"
+    }
+  }
+}

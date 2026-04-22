@@ -1,0 +1,67 @@
+{
+  "skill": "relationship-graph-review-resolution",
+  "version": "0.1.0",
+  "status": "success",
+  "graph_skill": "relationship-graph",
+  "processed_at": "2026-04-20T10:40:00.000Z",
+  "review_summary": {
+    "decision_count": 1,
+    "confirmed_count": 0,
+    "rejected_count": 1,
+    "downgraded_count": 0,
+    "reclassified_count": 0,
+    "deferred_count": 0,
+    "unresolved_count": 0
+  },
+  "confirmed_edges": [],
+  "rejected_edges": [
+    {
+      "source_person_name": "Ava Chen",
+      "source_person_ref": "person_ava_chen",
+      "target_person_name": "Bella Xu",
+      "target_person_ref": "person_bella_xu",
+      "final_action": "reject",
+      "corrected_relation_type": null,
+      "note": "This is only a co-occurrence edge for now.",
+      "reviewed_at": "2026-04-20T10:40:00.000Z"
+    }
+  ],
+  "downgraded_edges": [],
+  "reclassified_edges": [],
+  "deferred_edges": [],
+  "unresolved_candidates": [],
+  "graph_review_store_delta": {
+    "upserts": [
+      {
+        "edge_key": "person_bella_xu::person_ava_chen",
+        "source_person_ref": "person_ava_chen",
+        "source_person_name": "Ava Chen",
+        "target_person_ref": "person_bella_xu",
+        "target_person_name": "Bella Xu",
+        "final_action": "reject",
+        "corrected_relation_type": null,
+        "note": "This is only a co-occurrence edge for now.",
+        "operator": "tester",
+        "reviewed_at": "2026-04-20T10:40:00.000Z",
+        "relation_type": "same_source_context",
+        "relation_score": 7
+      }
+    ],
+    "store_path": "relationship-graph/runtime/stores/relationship-graph-review-store.sample.json",
+    "written": false,
+    "total_decisions_after_write": 1
+  },
+  "commit_feedback": {
+    "headline": "Graph edge decision written back to the review store",
+    "summary_lines": [
+      "0 edges confirmed",
+      "1 edge rejected",
+      "0 edges still pending"
+    ],
+    "next_action": {
+      "type": "rerun_graph",
+      "message": "Rerun the graph skill to see the updated network after manual review."
+    }
+  },
+  "notes": "sample decision"
+}

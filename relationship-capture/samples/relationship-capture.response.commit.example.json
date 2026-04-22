@@ -1,0 +1,51 @@
+{
+  "skill": "relationship-capture",
+  "version": "0.1.0",
+  "status": "success",
+  "stage": "commit",
+  "receipt": {
+    "reviewed_candidates": 2,
+    "operator": "tester",
+    "written": false,
+    "profile_store_path": "relationship-ingestion/runtime/stores/sample-review-store.json",
+    "view_store_path": "relationship-view/runtime/stores/relationship-view-store.sample.json",
+    "remaining_unresolved": 0
+  },
+  "processing_feedback": {
+    "detected_people_count": 2,
+    "updated_people_count": 1,
+    "new_candidate_count": 1,
+    "ignored_noise_count": 0,
+    "review_pending_count": 2,
+    "highlights": [
+      "Identified Jordan Li for update",
+      "Found Ryan Gu as a new profile candidate"
+    ]
+  },
+  "confirmation_request": {
+    "required": false,
+    "pending_count": 0,
+    "required_candidate_count": 0,
+    "top_candidates": [],
+    "message": "The current confirmation set has been committed."
+  },
+  "next_action": {
+    "type": "complete",
+    "message": "The relationship profiles have been written back; you can now inspect the profile or generate a briefing."
+  },
+  "user_feedback": {
+    "headline": "Relationship profile submission completed for 2 people",
+    "summary_lines": [
+      "1 created",
+      "1 updated",
+      "1 ignored",
+      "0 deferred",
+      "No persistent view was refreshed in this sample"
+    ],
+    "highlights": [
+      "Created Ryan Gu",
+      "Updated Jordan Li"
+    ]
+  },
+  "notes": "Use a sample review request to verify the capture commit feedback layer."
+}
