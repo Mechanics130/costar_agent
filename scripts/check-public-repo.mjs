@@ -44,6 +44,9 @@ const requiredFiles = [
   "eslint.config.mjs",
   "README.md",
   "README.zh-CN.md",
+  "assets/README.md",
+  "assets/.gitkeep",
+  "RELEASE_NOTES_v0.1.0.md",
   "ROADMAP.md",
   "CONTRIBUTING.md",
   "SECURITY.md",
@@ -107,6 +110,16 @@ if (pkg.name !== "costar") fail("package.json name should be costar");
 if (pkg.license !== "Apache-2.0") fail("package.json license should be Apache-2.0");
 if (!pkg.engines || pkg.engines.node !== ">=18") {
   fail("package.json should declare node >=18");
+}
+if (pkg.author !== "Mechanics130") fail("package.json author should be Mechanics130");
+if (pkg.homepage !== "https://github.com/Mechanics130/costar_agent#readme") {
+  fail("package.json homepage should point at the public GitHub README");
+}
+if (!pkg.bugs || pkg.bugs.url !== "https://github.com/Mechanics130/costar_agent/issues") {
+  fail("package.json bugs.url should point at the public GitHub issues page");
+}
+if (!Array.isArray(pkg.files) || pkg.files.length === 0) {
+  fail("package.json should include a non-empty files allowlist");
 }
 
 for (const file of [
