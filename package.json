@@ -1,6 +1,6 @@
 {
   "name": "costar",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "CoStar is an open-core skill engine for durable relationship context.",
   "type": "module",
   "license": "Apache-2.0",
@@ -12,8 +12,14 @@
   "engines": {
     "node": ">=18"
   },
+  "workspaces": [
+    "costar-core"
+  ],
   "files": [
     "bin/",
+    "costar-core/",
+    "integrations/claude/",
+    "integrations/codex/",
     "integrations/openclaw/",
     "relationship-briefing/prompts/",
     "relationship-briefing/runtime/",
@@ -51,6 +57,7 @@
     "README.zh-CN.md",
     "START_HERE.md",
     "CHANGELOG.md",
+    "docs/",
     "CONTRIBUTING.md",
     "SECURITY.md",
     "CODE_OF_CONDUCT.md",
@@ -64,7 +71,10 @@
   "scripts": {
     "check": "node scripts/check-public-repo.mjs",
     "lint": "eslint .",
-    "test": "npm run lint && npm run check",
+    "test:briefing-insights": "node scripts/briefing-insights-smoke.mjs",
+    "test:host-model": "node costar-core/host-install/host-installer-smoke.mjs && node costar-core/host-model-adapter/review-protocol-smoke.mjs && node costar-core/host-model-adapter/host-adapter-smoke.mjs && node costar-core/host-model-adapter/claude-test-pack-smoke.mjs && node costar-core/host-model-adapter/codex-test-pack-smoke.mjs && node costar-core/host-model-adapter/openclaw-test-pack-smoke.mjs && node costar-core/host-model-adapter/openclaw-bootstrap-smoke.mjs && node costar-core/host-model-adapter/host-transcript-smoke.mjs && node costar-core/host-model-adapter/host-cli-smoke.mjs && node costar-core/host-model-e2e/runtime/host-model-e2e-smoke.mjs && node costar-core/mcp/mcp-smoke.mjs && node costar-core/mcp/claude-bootstrap-smoke.mjs && node costar-core/mcp/claude-config-install-smoke.mjs && node costar-core/mcp/claude-clean-install-smoke.mjs && node costar-core/mcp/claude-bundle-doctor-smoke.mjs && node costar-core/mcp/claude-final-user-pack-smoke.mjs",
+    "docs:file-map": "node scripts/generate-file-map.mjs",
+    "test": "npm run lint && npm run check && npm run test:briefing-insights",
     "doctor": "node scripts/check-public-repo.mjs",
     "help": "node bin/costar.mjs --help"
   },

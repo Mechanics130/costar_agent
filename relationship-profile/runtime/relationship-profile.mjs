@@ -1,8 +1,21 @@
 // SPDX-License-Identifier: Apache-2.0
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { getRelationshipReviewResolutionSkillInfo } from "../../relationship-ingestion/runtime/relationship-review-resolution.mjs";
+import {
+  loadProfileStore as loadProfileStoreState,
+  writeProfileStore as writeProfileStoreState
+} from "../../costar-core/stores/profile-store.mjs";
+import {
+  flattenInsightTexts,
+  mergeAttitudeIntent,
+  mergeKeyIssues,
+  mergeLatentNeeds,
+  normalizeAttitudeIntent,
+  normalizeKeyIssues,
+  normalizeLatentNeeds
+} from "../../costar-core/relationship-insights.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -311,45 +324,23 @@ function hasActiveFilters(filters) {
 }
 
 function loadProfileStore(storePath) {
-  if (!storePath || !existsSync(storePath)) {
-    return {
-      version: SKILL_VERSION,
-      updated_at: "",
-      profiles: []
-    };
-  }
-
-  const raw = readFileSync(storePath, "utf8").replace(/^\uFEFF/, "");
-  const parsed = JSON.parse(raw);
-  return {
-    version: normalizeString(parsed.version) || SKILL_VERSION,
-    updated_at: normalizeString(parsed.updated_at),
-    profiles: Array.isArray(parsed.profiles)
-      ? parsed.profiles.map((profile) => normalizeRelationshipProfile(profile))
-      : []
-  };
+  return loadProfileStoreState({
+    storePath,
+    defaultStorePath,
+    version: SKILL_VERSION,
+    normalizeProfile: normalizeRelationshipProfile
+  });
 }
 
 function writeProfileStore(storePath, profiles, processedAt) {
-  ensureDirectory(path.dirname(storePath));
-  writeFileSync(
+  return writeProfileStoreState({
     storePath,
-    `${JSON.stringify(
-      {
-        version: SKILL_VERSION,
-        updated_at: processedAt,
-        profiles: profiles.map((profile) => normalizeRelationshipProfile(profile))
-      },
-      null,
-      2
-    )}\n`,
-    "utf8"
-  );
-  return {
-    store_path: storePath,
-    written: true,
-    total_profiles_after_write: profiles.length
-  };
+    defaultStorePath,
+    version: SKILL_VERSION,
+    profiles,
+    processedAt,
+    normalizeProfile: normalizeRelationshipProfile
+  });
 }
 
 function resolveTargetProfile({ request, store, exactOnly = false }) {
@@ -566,6 +557,11 @@ function buildProfileRead(profile, options) {
       preferences: profile.compiled_truth.preferences,
       boundaries: profile.compiled_truth.boundaries,
       risk_flags: profile.compiled_truth.risk_flags
+    },
+    insight_board: {
+      latent_needs: profile.compiled_truth.latent_needs,
+      key_issues: profile.compiled_truth.key_issues,
+      attitude_intent: profile.compiled_truth.attitude_intent
     },
     action_board: {
       next_actions: profile.compiled_truth.next_actions,
@@ -879,6 +875,34 @@ function applyProfilePatch(profile, patch, processedAt) {
     }
   }
 
+  if (compiledTruthPatch.latent_needs && typeof compiledTruthPatch.latent_needs === "object") {
+    merged.compiled_truth.latent_needs = normalizeLatentNeeds(compiledTruthPatch.latent_needs);
+  }
+  if (compiledTruthPatch.key_issues && typeof compiledTruthPatch.key_issues === "object") {
+    merged.compiled_truth.key_issues = normalizeKeyIssues(compiledTruthPatch.key_issues);
+  }
+  if (compiledTruthPatch.attitude_intent && typeof compiledTruthPatch.attitude_intent === "object") {
+    merged.compiled_truth.attitude_intent = normalizeAttitudeIntent(compiledTruthPatch.attitude_intent);
+  }
+  if (compiledTruthAdditions.latent_needs && typeof compiledTruthAdditions.latent_needs === "object") {
+    merged.compiled_truth.latent_needs = mergeLatentNeeds(
+      merged.compiled_truth.latent_needs,
+      compiledTruthAdditions.latent_needs
+    );
+  }
+  if (compiledTruthAdditions.key_issues && typeof compiledTruthAdditions.key_issues === "object") {
+    merged.compiled_truth.key_issues = mergeKeyIssues(
+      merged.compiled_truth.key_issues,
+      compiledTruthAdditions.key_issues
+    );
+  }
+  if (compiledTruthAdditions.attitude_intent && typeof compiledTruthAdditions.attitude_intent === "object") {
+    merged.compiled_truth.attitude_intent = mergeAttitudeIntent(
+      merged.compiled_truth.attitude_intent,
+      compiledTruthAdditions.attitude_intent
+    );
+  }
+
   ARRAY_COMPILED_TRUTH_FIELDS.forEach((field) => {
     if (Array.isArray(compiledTruthPatch[field])) {
       merged.compiled_truth[field] = normalizeStringArray(compiledTruthPatch[field]);
@@ -956,6 +980,9 @@ function normalizeRelationshipProfile(profile) {
         label: firstNonEmpty([profile.compiled_truth?.attitude?.label, "待判断"]),
         reason: firstNonEmpty([profile.compiled_truth?.attitude?.reason, ""])
       },
+      latent_needs: normalizeLatentNeeds(profile.compiled_truth?.latent_needs),
+      key_issues: normalizeKeyIssues(profile.compiled_truth?.key_issues),
+      attitude_intent: normalizeAttitudeIntent(profile.compiled_truth?.attitude_intent),
       traits: normalizeStringArray(profile.compiled_truth?.traits),
       tags: normalizeStringArray(profile.compiled_truth?.tags),
       preferences: normalizeStringArray(profile.compiled_truth?.preferences),
@@ -1003,6 +1030,7 @@ function buildProfileCorpus(profile) {
     profile.compiled_truth.relationship_stage,
     profile.compiled_truth.attitude.label,
     profile.compiled_truth.attitude.reason,
+    ...flattenInsightTexts(profile.compiled_truth),
     ...profile.compiled_truth.tags,
     ...profile.compiled_truth.traits,
     ...profile.compiled_truth.preferences,

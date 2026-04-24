@@ -7,7 +7,7 @@ remaining work needed to turn CoStar into a cleaner open-core product.
 
 - Wave 1: complete as of 2026-04-21
 - Wave 2: complete as of 2026-04-21
-- Wave 3: in progress, with most public-facing docs already done
+- Wave 3: complete for the current public engine and host-model release slice as of 2026-04-24
 
 ## Wave 1 - Public release hygiene
 
@@ -60,12 +60,25 @@ Completed items:
    - `costar init`
    - environment-aware local config generation
 
+6. Host-model adapters
+   - Claude bundle install and doctor
+   - Codex skill install and doctor
+   - OpenClaw bundle install and doctor
+   - shared host-model review / commit path
+
+7. Briefing insight enhancement
+   - implicit needs
+   - key issues, consensus / non-consensus, and key quotes
+   - attitude / intent reads
+
 Remaining items:
 
 - Demo asset pack
   - `assets/demo.gif`
   - `assets/architecture.png`
   - `assets/social-card.png`
+- Real product-environment acceptance for Claude / Codex / OpenClaw
+- Cursor adapter design and validation
 
 ## Wave 3 exit criterion
 

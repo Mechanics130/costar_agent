@@ -1,9 +1,20 @@
 // SPDX-License-Identifier: Apache-2.0
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { __profile_internal, getRelationshipProfileSkillInfo } from "../../relationship-profile/runtime/relationship-profile.mjs";
 import { getRelationshipGraphSkillInfo, runRelationshipGraph } from "../../relationship-graph/runtime/relationship-graph.mjs";
+import { loadProfileStore as loadProfileStoreState } from "../../costar-core/stores/profile-store.mjs";
+import {
+  loadViewStore as loadViewStoreState,
+  writeViewStore as writeViewStoreState
+} from "../../costar-core/stores/view-store.mjs";
+import {
+  hasAttitudeIntentContent,
+  normalizeAttitudeIntent,
+  normalizeKeyIssues,
+  normalizeLatentNeeds
+} from "../../costar-core/relationship-insights.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -283,6 +294,11 @@ function buildPersonView({ profile, profileStorePath, graphReviewStorePath, opti
       open_questions: normalizeStringArray(profile.compiled_truth?.open_questions),
       next_actions: normalizeStringArray(profile.compiled_truth?.next_actions)
     },
+    insight_card: {
+      latent_needs: normalizeLatentNeeds(profile.compiled_truth?.latent_needs),
+      key_issues: normalizeKeyIssues(profile.compiled_truth?.key_issues),
+      attitude_intent: normalizeAttitudeIntent(profile.compiled_truth?.attitude_intent)
+    },
     evidence_summary: {
       excerpt_count: Number(profile.evidence_summary?.excerpt_count || 0),
       source_count: Number(profile.evidence_summary?.source_count || 0),
@@ -346,9 +362,12 @@ function persistViews({ request, currentViewStore, views, profileStorePath, grap
   };
 
   if (request.options.write_store) {
-    ensureDirectory(path.dirname(request.view_store_path));
-    writeFileSync(request.view_store_path, `${JSON.stringify(nextStore, null, 2)}\n`, "utf8");
-    delta.written = true;
+    const writeResult = writeViewStoreState({
+      storePath: request.view_store_path,
+      defaultStorePath: VIEW_STORE_FILE,
+      store: nextStore
+    });
+    delta.written = writeResult.written;
   }
 
   if (request.options.write_markdown) {
@@ -441,43 +460,20 @@ function resolveProfileTarget({ profiles, personName, personRef }) {
 }
 
 function loadProfileStore(storePath) {
-  if (!storePath || !existsSync(storePath)) {
-    return {
-      version: SKILL_VERSION,
-      updated_at: "",
-      profiles: []
-    };
-  }
-
-  const parsed = JSON.parse(readFileSync(storePath, "utf8").replace(/^\uFEFF/, ""));
-  return {
-    version: normalizeString(parsed.version) || SKILL_VERSION,
-    updated_at: normalizeString(parsed.updated_at),
-    profiles: Array.isArray(parsed.profiles)
-      ? parsed.profiles.map((profile) => __profile_internal.normalizeRelationshipProfile(profile))
-      : []
-  };
+  return loadProfileStoreState({
+    storePath,
+    defaultStorePath: defaultProfileStorePath,
+    version: SKILL_VERSION,
+    normalizeProfile: __profile_internal.normalizeRelationshipProfile
+  });
 }
 
 function loadViewStore(storePath) {
-  if (!storePath || !existsSync(storePath)) {
-    return {
-      version: SKILL_VERSION,
-      updated_at: "",
-      profile_store_path: "",
-      graph_review_store_path: "",
-      views: []
-    };
-  }
-
-  const parsed = JSON.parse(readFileSync(storePath, "utf8").replace(/^\uFEFF/, ""));
-  return {
-    version: normalizeString(parsed.version) || SKILL_VERSION,
-    updated_at: normalizeString(parsed.updated_at),
-    profile_store_path: normalizeString(parsed.profile_store_path),
-    graph_review_store_path: normalizeString(parsed.graph_review_store_path),
-    views: Array.isArray(parsed.views) ? parsed.views : []
-  };
+  return loadViewStoreState({
+    storePath,
+    defaultStorePath: VIEW_STORE_FILE,
+    version: SKILL_VERSION
+  });
 }
 
 function buildTimelineHighlights(timeline, limit) {
@@ -516,6 +512,8 @@ function renderPersonViewMarkdown(view) {
     if (view.summary_card.attitude?.label) lines.push(`- 态度判断：${view.summary_card.attitude.label}${view.summary_card.attitude.reason ? `（${view.summary_card.attitude.reason}）` : ""}`);
     lines.push("");
   }
+
+  appendInsightSections(lines, view.insight_card);
 
   appendListSection(lines, "关键标签", view.summary_card.tags);
   appendListSection(lines, "人物特点", view.summary_card.traits);
@@ -593,6 +591,44 @@ function appendListSection(lines, title, items) {
   lines.push(`## ${title}`, "");
   items.forEach((item) => lines.push(`- ${item}`));
   lines.push("");
+}
+
+function appendInsightSections(lines, insightCard) {
+  const latentNeeds = insightCard?.latent_needs || { counterpart: [], self: [] };
+  if (latentNeeds.counterpart.length || latentNeeds.self.length) {
+    lines.push("## 隐性需求", "");
+    latentNeeds.counterpart.forEach((item) => lines.push(`- 对方：${formatNeedInsight(item)}`));
+    latentNeeds.self.forEach((item) => lines.push(`- 我方：${formatNeedInsight(item)}`));
+    lines.push("");
+  }
+
+  const keyIssues = Array.isArray(insightCard?.key_issues) ? insightCard.key_issues : [];
+  if (keyIssues.length) {
+    lines.push("## 关键议题", "");
+    keyIssues.forEach((item) => {
+      const consensus = item.consensus.length ? `；共识：${item.consensus.join(" / ")}` : "";
+      const nonConsensus = item.non_consensus.length ? `；非共识：${item.non_consensus.join(" / ")}` : "";
+      const quotes = item.key_quotes.length ? `；关键语句：${item.key_quotes.join(" / ")}` : "";
+      lines.push(`- ${item.issue}（${item.confidence}）${consensus}${nonConsensus}${quotes}`);
+    });
+    lines.push("");
+  }
+
+  const attitudeIntent = insightCard?.attitude_intent;
+  if (
+    attitudeIntent &&
+    (hasAttitudeIntentContent(attitudeIntent.counterpart) || hasAttitudeIntentContent(attitudeIntent.self))
+  ) {
+    lines.push("## 态度与意图", "");
+    lines.push(`- 对方：态度=${attitudeIntent.counterpart.attitude}；意图=${attitudeIntent.counterpart.intent}；置信度=${attitudeIntent.counterpart.confidence}`);
+    lines.push(`- 我方：态度=${attitudeIntent.self.attitude}；意图=${attitudeIntent.self.intent}；置信度=${attitudeIntent.self.confidence}`);
+    lines.push("");
+  }
+}
+
+function formatNeedInsight(item) {
+  const evidence = item.evidence.length ? `；证据：${item.evidence.join(" / ")}` : "";
+  return `${item.need}（${item.confidence}）${evidence}`;
 }
 
 function summarizeView(view) {

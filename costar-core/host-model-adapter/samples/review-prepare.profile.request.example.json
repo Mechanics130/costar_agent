@@ -1,0 +1,27 @@
+{
+  "tool_name": "review_prepare_cards",
+  "tool_input": {
+    "ingestion_result": {
+      "skill": "relationship-ingestion",
+      "version": "0.1.0",
+      "status": "needs_review",
+      "stage": "ingestion",
+      "review_bundle": {
+        "candidates": [
+          {
+            "person_name": "Bella Xu",
+            "suggested_action": "create",
+            "priority": "medium",
+            "needs_confirmation": true,
+            "questions": [
+              "Should Bella Xu be created as a new relationship profile?"
+            ],
+            "evidence_preview": [
+              "Bella Xu is willing to keep moving if examples and scheduling are ready."
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

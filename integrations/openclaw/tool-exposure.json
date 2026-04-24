@@ -1,0 +1,25 @@
+{
+  "host": "openclaw",
+  "mode": "host-model",
+  "bridge_command": "node costar-core/host-model-adapter/run-host-tool.mjs <request.json>",
+  "tools": [
+    "capture_ingest_sources",
+    "capture_get_feedback",
+    "review_list_candidates",
+    "review_prepare_cards",
+    "review_translate_answers",
+    "review_commit_decisions",
+    "profile_get",
+    "profile_search",
+    "briefing_generate",
+    "roleplay_generate",
+    "graph_get_person",
+    "graph_find_path",
+    "view_get",
+    "view_refresh"
+  ],
+  "write_targets": [
+    "profile_review",
+    "graph_review"
+  ]
+}

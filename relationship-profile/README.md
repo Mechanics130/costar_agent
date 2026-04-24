@@ -10,6 +10,10 @@ core capabilities:
 - run profile health checks and maintenance suggestions
 - perform controlled manual patch write-back
 
+The `get_profile` response includes an `insight_board` for `latent_needs`,
+`key_issues`, and `attitude_intent`, so the same enhanced briefing signals stay
+available outside the briefing skill.
+
 This version focuses on a stable, auditable `profile service layer`. It can run
 without relying on an LLM.
 

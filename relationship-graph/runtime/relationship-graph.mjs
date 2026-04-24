@@ -1,8 +1,10 @@
 // SPDX-License-Identifier: Apache-2.0
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { __profile_internal, getRelationshipProfileSkillInfo } from "../../relationship-profile/runtime/relationship-profile.mjs";
+import { loadGraphReviewStore as loadGraphReviewStoreState } from "../../costar-core/stores/graph-review-store.mjs";
+import { loadProfileStore as loadProfileStoreState } from "../../costar-core/stores/profile-store.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -103,41 +105,21 @@ function deriveMode(payload) {
 }
 
 function loadProfileStore(storePath) {
-  if (!storePath || !existsSync(storePath)) {
-    return {
-      version: SKILL_VERSION,
-      updated_at: "",
-      profiles: []
-    };
-  }
-
-  const parsed = JSON.parse(readFileSync(storePath, "utf8").replace(/^\uFEFF/, ""));
-  return {
-    version: normalizeString(parsed.version) || SKILL_VERSION,
-    updated_at: normalizeString(parsed.updated_at),
-    profiles: Array.isArray(parsed.profiles)
-      ? parsed.profiles.map((profile) => __profile_internal.normalizeRelationshipProfile(profile))
-      : []
-  };
+  return loadProfileStoreState({
+    storePath,
+    defaultStorePath,
+    version: SKILL_VERSION,
+    normalizeProfile: __profile_internal.normalizeRelationshipProfile
+  });
 }
 
 function loadGraphReviewStore(storePath) {
-  if (!storePath || !existsSync(storePath)) {
-    return {
-      version: SKILL_VERSION,
-      updated_at: "",
-      decisions: []
-    };
-  }
-
-  const parsed = JSON.parse(readFileSync(storePath, "utf8").replace(/^\uFEFF/, ""));
-  return {
-    version: normalizeString(parsed.version) || SKILL_VERSION,
-    updated_at: normalizeString(parsed.updated_at),
-    decisions: Array.isArray(parsed.decisions)
-      ? parsed.decisions.map((decision) => normalizeGraphReviewDecision(decision))
-      : []
-  };
+  return loadGraphReviewStoreState({
+    storePath,
+    defaultStorePath: defaultReviewStorePath,
+    version: SKILL_VERSION,
+    normalizeDecision: normalizeGraphReviewDecision
+  });
 }
 
 function buildGraphData(profiles, options, reviewStore) {

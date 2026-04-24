@@ -1,0 +1,86 @@
+{
+  "tool_name": "briefing_generate",
+  "tool_input": {
+    "target_profile": {
+      "person_name": "Jordan Li",
+      "person_ref": "person_jordan_li",
+      "compiled_truth": {
+        "summary": "A rational lead who prefers data and clear boundaries.",
+        "relationship_stage": "stable contact",
+        "intent": "Clarify whether the project is worth continued investment.",
+        "attitude": {
+          "label": "cautious",
+          "reason": "Wants clear direction before moving forward."
+        }
+      },
+      "timeline": [
+        {
+          "date": "2026-04-13",
+          "event_summary": "Discussed project scope and resource allocation.",
+          "source_title": "Weather Agent Sync"
+        }
+      ]
+    },
+    "conversation_goal": "Prepare for a one-on-one conversation to get Jordan's real judgment on whether the project should continue.",
+    "conversation_topic": "Project priorities and investment trade-offs",
+    "meeting_context": {
+      "topic": "Project priorities and investment trade-offs",
+      "goal": "Get the real judgment before asking for commitment",
+      "scheduled_time": "2026-04-22 16:00"
+    },
+    "recent_interactions": [
+      {
+        "date": "2026-04-13",
+        "summary": "Jordan emphasized that scope and ownership need to be clear first."
+      }
+    ],
+    "host_model": {
+      "provider": "anthropic-host",
+      "model": "claude-host",
+      "target": "claude"
+    },
+    "host_reasoning_output": {
+      "briefing": {
+        "quick_brief": "This conversation should confirm Jordan's real judgment and conditions, not force a commitment.",
+        "relationship_read": {
+          "current_state": "Stable but cautious working contact",
+          "likely_intent": "Understand whether the scope is clear enough to justify continued effort",
+          "attitude": "Cautious but honest when asked for a real read",
+          "trust_level": "medium"
+        },
+        "approach_strategy": {
+          "goal_translation": "Get Jordan's real judgment and the minimum conditions for continuing",
+          "recommended_opening": "Start by asking for the real read on scope, ownership, and expected return",
+          "recommended_style": "Calm, factual, and low-pressure",
+          "why_now": "There is enough new context to test whether his prior caution has changed"
+        },
+        "talking_points": [
+          "What changed since the last sync on scope and ownership?",
+          "What would make this worth continued investment?"
+        ],
+        "watchouts": [
+          "Do not ask for commitment before clarifying ownership",
+          "Do not over-sell the upside"
+        ],
+        "questions_to_ask": [
+          "What is still unclear enough to block investment?",
+          "What minimum condition would make you keep going?"
+        ],
+        "next_actions": [
+          "Translate his conditions into a concrete next-step decision",
+          "Escalate only if the ownership gap is confirmed"
+        ]
+      },
+      "open_questions": [
+        "Still need to confirm whether the ownership question has changed since the last sync."
+      ],
+      "notes": "Host-model sample output."
+    },
+    "options": {
+      "save_run_artifacts": false,
+      "write_briefing_file": false,
+      "timeline_limit": 3,
+      "view_excerpt_chars": 800
+    }
+  }
+}

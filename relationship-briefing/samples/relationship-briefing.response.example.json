@@ -30,6 +30,51 @@
       "attitude": "谨慎但坦诚，愿意给事实判断，不会轻易表态承诺。",
       "trust_level": "medium"
     },
+    "needs_read": {
+      "counterpart_needs": [
+        {
+          "need": "希望先确认真实优先级和资源窗口，避免在未定调前被动背责任。",
+          "evidence": ["愿意给事实判断，不会轻易表态承诺。"],
+          "confidence": "medium"
+        }
+      ],
+      "self_needs": [
+        {
+          "need": "需要拿到可执行的下一步窗口，而不是泛泛支持。",
+          "evidence": ["这次沟通目标是拿到真实优先级、资源约束和继续推进窗口。"],
+          "confidence": "high"
+        }
+      ],
+      "leverage_points": ["先问事实和资源窗口，再判断是否继续投入。"],
+      "open_checks": ["需要确认当前天气 Agent 是否仍有 P0 级窗口。"]
+    },
+    "issue_map": [
+      {
+        "issue": "天气 Agent 后续推进窗口",
+        "consensus": ["需要先核对真实反馈和资源优先级。"],
+        "non_consensus": ["是否继续投入、如何承接仍未定。"],
+        "key_quotes": ["当前对优先级和资源窗口的判断是什么？"],
+        "evidence": ["briefing 聚焦优先级、资源约束和继续推进窗口。"],
+        "confidence": "medium",
+        "suggested_move": "先追问事实，再做推进/降级判断。"
+      }
+    ],
+    "attitude_intent_read": {
+      "counterpart": {
+        "attitude": "谨慎但坦诚",
+        "intent": "给事实判断，同时避免过早承诺。",
+        "evidence": ["愿意给事实判断，不会轻易表态承诺。"],
+        "confidence": "medium"
+      },
+      "self": {
+        "attitude": "务实推进",
+        "intent": "拿到真实判断并决定是否继续投入。",
+        "evidence": ["先拿真实判断，再决定后续是否继续投入。"],
+        "confidence": "high"
+      },
+      "alignment": "双方都倾向先看事实再定推进节奏。",
+      "risk": "如果直接要求承诺，可能会让对方转向防御。"
+    },
     "approach_strategy": {
       "goal_translation": "先拿真实判断，再决定后续是否继续投入推进天气 Agent。",
       "recommended_opening": "先追问上次待办的真实结果，再问他当前对优先级和资源窗口的判断。",

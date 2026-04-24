@@ -9,6 +9,10 @@ evaluate, and share CoStar.
 - [Pitch in Chinese](pitch-zh.md)
 - [Comparison notes](comparison.md)
 - [Architecture overview](architecture.md)
+- [Support matrix](support-matrix.md)
+- [Tester package](tester-package.md)
+- [Host adapter public hygiene](host-adapter-public-hygiene.md)
+- [Generated file map](generated-file-map.md)
 - [Examples](../examples/README.md)
 
 ## Why these docs exist

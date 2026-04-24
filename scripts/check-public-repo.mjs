@@ -30,6 +30,10 @@ const bannedPatterns = [
   "security@costar.dev",
   "conduct@costar.dev",
   "api.z.ai",
+  "my.feishu",
+  "feishu.cn",
+  "Lenovo",
+  "hqueen",
   "tester_Bcontext",
   "D:\\\\tester_Bcontext",
   "D:\\\\Lenny_Bcontext",
@@ -53,6 +57,11 @@ const requiredFiles = [
   "CODE_OF_CONDUCT.md",
   "CHANGELOG.md",
   "bin/costar.mjs",
+  "docs/support-matrix.md",
+  "docs/tester-package.md",
+  "docs/host-adapter-public-hygiene.md",
+  "docs/generated-file-map.md",
+  "scripts/generate-file-map.mjs",
 ];
 
 const forbiddenFiles = [
@@ -83,6 +92,9 @@ function collectTextFiles(dir = repoRoot, files = []) {
       continue;
     }
     const abs = path.join(dir, entry.name);
+    if (isGitIgnored(abs)) {
+      continue;
+    }
     if (entry.isDirectory()) {
       collectTextFiles(abs, files);
       continue;
@@ -95,6 +107,18 @@ function collectTextFiles(dir = repoRoot, files = []) {
     }
   }
   return files;
+}
+
+function isGitIgnored(absPath) {
+  const relPath = path.relative(repoRoot, absPath);
+  if (!relPath || relPath.startsWith("..")) {
+    return false;
+  }
+  const result = spawnSync("git", ["check-ignore", "--quiet", "--", relPath], {
+    cwd: repoRoot,
+    stdio: "ignore",
+  });
+  return result.status === 0;
 }
 
 for (const file of requiredFiles) {
@@ -125,6 +149,9 @@ if (!Array.isArray(pkg.files) || pkg.files.length === 0) {
 for (const file of [
   "bin/costar.mjs",
   "scripts/check-public-repo.mjs",
+  "scripts/briefing-insights-smoke.mjs",
+  "scripts/generate-file-map.mjs",
+  "costar-core/relationship-insights.mjs",
   "relationship-capture/runtime/run-relationship-capture.mjs",
   "relationship-capture/runtime/relationship-capture.mjs",
   "relationship-capture/runtime/render-relationship-capture-summary.mjs",

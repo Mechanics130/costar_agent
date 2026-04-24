@@ -1,0 +1,13 @@
+{
+  "name": "costar",
+  "display_name": "CoStar",
+  "version": "0.1.0",
+  "description": "Local CoStar host-model bridge for Claude-family products.",
+  "transport": {
+    "type": "stdio",
+    "command": "node",
+    "args": [
+      "{{CLAUDE_BUNDLE_ROOT}}\\run-costar-mcp.mjs"
+    ]
+  }
+}

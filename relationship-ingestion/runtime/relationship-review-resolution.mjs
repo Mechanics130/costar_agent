@@ -1,8 +1,23 @@
 // SPDX-License-Identifier: Apache-2.0
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { __internal } from "./relationship-ingestion.mjs";
+import {
+  buildProfileReviewSummaryArtifact,
+  buildProfileStoreDeltaArtifact
+} from "../../costar-core/artifacts/review-artifacts.mjs";
+import {
+  loadProfileStore as loadProfileStoreState,
+  writeProfileStore as writeProfileStoreState
+} from "../../costar-core/stores/profile-store.mjs";
+import {
+  mergeAttitudeIntent,
+  mergeKeyIssues,
+  mergeLatentNeeds,
+  normalizeAttitudeIntent,
+  normalizeKeyIssues,
+  normalizeLatentNeeds
+} from "../../costar-core/relationship-insights.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -121,31 +136,33 @@ export function runRelationshipReviewResolution(payload) {
     status: results.unresolvedCandidates.length ? "needs_review" : "success",
     ingestion_skill: request.ingestion_result.skill || "relationship-ingestion",
     processed_at: processedAt,
-    review_summary: {
-      decision_count: request.review_decisions.length,
-      committed_count: results.committedProfiles.length,
-      created_count: results.createdPeople.length,
-      updated_count: results.updatedPeople.length,
-      ignored_count: results.ignoredPeople.length,
-      deferred_count: results.deferredPeople.length,
-      unresolved_count: results.unresolvedCandidates.length,
-      auto_committed_count: results.autoCommittedPeople.length
-    },
+    review_summary: buildProfileReviewSummaryArtifact({
+      decisionCount: request.review_decisions.length,
+      committedCount: results.committedProfiles.length,
+      createdCount: results.createdPeople.length,
+      updatedCount: results.updatedPeople.length,
+      ignoredCount: results.ignoredPeople.length,
+      deferredCount: results.deferredPeople.length,
+      unresolvedCount: results.unresolvedCandidates.length,
+      autoCommittedCount: results.autoCommittedPeople.length
+    }),
     committed_profiles: results.committedProfiles,
     created_people: results.createdPeople,
     updated_people: results.updatedPeople,
     ignored_people: results.ignoredPeople,
     deferred_people: results.deferredPeople,
     unresolved_candidates: results.unresolvedCandidates,
-    profile_store_delta: {
+    profile_store_delta: buildProfileStoreDeltaArtifact({
       upserts: results.committedProfiles,
-      ignored_people: results.ignoredPeople,
-      deferred_people: results.deferredPeople,
-      auto_committed_people: results.autoCommittedPeople,
-      store_path: storeWrite.store_path,
-      written: storeWrite.written,
-      total_profiles_after_write: storeWrite.profile_count
-    },
+      ignoredPeople: results.ignoredPeople,
+      deferredPeople: results.deferredPeople,
+      autoCommittedPeople: results.autoCommittedPeople,
+      storeWrite: {
+        store_path: storeWrite.store_path,
+        written: storeWrite.written,
+        total_profiles_after_write: storeWrite.profile_count
+      }
+    }),
     notes: request.notes || ""
   };
 }
@@ -292,6 +309,9 @@ function synthesizeProfile(candidate, profileUpdate, resolved) {
         label: "待判断",
         reason: ""
       };
+  const latentNeeds = normalizeLatentNeeds(deriveFieldObject(candidate, profileUpdate, "compiled_truth.latent_needs", "latent_needs"));
+  const keyIssues = normalizeKeyIssues(deriveFieldObject(candidate, profileUpdate, "compiled_truth.key_issues", "key_issues"));
+  const attitudeIntent = normalizeAttitudeIntent(deriveFieldObject(candidate, profileUpdate, "compiled_truth.attitude_intent", "attitude_intent"));
   const evidencePreview = normalizeStringArray([
     ...(Array.isArray(candidate.evidence_preview) ? candidate.evidence_preview : []),
     ...(Array.isArray(profileUpdate?.evidence) ? profileUpdate.evidence : [])
@@ -313,6 +333,9 @@ function synthesizeProfile(candidate, profileUpdate, resolved) {
       relationship_stage: relationshipStage,
       intent,
       attitude,
+      latent_needs: latentNeeds,
+      key_issues: keyIssues,
+      attitude_intent: attitudeIntent,
       traits,
       tags,
       preferences,
@@ -421,6 +444,16 @@ function applyProfileDecision(baseProfile, candidate, decision) {
     reason: firstNonEmpty([overrideAttitude?.reason, profile.compiled_truth.attitude?.reason, ""])
   };
 
+  if (overrides.latent_needs && typeof overrides.latent_needs === "object") {
+    profile.compiled_truth.latent_needs = normalizeLatentNeeds(overrides.latent_needs);
+  }
+  if (overrides.key_issues && typeof overrides.key_issues === "object") {
+    profile.compiled_truth.key_issues = normalizeKeyIssues(overrides.key_issues);
+  }
+  if (overrides.attitude_intent && typeof overrides.attitude_intent === "object") {
+    profile.compiled_truth.attitude_intent = normalizeAttitudeIntent(overrides.attitude_intent);
+  }
+
   profile.compiled_truth.tags = resolveArrayOverride(overrides.tags, profile.compiled_truth.tags);
   profile.compiled_truth.traits = resolveArrayOverride(overrides.traits, profile.compiled_truth.traits);
   profile.compiled_truth.preferences = resolveArrayOverride(overrides.preferences, profile.compiled_truth.preferences);
@@ -456,6 +489,9 @@ function finalizeCommittedProfile({ profile, finalAction, processedAt, _origin }
   committed.linked_relationships.detected_as = true;
   committed.linked_relationships.matched_existing_person_name = committed.linked_relationships.matched_existing_person_name
     || committed.person_name;
+  committed.compiled_truth.latent_needs = normalizeLatentNeeds(committed.compiled_truth.latent_needs);
+  committed.compiled_truth.key_issues = normalizeKeyIssues(committed.compiled_truth.key_issues);
+  committed.compiled_truth.attitude_intent = normalizeAttitudeIntent(committed.compiled_truth.attitude_intent);
   committed.compiled_truth.next_actions = normalizeStringArray(committed.compiled_truth.next_actions);
   committed.compiled_truth.open_questions = normalizeStringArray(committed.compiled_truth.open_questions);
   return committed;
@@ -510,6 +546,18 @@ function mergeProfile(previous, incoming, processedAt) {
     label: normalizedIncoming.compiled_truth.attitude?.label || merged.compiled_truth.attitude?.label || "待判断",
     reason: normalizedIncoming.compiled_truth.attitude?.reason || merged.compiled_truth.attitude?.reason || ""
   };
+  merged.compiled_truth.latent_needs = mergeLatentNeeds(
+    merged.compiled_truth.latent_needs,
+    normalizedIncoming.compiled_truth.latent_needs
+  );
+  merged.compiled_truth.key_issues = mergeKeyIssues(
+    merged.compiled_truth.key_issues,
+    normalizedIncoming.compiled_truth.key_issues
+  );
+  merged.compiled_truth.attitude_intent = mergeAttitudeIntent(
+    merged.compiled_truth.attitude_intent,
+    normalizedIncoming.compiled_truth.attitude_intent
+  );
   merged.compiled_truth.tags = normalizeStringArray([...merged.compiled_truth.tags, ...normalizedIncoming.compiled_truth.tags]);
   merged.compiled_truth.traits = normalizeStringArray([...merged.compiled_truth.traits, ...normalizedIncoming.compiled_truth.traits]);
   merged.compiled_truth.preferences = normalizeStringArray([...merged.compiled_truth.preferences, ...normalizedIncoming.compiled_truth.preferences]);
@@ -547,43 +595,27 @@ function mergeProfile(previous, incoming, processedAt) {
 }
 
 function loadProfileStore(storePath) {
-  if (!existsSync(storePath)) {
-    return {
-      version: SKILL_VERSION,
-      updated_at: "",
-      profiles: []
-    };
-  }
-
-  const parsed = JSON.parse(readFileSync(storePath, "utf8"));
-  return {
-    version: String(parsed.version || SKILL_VERSION),
-    updated_at: String(parsed.updated_at || ""),
-    profiles: Array.isArray(parsed.profiles)
-      ? parsed.profiles.map((profile) => normalizeRelationshipProfile(profile))
-      : []
-  };
+  return loadProfileStoreState({
+    storePath,
+    defaultStorePath,
+    version: SKILL_VERSION,
+    normalizeProfile: normalizeRelationshipProfile
+  });
 }
 
 function writeProfileStore(storePath, profiles, processedAt) {
-  ensureDirectory(path.dirname(storePath));
-  writeFileSync(
+  const result = writeProfileStoreState({
     storePath,
-    `${JSON.stringify(
-      {
-        version: SKILL_VERSION,
-        updated_at: processedAt,
-        profiles
-      },
-      null,
-      2
-    )}\n`,
-    "utf8"
-  );
+    defaultStorePath,
+    version: SKILL_VERSION,
+    profiles,
+    processedAt,
+    normalizeProfile: normalizeRelationshipProfile
+  });
   return {
-    store_path: storePath,
-    written: true,
-    profile_count: profiles.length,
+    store_path: result.store_path,
+    written: result.written,
+    profile_count: result.total_profiles_after_write,
     updated_at: processedAt
   };
 }
@@ -639,6 +671,17 @@ function deriveFieldValue(candidate, profileUpdate, fieldName, fallbackKey) {
   return "";
 }
 
+function deriveFieldObject(candidate, profileUpdate, fieldName, fallbackKey) {
+  const currentValue = extractFieldCurrentValue(candidate, fieldName);
+  if (currentValue && typeof currentValue === "object") {
+    return currentValue;
+  }
+  if (profileUpdate?.[fallbackKey] && typeof profileUpdate[fallbackKey] === "object") {
+    return profileUpdate[fallbackKey];
+  }
+  return null;
+}
+
 function extractFieldCurrentValue(candidate, fieldName) {
   const fields = Array.isArray(candidate?.fields_to_confirm) ? candidate.fields_to_confirm : [];
   const match = fields.find((field) => field?.field === fieldName);
@@ -671,6 +714,9 @@ function normalizeRelationshipProfile(profile) {
         label: firstNonEmpty([profile.compiled_truth?.attitude?.label, "待判断"]),
         reason: firstNonEmpty([profile.compiled_truth?.attitude?.reason, ""])
       },
+      latent_needs: normalizeLatentNeeds(profile.compiled_truth?.latent_needs),
+      key_issues: normalizeKeyIssues(profile.compiled_truth?.key_issues),
+      attitude_intent: normalizeAttitudeIntent(profile.compiled_truth?.attitude_intent),
       traits: normalizeStringArray(profile.compiled_truth?.traits),
       tags: normalizeStringArray(profile.compiled_truth?.tags),
       preferences: normalizeStringArray(profile.compiled_truth?.preferences),
@@ -792,10 +838,6 @@ function firstNonEmpty(values) {
 
 function clone(value) {
   return JSON.parse(JSON.stringify(value));
-}
-
-function ensureDirectory(directoryPath) {
-  mkdirSync(directoryPath, { recursive: true });
 }
 
 export const __review_internal = {

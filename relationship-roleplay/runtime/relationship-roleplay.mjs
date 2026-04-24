@@ -314,3 +314,10 @@ function clampInteger(value, fallback, min, max) {
   return Math.max(min, Math.min(max, Math.round(candidate)));
 }
 
+export const __roleplay_internal = {
+  validateRoleplayRequest,
+  resolveTargetProfile,
+  normalizeRoleplayOutput,
+  persistRunArtifacts
+};
+

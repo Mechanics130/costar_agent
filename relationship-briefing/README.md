@@ -53,6 +53,9 @@ The runtime consistently produces structured briefing content, including:
 
 - `quick_brief`
 - `relationship_read`
+- `needs_read` for counterpart/self latent needs and open checks
+- `issue_map` for key issues, consensus, non-consensus, and key quotes
+- `attitude_intent_read` for counterpart/self attitude and intent
 - `approach_strategy`
 - `talking_points`
 - `watchouts`

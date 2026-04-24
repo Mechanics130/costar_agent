@@ -1,8 +1,16 @@
 // SPDX-License-Identifier: Apache-2.0
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { getRelationshipGraphSkillInfo } from "./relationship-graph.mjs";
+import {
+  buildCommitFeedbackArtifact,
+  buildGraphReviewStoreDeltaArtifact,
+  buildGraphReviewSummaryArtifact
+} from "../../costar-core/artifacts/review-artifacts.mjs";
+import {
+  loadGraphReviewStore as loadGraphReviewStoreState,
+  writeGraphReviewStore as writeGraphReviewStoreState
+} from "../../costar-core/stores/graph-review-store.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -88,28 +96,26 @@ export function runRelationshipGraphReviewResolution(payload) {
     status: results.unresolvedCandidates.length ? "needs_review" : "success",
     graph_skill: request.graph_result.skill || "relationship-graph",
     processed_at: processedAt,
-    review_summary: {
-      decision_count: request.review_decisions.length,
-      confirmed_count: results.confirmedEdges.length,
-      rejected_count: results.rejectedEdges.length,
-      downgraded_count: results.downgradedEdges.length,
-      reclassified_count: results.reclassifiedEdges.length,
-      deferred_count: results.deferredEdges.length,
-      unresolved_count: results.unresolvedCandidates.length
-    },
+    review_summary: buildGraphReviewSummaryArtifact({
+      decisionCount: request.review_decisions.length,
+      confirmedCount: results.confirmedEdges.length,
+      rejectedCount: results.rejectedEdges.length,
+      downgradedCount: results.downgradedEdges.length,
+      reclassifiedCount: results.reclassifiedEdges.length,
+      deferredCount: results.deferredEdges.length,
+      unresolvedCount: results.unresolvedCandidates.length
+    }),
     confirmed_edges: results.confirmedEdges,
     rejected_edges: results.rejectedEdges,
     downgraded_edges: results.downgradedEdges,
     reclassified_edges: results.reclassifiedEdges,
     deferred_edges: results.deferredEdges,
     unresolved_candidates: results.unresolvedCandidates,
-    graph_review_store_delta: {
+    graph_review_store_delta: buildGraphReviewStoreDeltaArtifact({
       upserts: results.upserts,
-      store_path: storeWrite.store_path,
-      written: storeWrite.written,
-      total_decisions_after_write: storeWrite.total_decisions_after_write
-    },
-    commit_feedback: buildCommitFeedback(results),
+      storeWrite
+    }),
+    commit_feedback: buildGraphCommitFeedback(results),
     notes: request.notes || ""
   };
 }
@@ -259,7 +265,7 @@ function buildUnresolvedCandidate(candidate) {
   };
 }
 
-function buildCommitFeedback(results) {
+function _buildCommitFeedback(results) {
   const summaryLines = [
     `已确认 ${results.confirmedEdges.length} 条关系边`,
     `已拒绝 ${results.rejectedEdges.length} 条关系边`,
@@ -283,23 +289,37 @@ function buildCommitFeedback(results) {
   };
 }
 
-function loadGraphReviewStore(storePath) {
-  if (!storePath || !existsSync(storePath)) {
-    return {
-      version: SKILL_VERSION,
-      updated_at: "",
-      decisions: []
-    };
-  }
+function buildGraphCommitFeedback(results) {
+  const summaryLines = [
+    `已确认 ${results.confirmedEdges.length} 条关系边`,
+    `已拒绝 ${results.rejectedEdges.length} 条关系边`,
+    `仍待处理 ${results.unresolvedCandidates.length} 条关系边`
+  ];
 
-  const parsed = JSON.parse(readFileSync(storePath, "utf8").replace(/^\uFEFF/, ""));
-  return {
-    version: normalizeString(parsed.version) || SKILL_VERSION,
-    updated_at: normalizeString(parsed.updated_at),
-    decisions: Array.isArray(parsed.decisions)
-      ? parsed.decisions.map((decision) => normalizeStoredDecision(decision))
-      : []
-  };
+  return buildCommitFeedbackArtifact({
+    headline: results.unresolvedCandidates.length
+      ? "关系边决议已部分写回，但还有待处理候选"
+      : "关系边决议已写回 graph review store",
+    summaryLines,
+    nextAction: results.unresolvedCandidates.length
+      ? {
+          type: "continue_review",
+          message: `建议继续处理剩余 ${results.unresolvedCandidates.length} 条边，避免 graph 里长期保留弱关系候选`
+        }
+      : {
+          type: "rerun_graph",
+          message: "建议重新运行 graph skill，查看人工确认后的最新网络结构"
+        }
+  });
+}
+
+function loadGraphReviewStore(storePath) {
+  return loadGraphReviewStoreState({
+    storePath,
+    defaultStorePath: defaultReviewStorePath,
+    version: SKILL_VERSION,
+    normalizeDecision: normalizeStoredDecision
+  });
 }
 
 function mergeReviewStore(store, upserts, processedAt) {
@@ -315,13 +335,11 @@ function mergeReviewStore(store, upserts, processedAt) {
 }
 
 function writeGraphReviewStore(storePath, store) {
-  mkdirSync(path.dirname(storePath || defaultReviewStorePath), { recursive: true });
-  writeFileSync(storePath, `${JSON.stringify(store, null, 2)}\n`, "utf8");
-  return {
-    store_path: storePath,
-    written: true,
-    total_decisions_after_write: store.decisions.length
-  };
+  return writeGraphReviewStoreState({
+    storePath,
+    defaultStorePath: defaultReviewStorePath,
+    store
+  });
 }
 
 function normalizeStoredDecision(decision) {

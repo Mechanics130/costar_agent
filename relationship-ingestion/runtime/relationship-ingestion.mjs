@@ -2,6 +2,12 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import {
+  needsInsightReview,
+  normalizeAttitudeIntent,
+  normalizeKeyIssues,
+  normalizeLatentNeeds
+} from "../../costar-core/relationship-insights.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -1194,6 +1200,9 @@ function normalizeProfileUpdate(person, existingPeople, existingLookup, policy, 
     boundaries: normalizeProfileItems(person?.boundaries),
     intent: normalizeNarrativeField(person?.intent, "???"),
     attitude: normalizeAttitude(person?.attitude),
+    latent_needs: normalizeLatentNeeds(person?.latent_needs),
+    key_issues: normalizeKeyIssues(person?.key_issues),
+    attitude_intent: normalizeAttitudeIntent(person?.attitude_intent),
     relationship_stage: normalizeNarrativeField(person?.relationship_stage, "???"),
     risk_flags: normalizeProfileItems(person?.risk_flags),
     summary: normalizeNarrativeField(person?.summary, `${personName} ???????????????`),
@@ -1237,6 +1246,9 @@ function buildPersonProfiles({ profileUpdates, resolvedPeople, detectedPeople, t
         relationship_stage: update.relationship_stage,
         intent: update.intent,
         attitude: update.attitude,
+        latent_needs: update.latent_needs,
+        key_issues: update.key_issues,
+        attitude_intent: update.attitude_intent,
         traits: update.traits,
         tags: update.tags,
         preferences: update.preferences,
@@ -1291,7 +1303,8 @@ function buildReviewBundle({ request, prepared, policy, detectedPeople, resolved
         suggestedAction === "create" ||
         suggestedAction === "review" ||
         (detected?.confidence || profile.confidence || "medium") === "low" ||
-        blockingFlags.length > 0,
+        blockingFlags.length > 0 ||
+        needsInsightReview(profile.compiled_truth),
       confirmation_status: "pending",
       suggested_action: suggestedAction,
       confidence: detected?.confidence || profile.confidence || "medium",
@@ -1315,6 +1328,21 @@ function buildReviewBundle({ request, prepared, policy, detectedPeople, resolved
           field: "compiled_truth.intent",
           label: "意图判断",
           current_value: update?.intent || profile.compiled_truth.intent
+        },
+        {
+          field: "compiled_truth.latent_needs",
+          label: "隐性需求识别",
+          current_value: profile.compiled_truth.latent_needs
+        },
+        {
+          field: "compiled_truth.key_issues",
+          label: "关键议题 / 共识 / 非共识",
+          current_value: profile.compiled_truth.key_issues
+        },
+        {
+          field: "compiled_truth.attitude_intent",
+          label: "双方态度与意图",
+          current_value: profile.compiled_truth.attitude_intent
         },
         {
           field: "compiled_truth.relationship_stage",
@@ -1514,6 +1542,9 @@ function deriveProfileOpenQuestions(update, interactionSummary, reviewFlags, ali
   }
   if (!update.preferences.length) {
     questions.push("对方偏好信息仍不够充分。");
+  }
+  if (needsInsightReview({ latent_needs: update.latent_needs, key_issues: update.key_issues, attitude_intent: update.attitude_intent })) {
+    questions.push("隐性需求、关键议题或双方态度意图中存在低置信度/缺少证据的判断，建议人工确认。");
   }
 
   interactionSummary.open_questions.forEach((question) => {
