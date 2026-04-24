@@ -44,6 +44,10 @@ node bin/costar.mjs host install codex --apply-skill
 node bin/costar.mjs host doctor codex
 ```
 
+For a full same-machine Codex acceptance run, use:
+
+- [Codex acceptance test manual](codex-acceptance-test-manual.md)
+
 OpenClaw:
 
 ```bash

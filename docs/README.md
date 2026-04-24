@@ -11,6 +11,7 @@ evaluate, and share CoStar.
 - [Architecture overview](architecture.md)
 - [Support matrix](support-matrix.md)
 - [Tester package](tester-package.md)
+- [Codex acceptance test manual](codex-acceptance-test-manual.md)
 - [Host adapter public hygiene](host-adapter-public-hygiene.md)
 - [Generated file map](generated-file-map.md)
 - [Examples](../examples/README.md)

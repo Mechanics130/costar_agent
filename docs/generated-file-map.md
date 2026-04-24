@@ -6,7 +6,7 @@ Branch and commit metadata are intentionally omitted so the file stays stable af
 
 ## Repository Snapshot
 
-- Tracked / public candidate files counted: 235
+- Tracked / public candidate files counted: 236
 
 ## Top-Level Map
 
@@ -17,7 +17,7 @@ Branch and commit metadata are intentionally omitted so the file stays stable af
 | `assets` | 3 | Branding and public assets |
 | `bin` | 1 | CLI entrypoint |
 | `costar-core` | 61 | Shared core, stores, host-model tools, commits, MCP bridge |
-| `docs` | 9 | Public architecture, support, testing, and product notes |
+| `docs` | 10 | Public architecture, support, testing, and product notes |
 | `examples` | 13 | Public mock examples |
 | `integrations` | 43 | Host adapters for Claude, Codex, and OpenClaw |
 | `relationship-briefing` | 9 | Brief generation |
@@ -148,6 +148,7 @@ Branch and commit metadata are intentionally omitted so the file stays stable af
 ### docs
 
 - `docs/architecture.md`
+- `docs/codex-acceptance-test-manual.md`
 - `docs/comparison.md`
 - `docs/host-adapter-public-hygiene.md`
 - `docs/pitch-en.md`
