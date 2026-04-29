@@ -1,0 +1,24 @@
+{
+  "skill": "relationship-capture",
+  "version": "0.1.0",
+  "status": "needs_review",
+  "stage": "ingestion",
+  "confirmation_request": {
+    "required": true,
+    "pending_count": 1,
+    "top_candidates": [
+      {
+        "person_name": "Bella Xu",
+        "suggested_action": "create",
+        "priority": "medium",
+        "needs_confirmation": true,
+        "questions": [
+          "Should Bella Xu be created as a new relationship profile?"
+        ],
+        "evidence_preview": [
+          "Bella Xu is willing to keep moving if examples and scheduling are ready."
+        ]
+      }
+    ]
+  }
+}

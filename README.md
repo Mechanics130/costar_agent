@@ -34,7 +34,29 @@ CoStar is designed around a simple loop:
 
 3. `briefing`
    - generate meeting prep from confirmed context
+   - surface implicit needs, key issues, consensus / non-consensus, key quotes, and attitude / intent reads
    - keep it short enough to read before a conversation
+
+## Host-Model Mode
+
+CoStar now has host-model adapter bundles for Claude, Codex, and OpenClaw.
+In host-model mode, the host product supplies model reasoning and CoStar keeps
+the durable stores, schemas, review / commit flow, graph, view, and briefing
+contracts. This means users should not need a separate CoStar model API key.
+
+Fast install checks:
+
+```bash
+node bin/costar.mjs host install claude
+node bin/costar.mjs host doctor claude
+node bin/costar.mjs host install codex --apply-skill
+node bin/costar.mjs host doctor codex
+node bin/costar.mjs host install openclaw
+node bin/costar.mjs host doctor openclaw
+```
+
+See [support matrix](docs/support-matrix.md) and [tester package](docs/tester-package.md)
+for the current acceptance scope.
 
 ## Advanced Skills
 
@@ -68,8 +90,8 @@ If you are a Chinese reader, see:
 If you are using OpenClaw, the fastest path is:
 
 1. Read `integrations/openclaw/README.md`
-2. Run `integrations/openclaw/bootstrap-costar.ps1`
-3. Let the bootstrap script write your local model config and install the adapter wrapper
+2. Run `node bin/costar.mjs host install openclaw`
+3. Run `node bin/costar.mjs host doctor openclaw`
 
 ## Launch Docs
 
@@ -113,8 +135,11 @@ Available commands:
 costar_agent/
   assets/branding/            Brand assets for GitHub and docs
   bin/                        CoStar CLI entrypoint
+  costar-core/                 Shared stores, commits, host tools, and MCP bridge
   examples/                   Small public example stories
-  integrations/openclaw/      OpenClaw adapter and bootstrap helpers
+  integrations/claude/        Claude host-model adapter bundle
+  integrations/codex/         Codex host-model skill adapter
+  integrations/openclaw/      OpenClaw host-model adapter and bootstrap helpers
   relationship-ingestion/     Core extraction and review-resolution engine
   relationship-capture/       User-facing ingestion orchestration layer
   relationship-profile/       Durable profile read/update skill

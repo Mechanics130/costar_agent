@@ -46,6 +46,12 @@
         "relationship_stage": { "type": "string" },
         "intent": { "type": "string" },
         "attitude": { "type": "object" },
+        "latent_needs": { "$ref": "#/$defs/latent_needs" },
+        "key_issues": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/key_issue" }
+        },
+        "attitude_intent": { "$ref": "#/$defs/attitude_intent" },
         "traits": { "type": "array", "items": { "type": "string" } },
         "tags": { "type": "array", "items": { "type": "string" } },
         "preferences": { "type": "array", "items": { "type": "string" } },
@@ -99,6 +105,66 @@
         "detected_as": { "type": "boolean" },
         "matched_existing_person_id": { "type": ["string", "null"] },
         "matched_existing_person_name": { "type": ["string", "null"] }
+      }
+    }
+  },
+  "$defs": {
+    "insight_item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["need", "evidence", "confidence"],
+      "properties": {
+        "need": { "type": "string" },
+        "evidence": { "type": "array", "items": { "type": "string" } },
+        "confidence": { "type": "string", "enum": ["high", "medium", "low"] }
+      }
+    },
+    "latent_needs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["counterpart", "self"],
+      "properties": {
+        "counterpart": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/insight_item" }
+        },
+        "self": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/insight_item" }
+        }
+      }
+    },
+    "key_issue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["issue", "consensus", "non_consensus", "key_quotes", "evidence", "confidence"],
+      "properties": {
+        "issue": { "type": "string" },
+        "consensus": { "type": "array", "items": { "type": "string" } },
+        "non_consensus": { "type": "array", "items": { "type": "string" } },
+        "key_quotes": { "type": "array", "items": { "type": "string" } },
+        "evidence": { "type": "array", "items": { "type": "string" } },
+        "confidence": { "type": "string", "enum": ["high", "medium", "low"] }
+      }
+    },
+    "attitude_intent_side": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["attitude", "intent", "evidence", "confidence"],
+      "properties": {
+        "attitude": { "type": "string" },
+        "intent": { "type": "string" },
+        "evidence": { "type": "array", "items": { "type": "string" } },
+        "confidence": { "type": "string", "enum": ["high", "medium", "low"] }
+      }
+    },
+    "attitude_intent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["counterpart", "self"],
+      "properties": {
+        "counterpart": { "$ref": "#/$defs/attitude_intent_side" },
+        "self": { "$ref": "#/$defs/attitude_intent_side" }
       }
     }
   }

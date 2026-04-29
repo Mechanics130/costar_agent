@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "costar": {
+      "command": "node",
+      "args": [
+        "{{CLAUDE_BUNDLE_ROOT}}\\run-costar-mcp.mjs"
+      ]
+    }
+  }
+}

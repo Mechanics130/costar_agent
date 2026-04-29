@@ -1,0 +1,60 @@
+{
+  "tool_name": "review_commit_decisions",
+  "tool_input": {
+    "target": "profile_review",
+    "commit_request": {
+      "ingestion_result": {
+        "skill": "relationship-ingestion",
+        "version": "0.1.0",
+        "resolved_people": [
+          {
+            "person_name": "Bella Xu",
+            "resolution_action": "create",
+            "confidence": "medium"
+          }
+        ],
+        "person_profiles": [
+          {
+            "person_name": "Bella Xu",
+            "person_ref": "person_bella_xu",
+            "profile_tier": "active",
+            "confidence": "medium",
+            "compiled_truth": {
+              "summary": "New collaborator who is willing to keep moving if examples and scheduling are ready."
+            },
+            "timeline": [
+              {
+                "date": "2026-04-22",
+                "event_summary": "Discussed next steps for examples and scheduling.",
+                "source_id": "meeting-2026-04-22-01",
+                "source_title": "Brand collaboration sync"
+              }
+            ]
+          }
+        ],
+        "review_bundle": {
+          "candidates": [
+            {
+              "person_name": "Bella Xu",
+              "suggested_action": "create",
+              "priority": "medium",
+              "needs_confirmation": true
+            }
+          ]
+        }
+      },
+      "decisions": [
+        {
+          "person_name": "Bella Xu",
+          "final_action": "create",
+          "resolved_person_ref": "person_bella_xu",
+          "resolved_person_name": "Bella Xu",
+          "profile_tier": "active",
+          "notes": "Confirmed by the user."
+        }
+      ],
+      "profile_store_path": "tmp/relationship-profile-store.json",
+      "operator": "host-user"
+    }
+  }
+}

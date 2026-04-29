@@ -1,0 +1,27 @@
+{
+  "tool_name": "review_translate_answers",
+  "tool_input": {
+    "source_type": "profile_review",
+    "commit_id": "profile-review-example-001",
+    "ingestion_result": {
+      "skill": "relationship-ingestion",
+      "version": "0.1.0",
+      "status": "needs_review",
+      "review_bundle": {
+        "candidates": []
+      }
+    },
+    "answers": [
+      {
+        "person_name": "Bella Xu",
+        "final_action": "create",
+        "resolved_person_ref": "person_bella_xu",
+        "resolved_person_name": "Bella Xu",
+        "profile_tier": "active",
+        "notes": "Create a new profile."
+      }
+    ],
+    "profile_store_path": "tmp/relationship-profile-store.json",
+    "operator": "host-user"
+  }
+}

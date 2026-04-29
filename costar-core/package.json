@@ -1,0 +1,11 @@
+{
+  "name": "@costar/core",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "description": "Shared CoStar core for stores, commit paths, host-model tools, and deterministic artifacts.",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=18"
+  }
+}

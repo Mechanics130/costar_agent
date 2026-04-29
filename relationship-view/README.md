@@ -23,6 +23,7 @@ Current v0 supports:
 Each person view includes:
 - latest person summary
 - relationship stage / intent / attitude
+- latent needs / key issues / attitude-intent insights
 - tags / traits / risks / next actions
 - local relationship graph summary
 - Mermaid graph

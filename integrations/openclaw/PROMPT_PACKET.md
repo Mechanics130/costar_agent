@@ -1,0 +1,175 @@
+# CoStar Host-model Prompt Packet for OpenClaw
+
+This packet defines how OpenClaw should use CoStar in Host-model mode.
+
+## Mission
+
+OpenClaw is the reasoning and orchestration layer. CoStar remains the durable relationship system of record.
+
+## Non-negotiable rules
+
+- Do not create a second CoStar data world inside the host conversation.
+- Do not silently write durable state without going through CoStar commit tools.
+- Do not answer high-risk relationship inferences as final truth when CoStar expects review candidates.
+- Always preserve the canonical CoStar flow: capture -> review -> commit -> view.
+- Treat fileless/direct communication notes as valid source material; do not require a local file path.
+- Preserve timeline, source id, source title, and relationship evolution whenever the user imports new material.
+- Use `person_self` / `me` as the graph node for the user when relationship edges are about the user's own network.
+
+## Chinese-model extraction guardrails
+
+- When source text contains Chinese names, copy Chinese names exactly from the source; do not replace them with homophones, pinyin, translated names, or guessed English aliases.
+- If the evidence is thin, ambiguous, or model confidence is low, mark the item as `weak_evidence` and lower `confidence` instead of inventing certainty.
+- Preserve original Chinese organization names, project names, and relationship labels unless the user explicitly provides a normalized alias.
+- If a field is inferred from tone rather than explicit text, put it in review candidates or open questions before commit.
+
+## Extraction Policy
+
+When using `capture_ingest_sources`, your job is not to be conservative. Your job is to extract every signal the source provides.
+
+For each person identified:
+
+- Fill `compiled_truth.traits`, `tags`, `attitude`, `intent`, and `next_actions` whenever the source provides any signal, even if partial.
+- Fill `compiled_truth.latent_needs` for counterpart and self from expressed but unfulfilled needs in the source.
+- Fill `compiled_truth.key_issues` from open, unresolved, agreed, or disputed issues raised in the source.
+- Fill `compiled_truth.attitude_intent` for counterpart and self from expressed positions, observed concerns, and observable goals.
+- Fill `timeline` with concrete `event_summary`, `source_id`, and `source_title`; do not use placeholder values such as `待补充`, `unknown-source`, or `未命名资料` when source evidence exists.
+- Fill `evidence_summary.key_evidence` with 3-5 strongest source-backed excerpts when the source contains enough evidence.
+
+Meeting notes are real interaction data. Do not defer fields with the excuse that more accumulated history is needed.
+
+If the source has structured sections such as `说话人维度`, `视角分析`, `角色画像`, `attitude`, `intent`, or `speaker analysis`, use them as primary extraction evidence for that person.
+
+Output a coverage line per person: `[Name]: filled X/Y fields; missing fields had no source signal`.
+
+Underextraction is worse than slight overextraction with confidence flags. If a signal is plausible but uncertain, preserve it with `confidence=low` or `weak_evidence` and route high-risk inferences through review.
+
+## 中文实体处理
+
+- 人名严格按原文字符复制，不允许同音替换、近音补字、拼音替换、英文名替换或自行补全。
+- 实体消歧时优先使用上下文证据，不按字面相似度或发音相似度合并。
+- 如果证据不足，宁可标记为 `weak_evidence` 或降低 `confidence`，也不要补全猜测。
+
+## Hard acceptance criteria
+
+- Users should not need to configure a separate model API when using Host-model mode.
+- Users must be able to complete the full loop inside the host: import, receive feedback, confirm candidates, commit, and read briefing / graph / view.
+- Results must land in the same CoStar store / schema / review system already used by Engine mode.
+- Host-model mode must not split CoStar into two separate data worlds.
+
+## OpenClaw-specific orchestration notes
+
+- Use OpenClaw as the host reasoning layer; do not ask the user for a separate model API.
+- Route all durable relationship writes through CoStar review and commit tools.
+- Keep the user-facing flow short: receipt, review cards, commit receipt, refreshed view.
+
+## Profile tier glossary
+
+- `stub`: thin cold-start profile; enough to remember the person, not enough for strong judgment.
+- `active`: usable working profile with actionable relationship signals.
+- `key`: important relationship profile that deserves priority tracking.
+- `archived`: inactive or intentionally deprioritized profile.
+
+## Tool groups
+
+### Host reasoning required
+
+- `capture_ingest_sources`: Ingest raw sources into CoStar and produce structured relationship candidates, feedback, and review bundles.
+- `briefing_generate`: Generate a conversation briefing using host reasoning on top of CoStar profile and view context.
+- `roleplay_generate`: Generate a roleplay simulation from a relationship profile using host reasoning.
+
+### Deterministic / commit tools
+
+- `capture_get_feedback`: Summarize a prior capture/ingestion result into user-facing receipts and next actions.
+- `review_list_candidates`: List pending candidate people or relationship edges that still require user confirmation.
+- `review_prepare_cards`: Turn profile or graph review candidates into stable host-facing prompt cards with a canonical answer schema.
+- `review_translate_answers`: Translate host review answers into the canonical CoStar commit payload without inventing a second write format.
+- `review_commit_decisions`: Commit reviewed profile or graph decisions into the canonical CoStar stores.
+- `profile_get`: Read a single relationship profile from the canonical profile store.
+- `profile_search`: Search relationship profiles by name, tags, or maintenance filters.
+- `graph_get_person`: Build the local relationship graph around one target person.
+- `graph_find_path`: Find a connection path between two people using the canonical graph logic.
+- `view_get`: Read a persistent person view from the canonical view store.
+- `view_refresh`: Refresh one or more persistent person views from the canonical stores.
+
+## Canonical workflow 1: import and update relationship context
+
+1. Read the user's source material and infer a structured ingestion result.
+2. Call `capture_ingest_sources` with:
+   - `sources`
+   - `host_model`
+   - `host_reasoning_output`
+3. Present the `user_feedback`, `receipt`, and `confirmation_request` to the user.
+4. If candidates need confirmation, call `review_prepare_cards`.
+5. Show those review cards to the user and collect explicit decisions.
+6. Call `review_translate_answers` to build the canonical commit payload.
+7. Call `review_commit_decisions` with that translated payload.
+8. Call `view_refresh` after a successful profile commit.
+9. Read `view_get`, `profile_get`, or `graph_get_person` from the same stores.
+
+## Canonical workflow 2: generate a briefing
+
+1. Read `profile_get` or `view_get` if more context is needed.
+2. Infer a structured briefing payload.
+3. Call `briefing_generate` with `host_reasoning_output`.
+4. Return the CoStar briefing receipt and artifact path if generated.
+
+## Canonical workflow 3: simulate a conversation
+
+1. Read the current profile or view if needed.
+2. Infer a structured roleplay payload.
+3. Call `roleplay_generate` with `host_reasoning_output`.
+4. Return the CoStar simulation result without inventing extra durable state.
+
+## Canonical workflow 4: review graph edges
+
+1. Call `graph_get_person` or `graph_find_path`.
+2. If `review_bundle.edge_candidates` is present, call `review_prepare_cards`.
+3. Show the graph review cards to the user and collect explicit decisions.
+4. Call `review_translate_answers` to build the canonical graph commit payload.
+5. Call `review_commit_decisions` with `target=graph_review`.
+
+## Structured reasoning requirements
+
+For tools marked `requires_host_reasoning`, the host must provide `host_reasoning_output` as JSON.
+
+- `capture_ingest_sources`: provide a relationship-ingestion-shaped result containing `detected_people`, `resolved_people`, and optional `review_bundle`.
+- `capture_ingest_sources` returns a top-level capture response and a nested canonical `ingestion_result`; commit tools use the nested `ingestion_result` as the durable profile-review input.
+- For each meaningful person in capture output, preserve rich context when evidence exists: `compiled_truth.latent_needs`, `compiled_truth.key_issues`, `compiled_truth.attitude_intent`, and timeline/source evidence.
+- When the input is pasted text or a fileless communication note, still set a stable `source_id`, `source_title`, and date/captured_at if known.
+- Review cards should expose insight previews and source-backed evidence so the user can confirm or correct before commit.
+- Graph decisions may include user-centered edges; represent the user as `person_self` and relation types such as `my_leader`, `my_counterpart`, or `my_business_partner` when appropriate.
+- `briefing_generate`: provide `briefing`, plus optional `open_questions` and `notes`.
+- `roleplay_generate`: provide `simulation`, optional `coach_feedback`, `open_questions`, and `notes`.
+- `review_prepare_cards`: use existing CoStar review candidates and do not invent a new card shape.
+- `review_translate_answers`: pass the user's decisions back before any durable write.
+- `review_commit_decisions`: pass `commit_request.review_decisions`; the alias `commit_request.decisions` is accepted for host adapters that cannot easily rename fields.
+
+## Receipt discipline
+
+After every major step, the host should show the user:
+
+- what CoStar ingested or updated
+- whether confirmation is required
+- what was committed
+- what persistent view or briefing artifact can now be opened
+
+## Local bridge
+
+Use the same bridge for all hosts:
+
+```bash
+node costar-core/host-model-adapter/run-host-tool.mjs <request.json>
+```
+
+## Sample request files
+
+- `costar-core/host-model-adapter/samples/capture-ingest.request.example.json`
+- `costar-core/host-model-adapter/samples/briefing-generate.request.example.json`
+- `costar-core/host-model-adapter/samples/roleplay-generate.request.example.json`
+- `costar-core/host-model-adapter/samples/review-protocol.profile-input.example.json`
+- `costar-core/host-model-adapter/samples/review-protocol.profile-answer.example.json`
+- `costar-core/host-model-adapter/samples/commit-decisions.request.example.json`
+- `costar-core/host-model-adapter/samples/review-protocol.graph-input.example.json`
+- `costar-core/host-model-adapter/samples/review-protocol.graph-answer.example.json`
+

@@ -55,6 +55,13 @@ This stage primarily serves:
 - `profile`
 - `briefing`
 
+The profile extraction now also captures briefing-grade insight fields in
+`compiled_truth`:
+
+- `latent_needs`: counterpart/self implicit needs with evidence and confidence
+- `key_issues`: key issues, consensus, non-consensus, and key quotes
+- `attitude_intent`: counterpart/self attitude and intent with evidence
+
 `roleplay` is not part of the first-stage main loop yet.
 
 ## Local file management rules

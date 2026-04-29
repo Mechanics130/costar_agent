@@ -1,0 +1,13 @@
+{
+  "scenario_id": "mock-cold-start",
+  "type": "cold_start",
+  "description": "Import a small historical note bundle and surface candidate people for review.",
+  "goal": "Bootstrap the first durable relationship profiles.",
+  "expected_flow": [
+    "capture_ingest_sources",
+    "capture_get_feedback",
+    "review_list_candidates",
+    "review_commit_decisions",
+    "view_refresh"
+  ]
+}

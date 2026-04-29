@@ -3,6 +3,10 @@ import { existsSync, readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import {
+  buildCaptureResponseArtifact,
+  buildViewRefreshResultArtifact
+} from "../../costar-core/artifacts/capture-artifacts.mjs";
+import {
   runRelationshipIngestion
 } from "../../relationship-ingestion/runtime/relationship-ingestion.mjs";
 import {
@@ -66,22 +70,22 @@ export async function runRelationshipCapture(payload, fallbackConfig = {}) {
     const commitFeedback = buildCommitFeedback(reviewResult);
     const confirmationRequest = buildConfirmationRequestAfterCommit(reviewResult);
 
-    return {
+    return buildCaptureResponseArtifact({
       skill: SKILL_NAME,
       version: SKILL_VERSION,
       status: reviewResult.status,
       stage: "commit",
       receipt: buildCommitReceipt(request, reviewResult),
-      processing_feedback: processingFeedback,
-      confirmation_request: confirmationRequest,
-      next_action: buildNextActionForCommit(reviewResult, viewRefreshResult),
-      user_feedback: buildUserFeedbackForCommit(reviewResult, viewRefreshResult),
-      ingestion_result: request.ingestion_result,
-      review_resolution_result: reviewResult,
-      view_refresh_result: viewRefreshResult,
-      commit_feedback: commitFeedback,
+      processingFeedback,
+      confirmationRequest,
+      nextAction: buildNextActionForCommit(reviewResult, viewRefreshResult),
+      userFeedback: buildUserFeedbackForCommit(reviewResult, viewRefreshResult),
+      ingestionResult: request.ingestion_result,
+      reviewResolutionResult: reviewResult,
+      viewRefreshResult,
+      commitFeedback,
       notes: request.notes || ""
-    };
+    });
   }
 
   const autoContext = request.ingestion_result ? null : deriveAutoContext(request);
@@ -107,49 +111,49 @@ export async function runRelationshipCapture(payload, fallbackConfig = {}) {
   const processingFeedback = buildProcessingFeedbackFromIngestion(ingestionResult);
   const confirmationRequest = buildConfirmationRequestFromIngestion(ingestionResult);
 
-  return {
+  return buildCaptureResponseArtifact({
     skill: SKILL_NAME,
     version: SKILL_VERSION,
     status: confirmationRequest.required ? "needs_review" : ingestionResult.status || "success",
     stage: "ingestion",
     receipt: buildIngestionReceipt(request, ingestionResult, autoContext, effectiveExistingPeople),
-    processing_feedback: processingFeedback,
-    confirmation_request: confirmationRequest,
-    next_action: buildNextActionForIngestion(confirmationRequest, processingFeedback),
-    user_feedback: buildUserFeedbackForIngestion(processingFeedback, confirmationRequest, autoContext),
-    ingestion_result: ingestionResult,
-    review_resolution_result: null,
-    view_refresh_result: null,
-    commit_feedback: null,
+    processingFeedback,
+    confirmationRequest,
+    nextAction: buildNextActionForIngestion(confirmationRequest, processingFeedback),
+    userFeedback: buildUserFeedbackForIngestion(processingFeedback, confirmationRequest, autoContext),
+    ingestionResult,
+    reviewResolutionResult: null,
+    viewRefreshResult: null,
+    commitFeedback: null,
     notes: request.notes || ""
-  };
+  });
 }
 
 function buildViewRefreshAfterCommit(request, reviewResult) {
   const autoRefreshEnabled = request.options.auto_refresh_views_after_commit !== false;
   const committedProfiles = Array.isArray(reviewResult?.committed_profiles) ? reviewResult.committed_profiles : [];
   if (!autoRefreshEnabled || !committedProfiles.length) {
-    return {
+    return buildViewRefreshResultArtifact({
       attempted: false,
-      refreshed_count: 0,
+      refreshedCount: 0,
       reason: committedProfiles.length ? "disabled" : "no_committed_profiles",
-      refreshed_views: [],
-      view_store_path: normalizeOptionalString(request.view_store_path) || defaultViewStorePath,
-      markdown_dir: normalizeOptionalString(request.view_markdown_dir) || defaultViewMarkdownDir,
+      refreshedViews: [],
+      viewStorePath: normalizeOptionalString(request.view_store_path) || defaultViewStorePath,
+      markdownDir: normalizeOptionalString(request.view_markdown_dir) || defaultViewMarkdownDir,
       result: null
-    };
+    });
   }
 
   if (reviewResult?.profile_store_delta?.written !== true) {
-    return {
+    return buildViewRefreshResultArtifact({
       attempted: false,
-      refreshed_count: 0,
+      refreshedCount: 0,
       reason: "profile_store_not_written",
-      refreshed_views: [],
-      view_store_path: normalizeOptionalString(request.view_store_path) || defaultViewStorePath,
-      markdown_dir: normalizeOptionalString(request.view_markdown_dir) || defaultViewMarkdownDir,
+      refreshedViews: [],
+      viewStorePath: normalizeOptionalString(request.view_store_path) || defaultViewStorePath,
+      markdownDir: normalizeOptionalString(request.view_markdown_dir) || defaultViewMarkdownDir,
       result: null
-    };
+    });
   }
 
   const profileStorePath = normalizeOptionalString(reviewResult?.profile_store_delta?.store_path)
@@ -175,15 +179,15 @@ function buildViewRefreshAfterCommit(request, reviewResult) {
     }
   });
 
-  return {
+  return buildViewRefreshResultArtifact({
     attempted: true,
-    refreshed_count: Array.isArray(viewResult?.refreshed_views) ? viewResult.refreshed_views.length : 0,
+    refreshedCount: Array.isArray(viewResult?.refreshed_views) ? viewResult.refreshed_views.length : 0,
     reason: "success",
-    refreshed_views: Array.isArray(viewResult?.refreshed_views) ? viewResult.refreshed_views : [],
-    view_store_path: viewStorePath,
-    markdown_dir: markdownDir,
+    refreshedViews: Array.isArray(viewResult?.refreshed_views) ? viewResult.refreshed_views : [],
+    viewStorePath,
+    markdownDir,
     result: viewResult
-  };
+  });
 }
 
 function validateCaptureRequest(payload) {
@@ -877,6 +881,11 @@ function normalizeKey(value) {
 export const __capture_internal = {
   validateCaptureRequest,
   deriveAutoContext,
+  buildIngestionReceipt,
+  buildProcessingFeedbackFromIngestion,
+  buildConfirmationRequestFromIngestion,
+  buildNextActionForIngestion,
+  buildUserFeedbackForIngestion,
   discoverProfileStorePaths,
   loadProfilesFromStores,
   rankProfilesForRequest,

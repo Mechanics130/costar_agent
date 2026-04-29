@@ -1,0 +1,15 @@
+{
+  "scenario_id": "mock-incremental-update",
+  "type": "incremental_update",
+  "description": "Ingest a new meeting note and verify updates land in existing relationship assets.",
+  "goal": "Update known people without creating a parallel CoStar world.",
+  "expected_flow": [
+    "capture_ingest_sources",
+    "capture_get_feedback",
+    "review_list_candidates",
+    "review_commit_decisions",
+    "view_refresh",
+    "graph_get_person",
+    "view_get"
+  ]
+}

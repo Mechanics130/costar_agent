@@ -1,8 +1,10 @@
 // SPDX-License-Identifier: Apache-2.0
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { __profile_internal, getRelationshipProfileSkillInfo } from "../../relationship-profile/runtime/relationship-profile.mjs";
+import { loadGraphReviewStore as loadGraphReviewStoreState } from "../../costar-core/stores/graph-review-store.mjs";
+import { loadProfileStore as loadProfileStoreState } from "../../costar-core/stores/profile-store.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -21,6 +23,8 @@ const DEFAULT_OPTIONS = {
   max_path_length: 4,
   min_relation_score: 2
 };
+const SELF_PERSON_REF = "person_self";
+const SELF_PERSON_NAME = "我";
 
 export function getRelationshipGraphSkillInfo() {
   return {
@@ -78,8 +82,8 @@ function validateGraphRequest(payload) {
     mode: normalizeString(payload.mode) || deriveMode(payload),
     profile_store_path: normalizeString(payload.profile_store_path) || defaultStorePath,
     graph_review_store_path: normalizeString(payload.graph_review_store_path) || defaultReviewStorePath,
-    person_name: normalizeString(payload.person_name),
-    person_ref: normalizeString(payload.person_ref),
+    person_name: normalizeString(payload.person_name || payload.source_person_name),
+    person_ref: normalizeString(payload.person_ref || payload.source_person_ref),
     target_person_name: normalizeString(payload.target_person_name),
     target_person_ref: normalizeString(payload.target_person_ref),
     options: {
@@ -103,41 +107,21 @@ function deriveMode(payload) {
 }
 
 function loadProfileStore(storePath) {
-  if (!storePath || !existsSync(storePath)) {
-    return {
-      version: SKILL_VERSION,
-      updated_at: "",
-      profiles: []
-    };
-  }
-
-  const parsed = JSON.parse(readFileSync(storePath, "utf8").replace(/^\uFEFF/, ""));
-  return {
-    version: normalizeString(parsed.version) || SKILL_VERSION,
-    updated_at: normalizeString(parsed.updated_at),
-    profiles: Array.isArray(parsed.profiles)
-      ? parsed.profiles.map((profile) => __profile_internal.normalizeRelationshipProfile(profile))
-      : []
-  };
+  return loadProfileStoreState({
+    storePath,
+    defaultStorePath,
+    version: SKILL_VERSION,
+    normalizeProfile: __profile_internal.normalizeRelationshipProfile
+  });
 }
 
 function loadGraphReviewStore(storePath) {
-  if (!storePath || !existsSync(storePath)) {
-    return {
-      version: SKILL_VERSION,
-      updated_at: "",
-      decisions: []
-    };
-  }
-
-  const parsed = JSON.parse(readFileSync(storePath, "utf8").replace(/^\uFEFF/, ""));
-  return {
-    version: normalizeString(parsed.version) || SKILL_VERSION,
-    updated_at: normalizeString(parsed.updated_at),
-    decisions: Array.isArray(parsed.decisions)
-      ? parsed.decisions.map((decision) => normalizeGraphReviewDecision(decision))
-      : []
-  };
+  return loadGraphReviewStoreState({
+    storePath,
+    defaultStorePath: defaultReviewStorePath,
+    version: SKILL_VERSION,
+    normalizeDecision: normalizeGraphReviewDecision
+  });
 }
 
 function buildGraphData(profiles, options, reviewStore) {
@@ -175,11 +159,12 @@ function buildGraphData(profiles, options, reviewStore) {
   });
 
   const rawEdges = Array.from(edgeMap.values()).sort((left, right) => right.relation_score - left.relation_score);
-  const edges = applyReviewDecisionsToEdges(rawEdges, reviewStore);
+  const edges = applyReviewDecisionsToEdges(rawEdges, reviewStore, nodeMap);
   const adjacency = buildAdjacency(edges);
+  const graphProfiles = Array.from(nodeMap.values());
 
   return {
-    profiles: normalizedProfiles,
+    profiles: graphProfiles,
     nodeMap,
     edges,
     adjacency,
@@ -187,9 +172,9 @@ function buildGraphData(profiles, options, reviewStore) {
   };
 }
 
-function applyReviewDecisionsToEdges(edges, reviewStore) {
+function applyReviewDecisionsToEdges(edges, reviewStore, nodeMap) {
   const decisionsByKey = new Map((reviewStore?.decisions || []).map((decision) => [decision.edge_key, decision]));
-  return edges
+  const reviewedEdges = edges
     .map((edge) => {
       const decision = decisionsByKey.get(edgeKey(edge.source, edge.target));
       if (!decision) {
@@ -212,8 +197,21 @@ function applyReviewDecisionsToEdges(edges, reviewStore) {
         reviewed_by: decision.operator
       };
     })
-    .filter(Boolean)
-    .sort((left, right) => right.relation_score - left.relation_score);
+    .filter(Boolean);
+
+  const reviewedEdgeMap = new Map(reviewedEdges.map((edge) => [edgeKey(edge.source, edge.target), edge]));
+  (reviewStore?.decisions || []).forEach((decision) => {
+    const key = edgeKey(decision.source_person_ref || decision.source_person_name, decision.target_person_ref || decision.target_person_name);
+    if (reviewedEdgeMap.has(key) || decision.final_action === "reject" || decision.final_action === "defer") {
+      return;
+    }
+    const edge = buildReviewedEdgeFromDecision(decision, nodeMap);
+    if (edge) {
+      reviewedEdgeMap.set(edgeKey(edge.source, edge.target), edge);
+    }
+  });
+
+  return Array.from(reviewedEdgeMap.values()).sort((left, right) => right.relation_score - left.relation_score);
 }
 
 function buildAdjacency(edges) {
@@ -420,6 +418,9 @@ function handleSummarizeNetwork({ graphData, store }) {
 }
 
 function resolvePerson({ graphData, personName, personRef }) {
+  if (isSelfReference(personRef) || isSelfReference(personName)) {
+    return graphData.nodeMap.get(SELF_PERSON_REF) || null;
+  }
   if (personRef) {
     return graphData.nodeMap.get(personRef) || null;
   }
@@ -479,6 +480,8 @@ function buildSubgraph({ graphData, nodeRefs, rootRef, targetRef, maxEdges }) {
         kind = "root";
       } else if (targetRef && personRef === targetRef) {
         kind = "target";
+      } else if (personRef === SELF_PERSON_REF) {
+        kind = "self";
       } else if (targetRef) {
         kind = "path";
       } else if (rootRef) {
@@ -1011,6 +1014,152 @@ function normalizeNullableString(value) {
 
 function normalizeKey(value) {
   return normalizeString(value).toLowerCase();
+}
+
+function buildReviewedEdgeFromDecision(decision, nodeMap) {
+  const source = resolveDecisionEndpoint({
+    personRef: decision.source_person_ref,
+    personName: decision.source_person_name,
+    nodeMap
+  });
+  const target = resolveDecisionEndpoint({
+    personRef: decision.target_person_ref,
+    personName: decision.target_person_name,
+    nodeMap
+  });
+  if (!source || !target || source.person_ref === target.person_ref) {
+    return null;
+  }
+
+  const [left, right] = [source.person_ref, target.person_ref].sort();
+  return {
+    source: left,
+    target: right,
+    relation_score: decision.relation_score || defaultReviewedRelationScore(decision.final_action),
+    relation_type: decision.corrected_relation_type || decision.relation_type || "user_confirmed_relation",
+    relation_reasons: uniqueStrings([
+      decision.note,
+      "This edge was committed through CoStar graph review."
+    ]),
+    shared_sources: [],
+    shared_tags: [],
+    review_status: decision.final_action,
+    review_note: normalizeString(decision.note),
+    reviewed_at: decision.reviewed_at,
+    reviewed_by: decision.operator
+  };
+}
+
+function resolveDecisionEndpoint({ personRef, personName, nodeMap }) {
+  if (isSelfReference(personRef) || isSelfReference(personName)) {
+    return ensureNode(nodeMap, buildSelfProfile());
+  }
+
+  const normalizedRef = normalizeString(personRef);
+  if (normalizedRef && nodeMap.has(normalizedRef)) {
+    return nodeMap.get(normalizedRef);
+  }
+
+  const normalizedName = normalizeKey(personName);
+  const byName = normalizedName
+    ? Array.from(nodeMap.values()).find((profile) => {
+        if (normalizeKey(profile.person_name) === normalizedName) {
+          return true;
+        }
+        return Array.isArray(profile.aliases)
+          ? profile.aliases.some((alias) => normalizeKey(alias) === normalizedName)
+          : false;
+      })
+    : null;
+  if (byName) {
+    return byName;
+  }
+
+  const fallbackName = normalizeString(personName || personRef);
+  if (!fallbackName) {
+    return null;
+  }
+  const fallbackRef = normalizedRef || buildVirtualPersonRef(fallbackName);
+  return ensureNode(nodeMap, buildVirtualProfile({ personRef: fallbackRef, personName: fallbackName }));
+}
+
+function ensureNode(nodeMap, profile) {
+  if (!nodeMap.has(profile.person_ref)) {
+    nodeMap.set(profile.person_ref, profile);
+  }
+  return nodeMap.get(profile.person_ref);
+}
+
+function buildSelfProfile() {
+  return buildVirtualProfile({
+    personRef: SELF_PERSON_REF,
+    personName: SELF_PERSON_NAME,
+    profileTier: "key",
+    confidence: "high"
+  });
+}
+
+function buildVirtualProfile({ personRef, personName, profileTier = "stub", confidence = "low" }) {
+  return {
+    person_name: personName,
+    person_ref: personRef,
+    resolution_action: "create",
+    profile_tier: profileTier,
+    confidence,
+    aliases: personRef === SELF_PERSON_REF ? ["me", "self", "myself", "user"] : [],
+    compiled_truth: {
+      summary: personRef === SELF_PERSON_REF ? "The user / owner of this relationship network." : "Graph-review endpoint without a full profile yet.",
+      current_judgment: personRef === SELF_PERSON_REF ? "The user is the center of this CoStar relationship graph." : "Needs profile enrichment.",
+      relationship_stage: "active",
+      intent: "relationship_context",
+      attitude: { label: "active", reason: "" },
+      latent_needs: { counterpart: [], self: [] },
+      key_issues: [],
+      attitude_intent: {
+        counterpart: { attitude: "pending", intent: "pending", evidence: [], confidence: "medium" },
+        self: { attitude: "pending", intent: "pending", evidence: [], confidence: "medium" }
+      },
+      traits: [],
+      tags: personRef === SELF_PERSON_REF ? ["self"] : ["graph-review-endpoint"],
+      preferences: [],
+      boundaries: [],
+      risk_flags: [],
+      open_questions: [],
+      next_actions: []
+    },
+    timeline: [],
+    evidence_summary: {
+      excerpt_count: 0,
+      source_count: 0,
+      last_updated_at: "",
+      key_evidence: []
+    },
+    linked_relationships: {
+      detected_as: true,
+      matched_existing_person_id: personRef,
+      matched_existing_person_name: personName
+    }
+  };
+}
+
+function buildVirtualPersonRef(personName) {
+  const normalized = normalizeKey(personName).replace(/[^a-z0-9\u4e00-\u9fa5]+/gi, "_");
+  return `person_${normalized || "review_endpoint"}`;
+}
+
+function isSelfReference(value) {
+  const normalized = normalizeKey(value);
+  return ["我", "me", "myself", "self", "user", "owner", "person_self"].includes(normalized);
+}
+
+function defaultReviewedRelationScore(action) {
+  if (action === "downgrade") {
+    return 10;
+  }
+  if (action === "defer" || action === "reject") {
+    return 0;
+  }
+  return 80;
 }
 
 function normalizeGraphReviewAction(value) {

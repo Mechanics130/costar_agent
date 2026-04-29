@@ -2,6 +2,12 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import {
+  hasAttitudeIntentContent,
+  normalizeAttitudeIntent,
+  normalizeKeyIssues,
+  normalizeLatentNeeds
+} from "../../costar-core/relationship-insights.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -361,6 +367,12 @@ function normalizeBriefingOutput({ parsed, request, profile, context, config, so
   const approachStrategy = briefing.approach_strategy && typeof briefing.approach_strategy === "object"
     ? briefing.approach_strategy
     : {};
+  const needsRead = briefing.needs_read && typeof briefing.needs_read === "object"
+    ? briefing.needs_read
+    : {};
+  const attitudeIntentRead = briefing.attitude_intent_read && typeof briefing.attitude_intent_read === "object"
+    ? briefing.attitude_intent_read
+    : {};
 
   const openQuestions = Array.isArray(parsed?.open_questions)
     ? uniqueStrings(parsed.open_questions.map((item) => normalizeString(item)).filter(Boolean))
@@ -393,6 +405,9 @@ function normalizeBriefingOutput({ parsed, request, profile, context, config, so
         attitude: normalizeString(relationshipRead.attitude) || profile.compiled_truth?.attitude?.label || "待判断",
         trust_level: normalizeTrustLevel(relationshipRead.trust_level)
       },
+      needs_read: normalizeNeedsRead(needsRead, profile),
+      issue_map: normalizeBriefingIssueMap(briefing.issue_map, profile),
+      attitude_intent_read: normalizeBriefingAttitudeIntentRead(attitudeIntentRead, relationshipRead, profile),
       approach_strategy: {
         goal_translation: normalizeString(approachStrategy.goal_translation) || request.conversation_goal,
         recommended_opening: normalizeString(approachStrategy.recommended_opening) || "先从对方当前最在意的问题切入。",
@@ -409,6 +424,7 @@ function normalizeBriefingOutput({ parsed, request, profile, context, config, so
       summary_lines: [
         `目标人物：${profile.person_name}`,
         `关系阶段：${profile.compiled_truth?.relationship_stage || "待判断"}`,
+        "已补充隐性需求、关键议题、双方态度意图三类 briefing 洞察",
         `自动召回互动数：${context.receipt.auto_context_interaction_count}`,
         context.receipt.auto_context_used_views ? "已补充持续视图上下文" : "未命中持续视图上下文"
       ],
@@ -420,6 +436,74 @@ function normalizeBriefingOutput({ parsed, request, profile, context, config, so
     open_questions: openQuestions,
     notes: normalizeString(parsed?.notes)
   };
+}
+
+function normalizeNeedsRead(value, profile) {
+  const source = value && typeof value === "object" ? value : {};
+  const profileNeeds = normalizeLatentNeeds(profile.compiled_truth?.latent_needs);
+  return {
+    counterpart_needs: normalizeBriefingNeedItems(
+      source.counterpart_needs || source.counterpart || profileNeeds.counterpart,
+      4
+    ),
+    self_needs: normalizeBriefingNeedItems(
+      source.self_needs || source.self || source.my_needs || profileNeeds.self,
+      4
+    ),
+    leverage_points: normalizeArray(source.leverage_points || source.recommended_moves, 5),
+    open_checks: normalizeArray(source.open_checks || source.questions_to_validate, 5)
+  };
+}
+
+function normalizeBriefingNeedItems(values, limit) {
+  return normalizeLatentNeeds({ counterpart: Array.isArray(values) ? values : [] })
+    .counterpart
+    .slice(0, limit);
+}
+
+function normalizeBriefingIssueMap(values, profile) {
+  const sourceItems = Array.isArray(values) && values.length
+    ? values
+    : normalizeKeyIssues(profile.compiled_truth?.key_issues);
+  return normalizeKeyIssues(sourceItems)
+    .map((item, index) => ({
+      ...item,
+      suggested_move: normalizeString(sourceItems[index]?.suggested_move || sourceItems[index]?.recommended_move)
+    }))
+    .slice(0, 6);
+}
+
+function normalizeBriefingAttitudeIntentRead(value, relationshipRead, profile) {
+  const parsed = normalizeAttitudeIntent(value);
+  const profileInsight = normalizeAttitudeIntent(profile.compiled_truth?.attitude_intent);
+  const fallbackCounterpart = {
+    attitude: normalizeString(relationshipRead.attitude) || profile.compiled_truth?.attitude?.label || "待判断",
+    intent: normalizeString(relationshipRead.likely_intent) || profile.compiled_truth?.intent || "待判断",
+    evidence: [],
+    confidence: "medium"
+  };
+  const fallbackSelf = {
+    attitude: "待判断",
+    intent: "待判断",
+    evidence: [],
+    confidence: "medium"
+  };
+  return {
+    counterpart: chooseAttitudeIntentSide(parsed.counterpart, profileInsight.counterpart, fallbackCounterpart),
+    self: chooseAttitudeIntentSide(parsed.self, profileInsight.self, fallbackSelf),
+    alignment: normalizeString(value.alignment) || "待判断",
+    risk: normalizeString(value.risk) || "待判断"
+  };
+}
+
+function chooseAttitudeIntentSide(parsed, profileSide, fallback) {
+  if (hasAttitudeIntentContent(parsed)) {
+    return parsed;
+  }
+  if (hasAttitudeIntentContent(profileSide)) {
+    return profileSide;
+  }
+  return fallback;
 }
 
 function writeBriefingMarkdown({ request, result, profile, context }) {
@@ -461,6 +545,9 @@ function renderBriefingMarkdown({ request, result, profile, context, title }) {
   lines.push(`- 当前态度：${result.briefing.relationship_read.attitude}`);
   lines.push(`- 信任度：${result.briefing.relationship_read.trust_level}`);
   lines.push("");
+  appendNeedsReadSection(lines, result.briefing.needs_read);
+  appendIssueMapSection(lines, result.briefing.issue_map);
+  appendAttitudeIntentSection(lines, result.briefing.attitude_intent_read);
   lines.push("## 这次沟通该怎么打");
   lines.push("");
   lines.push(`- 现实目标：${result.briefing.approach_strategy.goal_translation}`);
@@ -535,6 +622,72 @@ function renderBriefingMarkdown({ request, result, profile, context, title }) {
   return `${lines.join("\n")}\n`;
 }
 
+function appendNeedsReadSection(lines, needsRead) {
+  const counterpart = Array.isArray(needsRead?.counterpart_needs) ? needsRead.counterpart_needs : [];
+  const self = Array.isArray(needsRead?.self_needs) ? needsRead.self_needs : [];
+  const leveragePoints = Array.isArray(needsRead?.leverage_points) ? needsRead.leverage_points : [];
+  const openChecks = Array.isArray(needsRead?.open_checks) ? needsRead.open_checks : [];
+
+  if (!counterpart.length && !self.length && !leveragePoints.length && !openChecks.length) {
+    return;
+  }
+
+  lines.push("## 隐性需求识别", "");
+  counterpart.forEach((item) => lines.push(`- 关系人隐性需求：${formatNeedInsight(item)}`));
+  self.forEach((item) => lines.push(`- 我的隐性需求：${formatNeedInsight(item)}`));
+  leveragePoints.forEach((item) => lines.push(`- 可用切入点：${item}`));
+  openChecks.forEach((item) => lines.push(`- 需确认：${item}`));
+  lines.push("");
+}
+
+function appendIssueMapSection(lines, issueMap) {
+  const items = Array.isArray(issueMap) ? issueMap : [];
+  if (!items.length) {
+    return;
+  }
+
+  lines.push("## 关键议题地图", "");
+  items.forEach((item) => {
+    const consensus = item.consensus.length ? `；共识：${item.consensus.join(" / ")}` : "";
+    const nonConsensus = item.non_consensus.length ? `；非共识：${item.non_consensus.join(" / ")}` : "";
+    const quotes = item.key_quotes.length ? `；关键语句：${item.key_quotes.join(" / ")}` : "";
+    const move = item.suggested_move ? `；建议处理：${item.suggested_move}` : "";
+    lines.push(`- ${item.issue}（${item.confidence}）${consensus}${nonConsensus}${quotes}${move}`);
+  });
+  lines.push("");
+}
+
+function appendAttitudeIntentSection(lines, attitudeIntentRead) {
+  if (!attitudeIntentRead) {
+    return;
+  }
+
+  const counterpart = attitudeIntentRead.counterpart;
+  const self = attitudeIntentRead.self;
+  if (!hasAttitudeIntentContent(counterpart) && !hasAttitudeIntentContent(self)) {
+    return;
+  }
+
+  lines.push("## 态度与意图预判", "");
+  lines.push(`- 关系人：态度=${counterpart.attitude}；意图=${counterpart.intent}；置信度=${counterpart.confidence}${formatEvidenceSuffix(counterpart.evidence)}`);
+  lines.push(`- 我方：态度=${self.attitude}；意图=${self.intent}；置信度=${self.confidence}${formatEvidenceSuffix(self.evidence)}`);
+  if (attitudeIntentRead.alignment && attitudeIntentRead.alignment !== "待判断") {
+    lines.push(`- 对齐程度：${attitudeIntentRead.alignment}`);
+  }
+  if (attitudeIntentRead.risk && attitudeIntentRead.risk !== "待判断") {
+    lines.push(`- 风险提醒：${attitudeIntentRead.risk}`);
+  }
+  lines.push("");
+}
+
+function formatNeedInsight(item) {
+  return `${item.need}（${item.confidence}）${formatEvidenceSuffix(item.evidence)}`;
+}
+
+function formatEvidenceSuffix(evidence) {
+  return Array.isArray(evidence) && evidence.length ? `；证据：${evidence.join(" / ")}` : "";
+}
+
 function deriveBriefingDate(request) {
   const raw = normalizeString(request.meeting_context?.scheduled_time) || new Date().toISOString().slice(0, 10);
   const matched = raw.match(/\d{4}-\d{2}-\d{2}/);
@@ -592,4 +745,14 @@ function normalizeTrustLevel(value) {
 function uniqueStrings(values) {
   return Array.from(new Set(values));
 }
+
+export const __briefing_internal = {
+  validateBriefingRequest,
+  resolveTargetProfile,
+  deriveBriefingContext,
+  normalizeBriefingOutput,
+  renderBriefingMarkdown,
+  writeBriefingMarkdown,
+  persistRunArtifacts
+};
 

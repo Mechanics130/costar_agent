@@ -1,0 +1,38 @@
+{
+  "source_type": "profile_review",
+  "ingestion_result": {
+    "skill": "relationship-ingestion",
+    "version": "0.1.0",
+    "resolved_people": [
+      {
+        "person_name": "Bella Xu",
+        "resolution_action": "create"
+      }
+    ],
+    "review_bundle": {
+      "candidates": [
+        {
+          "person_name": "Bella Xu",
+          "suggested_action": "create",
+          "priority": "medium",
+          "needs_confirmation": true
+        }
+      ]
+    },
+    "interaction_summary": {
+      "summary": "Sample ingestion result for review translation."
+    }
+  },
+  "answers": [
+    {
+      "person_name": "Bella Xu",
+      "final_action": "create",
+      "resolved_person_ref": "person_bella_xu",
+      "resolved_person_name": "Bella Xu",
+      "profile_tier": "active",
+      "notes": "Create a new profile."
+    }
+  ],
+  "profile_store_path": "tmp/relationship-profile-store.json",
+  "operator": "host-user"
+}

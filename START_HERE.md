@@ -30,15 +30,28 @@ It does **not** include:
 
 - Git
 - Node.js 18+ recommended
-- Your own OpenAI-compatible model endpoint
+- For host-model mode: Claude, Codex, or OpenClaw can supply the model reasoning
+- For engine mode only: your own OpenAI-compatible model endpoint
 
-If you are using OpenClaw, you can skip most manual setup by running:
+If you are using Claude, Codex, or OpenClaw, start with the host installer:
+
+```powershell
+node bin/costar.mjs host install claude
+node bin/costar.mjs host install codex --apply-skill
+node bin/costar.mjs host install openclaw
+```
+
+Then run the matching doctor:
+
+```powershell
+node bin/costar.mjs host doctor claude
+node bin/costar.mjs host doctor codex
+node bin/costar.mjs host doctor openclaw
+```
+
+If you want the older engine-mode CLI path, run:
 
 `node bin/costar.mjs init`
-
-If you want the OpenClaw adapter wiring too, run:
-
-`integrations/openclaw/bootstrap-costar.ps1`
 
 You can also inspect the CLI first:
 
@@ -86,6 +99,7 @@ For a good first test, focus on:
 
 4. `briefing`
    - Is the briefing short, direct, and usable before a conversation?
+   - Does it include implicit needs, key issues, consensus / non-consensus, key quotes, and attitude / intent?
 
 5. `graph`
    - Does the graph make the relationship structure clearer?

@@ -1,0 +1,88 @@
+{
+  "tool_name": "roleplay_generate",
+  "tool_input": {
+    "target_profile": {
+      "person_name": "Jordan Li",
+      "person_ref": "person_jordan_li",
+      "compiled_truth": {
+        "summary": "A rational lead who prefers data and clear boundaries.",
+        "relationship_stage": "stable contact",
+        "intent": "Clarify whether the project is worth continued investment.",
+        "attitude": {
+          "label": "cautious",
+          "reason": "Wants clear direction before moving forward."
+        }
+      },
+      "timeline": [
+        {
+          "date": "2026-04-13",
+          "event_summary": "Discussed project scope and resource allocation."
+        }
+      ]
+    },
+    "conversation_goal": "Simulate a follow-up conversation about whether the project should continue.",
+    "conversation_topic": "Project priorities and investment trade-offs",
+    "scenario_context": "A one-on-one discussion where we want a real read on judgment without creating pressure.",
+    "starting_user_message": "I want to hear your honest judgment on whether this line is worth continuing.",
+    "host_model": {
+      "provider": "codex-host",
+      "model": "codex-host",
+      "target": "codex"
+    },
+    "host_reasoning_output": {
+      "simulation": {
+        "persona_read": {
+          "current_state": "Open to discussing it, but will first test whether the scope is actually clear.",
+          "likely_intent": "Figure out whether this is worth continued investment and who would really own it.",
+          "attitude": "Cautious, not negative.",
+          "response_style": "State the judgment first, then the boundary."
+        },
+        "opening_assessment": "If the opening is restrained and fact-based, he is likely to stay analytical.",
+        "simulated_turns": [
+          {
+            "turn": 1,
+            "user_move": "I want to hear your honest judgment on whether this line is worth continuing.",
+            "likely_response": "It could be, but only if the scope and owner are clear enough to avoid diffuse effort.",
+            "why": "He usually gives a cautious judgment first, then defines conditions.",
+            "risk_level": "low"
+          },
+          {
+            "turn": 2,
+            "user_move": "What would make it worth continuing from your perspective?",
+            "likely_response": "A clear owner, a believable end-to-end path, and proof the team will not be spread too thin.",
+            "why": "He values boundaries and resourcing more than ambition language.",
+            "risk_level": "medium"
+          }
+        ],
+        "likely_pushbacks": [
+          "He may push back if the conversation becomes aspirational instead of concrete."
+        ],
+        "recommended_replies": [
+          "Acknowledge the caution and keep the discussion on ownership and real constraints."
+        ],
+        "danger_zones": [
+          "Do not frame the conversation as a loyalty test."
+        ],
+        "if_conversation_goes_well": [
+          "Ask him to define the minimum conditions for continued investment."
+        ]
+      },
+      "coach_feedback": {
+        "keep_doing": [
+          "Ask for the judgment first, then the conditions."
+        ],
+        "avoid": [
+          "Do not push for commitment too early."
+        ],
+        "recovery_moves": [
+          "If he becomes reserved, restate that you are only trying to confirm the real constraints."
+        ]
+      },
+      "notes": "Host-model sample output."
+    },
+    "options": {
+      "save_run_artifacts": false,
+      "simulation_turns": 3
+    }
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "tool_name": "profile_get",
+  "tool_input": {
+    "person_name": "Ava Chen",
+    "profile_store_path": "relationship-profile/samples/stores/relationship-profile-store.cold-start.example.json"
+  }
+}

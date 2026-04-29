@@ -1,0 +1,23 @@
+{
+  "tool_name": "review_translate_answers",
+  "tool_input": {
+    "source_type": "graph_review",
+    "commit_id": "graph-review-example-001",
+    "graph_result": {
+      "skill": "relationship-graph",
+      "review_bundle": {
+        "edge_candidates": []
+      }
+    },
+    "answers": [
+      {
+        "source_person_ref": "person_ava_chen",
+        "target_person_ref": "person_bella_xu",
+        "final_action": "reject",
+        "note": "This edge is only co-occurrence for now."
+      }
+    ],
+    "graph_review_store_path": "tmp/relationship-graph-review-store.json",
+    "operator": "host-user"
+  }
+}

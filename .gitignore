@@ -6,6 +6,15 @@
 logs/temp/
 logs/*.log
 
+# Local host retest artifacts and internal Feishu sync snippets
+retest-b*.json
+catpaw-host-model-retest-report-*.md
+codex-host-model-clean-test-report-*.md
+macos-codex-host-model-install-test-report-*.md
+docs/catpaw-host-model-*.md
+docs/feishu-update-snippet-*.md
+_feishu_drafts/
+
 # Generated runtime artifacts
 **/runtime/runs/
 **/runtime/stores/
