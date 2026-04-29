@@ -68,6 +68,16 @@ const forbiddenFiles = [
   "docs/launch-plan.md",
   "docs/launch-notes.md",
 ];
+const forbiddenPackagePathFragments = [
+  "/runtime/runs/",
+  "/runtime/stores/",
+  "docs/catpaw-host-model-",
+  "docs/feishu-update-snippet-",
+  "_feishu_drafts/",
+  "catpaw-host-model-retest-report-",
+  "codex-host-model-clean-test-report-",
+  "macos-codex-host-model-install-test-report-",
+];
 
 function fail(message) {
   console.error(`FAIL: ${message}`);
@@ -187,6 +197,35 @@ for (const file of collectTextFiles()) {
     if (content.includes(pattern)) {
       fail(`Public file still contains banned pattern "${pattern}" in ${path.relative(repoRoot, file)}`);
     }
+  }
+}
+
+const npmPackCommand = process.platform === "win32" ? "cmd.exe" : "npm";
+const npmPackArgs = process.platform === "win32"
+  ? ["/d", "/s", "/c", "npm pack --dry-run --json"]
+  : ["pack", "--dry-run", "--json"];
+const packResult = spawnSync(npmPackCommand, npmPackArgs, {
+  cwd: repoRoot,
+  stdio: "pipe",
+  encoding: "utf8",
+});
+if (packResult.status !== 0) {
+  fail(`npm pack --dry-run failed\n${packResult.error || packResult.stderr || packResult.stdout}`);
+} else {
+  try {
+    const packEntries = JSON.parse(packResult.stdout);
+    const packageFiles = Array.isArray(packEntries?.[0]?.files)
+      ? packEntries[0].files.map((item) => String(item.path || "").replaceAll("\\", "/"))
+      : [];
+    for (const packagePath of packageFiles) {
+      for (const fragment of forbiddenPackagePathFragments) {
+        if (packagePath.includes(fragment)) {
+          fail(`npm package includes forbidden path: ${packagePath}`);
+        }
+      }
+    }
+  } catch (error) {
+    fail(`Could not parse npm pack --dry-run output: ${error.message}`);
   }
 }
 
