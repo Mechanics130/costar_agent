@@ -34,6 +34,12 @@ for (const host of ["claude", "codex", "openclaw"]) {
   record(output.includes("compiled_truth.latent_needs"), `${host} packet preserves latent needs`, "");
   record(output.includes("compiled_truth.key_issues"), `${host} packet preserves key issues`, "");
   record(output.includes("compiled_truth.attitude_intent"), `${host} packet preserves attitude intent`, "");
+  record(output.includes("## Extraction Policy"), `${host} packet includes forced extraction policy`, "");
+  record(output.includes("extract every signal the source provides"), `${host} packet rejects underextraction`, "");
+  record(output.includes("coverage line per person"), `${host} packet asks for per-person extraction coverage`, "");
+  record(output.includes("Underextraction is worse than slight overextraction with confidence flags"), `${host} packet prioritizes source-backed coverage`, "");
+  record(output.includes("人名严格按原文字符复制"), `${host} packet includes Chinese entity exact-copy rule`, "");
+  record(output.includes("weak_evidence"), `${host} packet preserves weak evidence for uncertain Chinese entities`, "");
   record(output.includes("source_id") && output.includes("source_title"), `${host} packet preserves source identity`, "");
   record(output.includes("person_self"), `${host} packet defines self graph node`, "");
   record(output.includes("Profile tier glossary"), `${host} packet includes profile tier glossary`, "");
