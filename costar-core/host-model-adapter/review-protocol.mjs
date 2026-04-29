@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
+import { getExtractionWarningsForPerson } from "../host-model-workflows/extraction-guardrails.mjs";
 
 export function buildHostReviewPrompt(result, options = {}) {
   const stage = normalizeString(result?.stage);
@@ -72,6 +73,7 @@ function buildProfileReviewPrompt(result, options) {
     fields_to_confirm: Array.isArray(candidate.fields_to_confirm) ? candidate.fields_to_confirm : [],
     evidence_preview: Array.isArray(candidate.evidence_preview) ? candidate.evidence_preview : [],
     insight_preview: buildCandidateInsightPreview(candidate),
+    extraction_warnings: getExtractionWarningsForPerson(result, candidate.person_name),
     response_schema: {
       person_name: normalizeString(candidate.person_name),
       final_action: "create | update | ignore | defer",
@@ -188,7 +190,12 @@ function buildProfileCandidatesPreview(result) {
   collectProfilePreviewItems(previewMap, result?.detected_people, "detected_people");
   collectProfilePreviewItems(previewMap, result?.confirmation_request?.top_candidates, "confirmation_request");
   collectProfilePreviewItems(previewMap, result?.review_bundle?.candidates, "review_bundle");
-  return Array.from(previewMap.values());
+  return Array.from(previewMap.values()).map((item) => {
+    const extractionWarnings = getExtractionWarningsForPerson(result, item.person_name);
+    return extractionWarnings.length
+      ? { ...item, extraction_warnings: extractionWarnings }
+      : item;
+  });
 }
 
 function collectProfilePreviewItems(previewMap, items, source) {

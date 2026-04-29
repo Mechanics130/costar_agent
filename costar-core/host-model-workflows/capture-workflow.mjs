@@ -1,14 +1,18 @@
 // SPDX-License-Identifier: Apache-2.0
 import { buildCaptureResponseArtifact } from "../artifacts/capture-artifacts.mjs";
+import { withExtractionWarnings } from "./extraction-guardrails.mjs";
 import { __capture_internal, getRelationshipCaptureSkillInfo } from "../../relationship-capture/runtime/relationship-capture.mjs";
 
 export async function runHostModelCaptureWorkflow(payload) {
   const request = __capture_internal.validateCaptureRequest(payload);
   const autoContext = request.ingestion_result ? null : __capture_internal.deriveAutoContext(request);
   const effectiveExistingPeople = autoContext ? autoContext.existing_people : request.existing_people;
-  const ingestionResult = request.ingestion_result
-    ? attachSourceManifest(request.ingestion_result, request)
-    : normalizeCaptureReasoning(payload.host_reasoning_output, request);
+  const ingestionResult = withExtractionWarnings(
+    request.ingestion_result
+      ? attachSourceManifest(request.ingestion_result, request)
+      : normalizeCaptureReasoning(payload.host_reasoning_output, request),
+    request
+  );
 
   const processingFeedback = __capture_internal.buildProcessingFeedbackFromIngestion(ingestionResult);
   const confirmationRequest = __capture_internal.buildConfirmationRequestFromIngestion(ingestionResult);
@@ -31,8 +35,13 @@ export async function runHostModelCaptureWorkflow(payload) {
   });
 
   const insightPreview = buildIngestionInsightPreview(ingestionResult);
+  const extractionWarnings = Array.isArray(ingestionResult.extraction_warnings)
+    ? ingestionResult.extraction_warnings
+    : [];
   response.processing_feedback.insight_preview = insightPreview;
+  response.processing_feedback.extraction_warnings = extractionWarnings;
   response.user_feedback.insight_preview = insightPreview;
+  response.user_feedback.extraction_warnings = extractionWarnings;
   response.host_model = summarizeHostModel(payload.host_model);
   response.source = "host_model_adapter";
   return response;

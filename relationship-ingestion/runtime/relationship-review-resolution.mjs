@@ -239,13 +239,17 @@ function normalizeIngestionResult(value) {
 }
 
 function buildIngestionContext(ingestionResult) {
+  const sourceManifest = buildSourceManifest(ingestionResult);
   const personProfiles = Array.isArray(ingestionResult.person_profiles)
-    ? ingestionResult.person_profiles.map((profile) => normalizeRelationshipProfile(profile))
+    ? ingestionResult.person_profiles.map((profile) => repairProfileTimelinePlaceholders(
+        normalizeRelationshipProfile(profile),
+        sourceManifest[0],
+        profile?.compiled_truth?.summary
+      ))
     : [];
   const resolvedPeople = Array.isArray(ingestionResult.resolved_people) ? ingestionResult.resolved_people : [];
   const profileUpdates = Array.isArray(ingestionResult.profile_updates) ? ingestionResult.profile_updates : [];
   const evidenceItems = Array.isArray(ingestionResult.evidence) ? ingestionResult.evidence : [];
-  const sourceManifest = buildSourceManifest(ingestionResult);
   const reviewBundle = ingestionResult.review_bundle && typeof ingestionResult.review_bundle === "object"
     ? ingestionResult.review_bundle
     : { candidates: [] };
@@ -819,30 +823,61 @@ function evidenceToTimelineItem(evidence) {
   };
 }
 
-function normalizeTimelineInput(item, index, fallbackSource = null) {
+function normalizeTimelineInput(item, index, fallbackSource = null, fallbackSummary = "") {
   if (typeof item === "string") {
     return {
       timeline_id: `timeline-${index + 1}`,
-      date: fallbackSource?.captured_at || "pending",
-      source_id: fallbackSource?.source_id || `source-${index + 1}`,
-      source_title: fallbackSource?.source_title || "Direct communication input",
+      date: firstNonPlaceholder([fallbackSource?.captured_at]) || "pending",
+      source_id: firstNonPlaceholder([fallbackSource?.source_id, `source-${index + 1}`]),
+      source_title: firstNonPlaceholder([fallbackSource?.source_title]) || "Direct communication input",
       relative_path: fallbackSource?.relative_path || "",
-      event_summary: item,
+      event_summary: firstNonPlaceholder([item, fallbackSummary, fallbackSource?.source_title]) || "Imported relationship event",
       matched_excerpt_index: index + 1
     };
   }
   const source = item && typeof item === "object" ? item : {};
   return {
-    timeline_id: firstNonEmpty([source.timeline_id, `timeline-${index + 1}`]),
-    date: firstNonEmpty([source.date, source.captured_at, source.source_captured_at, fallbackSource?.captured_at, "pending"]),
-    source_id: firstNonEmpty([source.source_id, fallbackSource?.source_id, `source-${index + 1}`]),
-    source_title: firstNonEmpty([source.source_title, source.title, fallbackSource?.source_title, "Direct communication input"]),
-    relative_path: firstNonEmpty([source.relative_path, source.source_relative_path, fallbackSource?.relative_path]),
-    event_summary: firstNonEmpty([source.event_summary, source.summary, source.excerpt, source.text, source.source_title, "Imported relationship event"]),
+    timeline_id: firstNonPlaceholder([source.timeline_id, `timeline-${index + 1}`]),
+    date: firstNonPlaceholder([source.date, source.captured_at, source.source_captured_at, fallbackSource?.captured_at]) || "pending",
+    source_id: firstNonPlaceholder([source.source_id, fallbackSource?.source_id, `source-${index + 1}`]),
+    source_title: firstNonPlaceholder([source.source_title, source.title, fallbackSource?.source_title]) || "Direct communication input",
+    relative_path: firstNonPlaceholder([source.relative_path, source.source_relative_path, fallbackSource?.relative_path]),
+    event_summary: firstNonPlaceholder([
+      source.event_summary,
+      source.summary,
+      source.excerpt,
+      source.text,
+      source.source_title,
+      fallbackSummary,
+      fallbackSource?.source_title,
+    ]) || "Imported relationship event",
     matched_excerpt_index: Number.isInteger(source.matched_excerpt_index)
       ? source.matched_excerpt_index
       : Number.isInteger(source.excerpt_index) ? source.excerpt_index : index + 1
   };
+}
+
+function repairProfileTimelinePlaceholders(profile, fallbackSource = null, fallbackSummary = "") {
+  if (!fallbackSource || !Array.isArray(profile?.timeline)) {
+    return profile;
+  }
+  return {
+    ...profile,
+    timeline: profile.timeline.map((item, index) => normalizeTimelineInput(item, index, fallbackSource, fallbackSummary))
+  };
+}
+
+function firstNonPlaceholder(values) {
+  for (const value of values) {
+    if (typeof value !== "string") {
+      continue;
+    }
+    const normalized = value.trim();
+    if (normalized && !isPlaceholderValue(normalized)) {
+      return normalized;
+    }
+  }
+  return "";
 }
 
 function firstTimelineArray(values) {
@@ -1042,6 +1077,34 @@ function firstNonEmpty(values) {
     }
   }
   return "";
+}
+
+function isPlaceholderValue(value) {
+  const normalized = String(value ?? "").trim();
+  const key = normalized.toLowerCase();
+  return !normalized
+    || key === "tbd"
+    || key === "todo"
+    || key === "to be determined"
+    || key === "pending"
+    || key === "unknown"
+    || key === "unknown-source"
+    || key === "n/a"
+    || key === "na"
+    || key === "none"
+    || key === "null"
+    || key === "undefined"
+    || key === "待判断"
+    || key === "待补充"
+    || key === "未命名资料"
+    || key === "direct communication input"
+    || key === "imported relationship event"
+    || normalized.includes("待判断")
+    || normalized.includes("待补充")
+    || normalized.includes("未命名资料")
+    || normalized.includes("寰呭垽")
+    || normalized.includes("寰呰")
+    || normalized.includes("鏈懡");
 }
 
 function clone(value) {
