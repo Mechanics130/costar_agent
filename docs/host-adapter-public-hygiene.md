@@ -35,5 +35,6 @@ The public adapter must preserve four rules:
 - `npm run test:host-model` passes.
 - `npm run docs:file-map` regenerates the public file map.
 - `scripts/check-public-repo.mjs` reports no banned private patterns.
+- Public `README.md`, `README.zh-CN.md`, and `CHANGELOG.md` are updated with the release version and user-facing update notes before pushing public `main`.
 - `docs/support-matrix.md` reflects the real support level.
 - `docs/tester-package.md` matches the current test commands.
