@@ -187,7 +187,8 @@ function buildCaptureFeedbackPreview(toolInput) {
     processing_feedback: {
       updated_people_count: resolvedPeople.filter((item) => item?.resolution_action === "update").length,
       new_candidate_count: resolvedPeople.filter((item) => item?.resolution_action === "create").length,
-      ignored_noise_count: resolvedPeople.filter((item) => item?.resolution_action === "ignore").length
+      ignored_noise_count: resolvedPeople.filter((item) => item?.resolution_action === "ignore").length,
+      insight_preview: buildIngestionInsightPreview(ingestionResult)
     },
     confirmation_request: {
       required: reviewCandidates.length > 0,
@@ -197,9 +198,34 @@ function buildCaptureFeedbackPreview(toolInput) {
   };
 }
 
+function buildIngestionInsightPreview(ingestionResult) {
+  const profiles = Array.isArray(ingestionResult?.person_profiles) ? ingestionResult.person_profiles : [];
+  const candidates = Array.isArray(ingestionResult?.review_bundle?.candidates)
+    ? ingestionResult.review_bundle.candidates
+    : [];
+  return [...profiles, ...candidates]
+    .slice(0, 5)
+    .map((item) => ({
+      person_name: normalizeString(item.person_name),
+      latent_needs: item.compiled_truth?.latent_needs || getCandidateField(item, "compiled_truth.latent_needs") || null,
+      key_issues: item.compiled_truth?.key_issues || getCandidateField(item, "compiled_truth.key_issues") || null,
+      attitude_intent: item.compiled_truth?.attitude_intent || getCandidateField(item, "compiled_truth.attitude_intent") || null
+    }))
+    .filter((item) => item.person_name);
+}
+
+function getCandidateField(candidate, fieldName) {
+  const fields = Array.isArray(candidate?.fields_to_confirm) ? candidate.fields_to_confirm : [];
+  return fields.find((field) => normalizeString(field?.field) === fieldName)?.current_value;
+}
+
 function pickLimitOption(toolInput) {
   if (toolInput?.limit == null) {
     return {};
   }
   return { limit: toolInput.limit };
+}
+
+function normalizeString(value) {
+  return String(value ?? "").trim();
 }

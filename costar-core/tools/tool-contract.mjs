@@ -20,9 +20,13 @@ const TOOL_DEFINITIONS = [
         "host_model",
         "host_reasoning_output",
         "options"
-      ]
+      ],
+      default_paths: {
+        profile_store_path: "relationship-profile/runtime/stores/relationship-profile-store.json"
+      }
     },
     output_contract: {
+      canonical_result_field: "ingestion_result",
       primary_fields: [
         "receipt",
         "processing_feedback",
@@ -44,7 +48,10 @@ const TOOL_DEFINITIONS = [
     purpose: "Summarize a prior capture/ingestion result into user-facing receipts and next actions.",
     input_contract: {
       required: ["ingestion_result"],
-      optional: ["profile_store_path", "options"]
+      optional: ["profile_store_path", "options"],
+      default_paths: {
+        profile_store_path: "relationship-profile/runtime/stores/relationship-profile-store.json"
+      }
     },
     output_contract: {
       primary_fields: [
@@ -87,7 +94,7 @@ const TOOL_DEFINITIONS = [
       optional: ["ingestion_result", "graph_result", "limit", "options"]
     },
     output_contract: {
-      primary_fields: ["source_type", "pending_count", "prompt_cards"]
+      primary_fields: ["status", "source_type", "pending_count", "explanation", "candidates_preview", "prompt_cards"]
     },
     side_effects: [],
     receipt_required: false,
@@ -128,7 +135,38 @@ const TOOL_DEFINITIONS = [
     purpose: "Commit reviewed profile or graph decisions into the canonical CoStar stores.",
     input_contract: {
       required: ["target", "commit_request"],
-      optional: ["commit_id", "commit_log_path"]
+      optional: ["commit_id", "commit_log_path"],
+      aliases: {
+        decisions: "commit_request.review_decisions"
+      },
+      nested: {
+        commit_request: {
+          profile_review: {
+            required: ["ingestion_result", "review_decisions"],
+            accepted_aliases: ["decisions"],
+            accepted_ingestion_result_shapes: [
+              "capture_ingest_sources.ingestion_result",
+              "full capture_ingest_sources response containing ingestion_result",
+              "relationship-ingestion-shaped object with detected_people/resolved_people/person_profiles"
+            ],
+            optional: ["profile_store_path", "operator", "notes", "options"],
+            default_paths: {
+              profile_store_path: "relationship-ingestion/runtime/stores/relationship-profile-store.json"
+            }
+          },
+          graph_review: {
+            required: ["graph_result", "review_decisions"],
+            accepted_aliases: ["decisions"],
+            optional: ["graph_review_store_path", "operator", "notes", "options"],
+            default_paths: {
+              graph_review_store_path: "relationship-graph/runtime/stores/relationship-graph-review-store.json"
+            }
+          }
+        }
+      },
+      samples: [
+        "costar-core/host-model-adapter/samples/commit-decisions.request.example.json"
+      ]
     },
     output_contract: {
       primary_fields: [
@@ -152,7 +190,10 @@ const TOOL_DEFINITIONS = [
     purpose: "Read a single relationship profile from the canonical profile store.",
     input_contract: {
       required: [],
-      optional: ["person_name", "person_ref", "profile_store_path", "options"]
+      optional: ["person_name", "person_ref", "profile_store_path", "options"],
+      default_paths: {
+        profile_store_path: "relationship-profile/runtime/stores/relationship-profile-store.json"
+      }
     },
     output_contract: {
       primary_fields: ["target_person", "profile_read", "related_people", "maintenance_report"]
@@ -169,7 +210,10 @@ const TOOL_DEFINITIONS = [
     purpose: "Search relationship profiles by name, tags, or maintenance filters.",
     input_contract: {
       required: [],
-      optional: ["query_text", "filters", "profile_store_path", "options"]
+      optional: ["query_text", "filters", "profile_store_path", "options"],
+      default_paths: {
+        profile_store_path: "relationship-profile/runtime/stores/relationship-profile-store.json"
+      }
     },
     output_contract: {
       primary_fields: ["search_results", "store_overview"]
@@ -197,7 +241,24 @@ const TOOL_DEFINITIONS = [
         "host_model",
         "host_reasoning_output",
         "options"
-      ]
+      ],
+      default_paths: {
+        profile_store_path: "relationship-profile/runtime/stores/relationship-profile-store.json"
+      },
+      host_reasoning_output_schema: {
+        wrapper: "host_reasoning_output.briefing",
+        alternate_top_level: true,
+        required: [
+          "quick_brief",
+          "relationship_read",
+          "approach_strategy",
+          "talking_points",
+          "watchouts",
+          "questions_to_ask",
+          "next_actions"
+        ],
+        optional: ["open_questions", "notes"]
+      }
     },
     output_contract: {
       primary_fields: ["briefing", "briefing_file", "receipt", "host_model"]
@@ -214,7 +275,10 @@ const TOOL_DEFINITIONS = [
     purpose: "Generate a roleplay simulation from a relationship profile using host reasoning.",
     input_contract: {
       required: ["conversation_goal"],
-      optional: ["person_name", "person_ref", "target_profile", "profile_store_path", "host_model", "host_reasoning_output", "options"]
+      optional: ["person_name", "person_ref", "target_profile", "profile_store_path", "host_model", "host_reasoning_output", "options"],
+      default_paths: {
+        profile_store_path: "relationship-profile/runtime/stores/relationship-profile-store.json"
+      }
     },
     output_contract: {
       primary_fields: [
@@ -238,7 +302,11 @@ const TOOL_DEFINITIONS = [
     purpose: "Build the local relationship graph around one target person.",
     input_contract: {
       required: [],
-      optional: ["person_name", "person_ref", "profile_store_path", "graph_review_store_path", "options"]
+      optional: ["person_name", "person_ref", "profile_store_path", "graph_review_store_path", "options"],
+      default_paths: {
+        profile_store_path: "relationship-profile/runtime/stores/relationship-profile-store.json",
+        graph_review_store_path: "relationship-graph/runtime/stores/relationship-graph-review-store.json"
+      }
     },
     output_contract: {
       primary_fields: ["graph", "related_people", "user_feedback", "review_bundle", "render_artifacts"]
@@ -263,7 +331,11 @@ const TOOL_DEFINITIONS = [
         "profile_store_path",
         "graph_review_store_path",
         "options"
-      ]
+      ],
+      default_paths: {
+        profile_store_path: "relationship-profile/runtime/stores/relationship-profile-store.json",
+        graph_review_store_path: "relationship-graph/runtime/stores/relationship-graph-review-store.json"
+      }
     },
     output_contract: {
       primary_fields: ["connection_path", "graph", "user_feedback", "review_bundle", "render_artifacts"]
@@ -280,7 +352,12 @@ const TOOL_DEFINITIONS = [
     purpose: "Read a persistent person view from the canonical view store.",
     input_contract: {
       required: [],
-      optional: ["person_name", "person_ref", "profile_store_path", "graph_review_store_path", "view_store_path", "options"]
+      optional: ["person_name", "person_ref", "profile_store_path", "graph_review_store_path", "view_store_path", "options"],
+      default_paths: {
+        profile_store_path: "relationship-profile/runtime/stores/relationship-profile-store.json",
+        graph_review_store_path: "relationship-graph/runtime/stores/relationship-graph-review-store.json",
+        view_store_path: "relationship-view/runtime/stores/relationship-view-store.json"
+      }
     },
     output_contract: {
       primary_fields: ["person_view", "store_overview", "user_feedback"]
@@ -305,7 +382,12 @@ const TOOL_DEFINITIONS = [
         "graph_review_store_path",
         "view_store_path",
         "options"
-      ]
+      ],
+      default_paths: {
+        profile_store_path: "relationship-profile/runtime/stores/relationship-profile-store.json",
+        graph_review_store_path: "relationship-graph/runtime/stores/relationship-graph-review-store.json",
+        view_store_path: "relationship-view/runtime/stores/relationship-view-store.json"
+      }
     },
     output_contract: {
       primary_fields: ["refreshed_views", "view_store_delta", "user_feedback"]

@@ -1,6 +1,16 @@
 // SPDX-License-Identifier: Apache-2.0
 import { __briefing_internal, getRelationshipBriefingSkillInfo } from "../../relationship-briefing/runtime/relationship-briefing.mjs";
 
+const REQUIRED_BRIEFING_FIELDS = [
+  "quick_brief",
+  "relationship_read",
+  "approach_strategy",
+  "talking_points",
+  "watchouts",
+  "questions_to_ask",
+  "next_actions"
+];
+
 export async function runHostModelBriefingWorkflow(payload) {
   const request = __briefing_internal.validateBriefingRequest(payload);
   const profile = __briefing_internal.resolveTargetProfile(request);
@@ -60,22 +70,15 @@ function normalizeBriefingReasoning(reasoningOutput) {
   }
 
   if (reasoningOutput.briefing && typeof reasoningOutput.briefing === "object") {
+    assertCompleteBriefing(reasoningOutput.briefing);
     return reasoningOutput;
   }
 
-  const topLevelBriefingFields = [
-    "quick_brief",
-    "relationship_read",
-    "approach_strategy",
-    "talking_points",
-    "watchouts",
-    "questions_to_ask",
-    "next_actions"
-  ];
-  const containsTopLevelBriefing = topLevelBriefingFields.some((key) => key in reasoningOutput);
+  const containsTopLevelBriefing = REQUIRED_BRIEFING_FIELDS.some((key) => key in reasoningOutput);
   if (!containsTopLevelBriefing) {
-    throw new Error("host_reasoning_output is missing the expected briefing structure.");
+    throwBriefingSchemaError(REQUIRED_BRIEFING_FIELDS);
   }
+  assertCompleteBriefing(reasoningOutput);
 
   const { open_questions, notes, ...briefing } = reasoningOutput;
   return {
@@ -83,6 +86,30 @@ function normalizeBriefingReasoning(reasoningOutput) {
     open_questions,
     notes
   };
+}
+
+function assertCompleteBriefing(briefing) {
+  const missing = REQUIRED_BRIEFING_FIELDS.filter((field) => !hasMeaningfulValue(briefing?.[field]));
+  if (missing.length) {
+    throwBriefingSchemaError(missing);
+  }
+}
+
+function hasMeaningfulValue(value) {
+  if (Array.isArray(value)) {
+    return value.length > 0;
+  }
+  if (value && typeof value === "object") {
+    return Object.keys(value).length > 0;
+  }
+  return normalizeString(value).length > 0;
+}
+
+function throwBriefingSchemaError(missingFields) {
+  throw new Error(
+    `host_reasoning_output is missing required briefing fields: ${missingFields.join(", ")}. ` +
+      `Expected host_reasoning_output.briefing or top-level fields: ${REQUIRED_BRIEFING_FIELDS.join(", ")}.`
+  );
 }
 
 function buildHostModelDescriptor(hostModel, fallbackName) {

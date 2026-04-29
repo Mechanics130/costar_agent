@@ -6,7 +6,7 @@ Branch and commit metadata are intentionally omitted so the file stays stable af
 
 ## Repository Snapshot
 
-- Tracked / public candidate files counted: 236
+- Tracked / public candidate files counted: 241
 
 ## Top-Level Map
 
@@ -16,7 +16,7 @@ Branch and commit metadata are intentionally omitted so the file stays stable af
 | `(root)` | 17 | Repository metadata and entry docs |
 | `assets` | 3 | Branding and public assets |
 | `bin` | 1 | CLI entrypoint |
-| `costar-core` | 61 | Shared core, stores, host-model tools, commits, MCP bridge |
+| `costar-core` | 65 | Shared core, stores, host-model tools, commits, MCP bridge |
 | `docs` | 10 | Public architecture, support, testing, and product notes |
 | `examples` | 13 | Public mock examples |
 | `integrations` | 43 | Host adapters for Claude, Codex, and OpenClaw |
@@ -27,7 +27,7 @@ Branch and commit metadata are intentionally omitted so the file stays stable af
 | `relationship-profile` | 9 | Durable profile read / write |
 | `relationship-roleplay` | 8 | Conversation simulation |
 | `relationship-view` | 8 | Persistent markdown views |
-| `scripts` | 3 | Checks, smoke tests, and generated docs |
+| `scripts` | 4 | Checks, smoke tests, and generated docs |
 
 ## Important Entrypoints
 
@@ -91,6 +91,7 @@ Branch and commit metadata are intentionally omitted so the file stays stable af
 - `costar-core/commit/README.md`
 - `costar-core/host-install/host-installer-smoke.mjs`
 - `costar-core/host-install/host-installer.mjs`
+- `costar-core/host-model-adapter/catpaw-contract-smoke.mjs`
 - `costar-core/host-model-adapter/claude-test-pack-smoke.mjs`
 - `costar-core/host-model-adapter/codex-test-pack-smoke.mjs`
 - `costar-core/host-model-adapter/conversation-spec-smoke.mjs`
@@ -108,6 +109,7 @@ Branch and commit metadata are intentionally omitted so the file stays stable af
 - `costar-core/host-model-adapter/run-host-tool.mjs`
 - `costar-core/host-model-adapter/samples/briefing-generate.request.example.json`
 - `costar-core/host-model-adapter/samples/capture-ingest.request.example.json`
+- `costar-core/host-model-adapter/samples/commit-decisions.request.example.json`
 - `costar-core/host-model-adapter/samples/profile-get.request.example.json`
 - `costar-core/host-model-adapter/samples/review-prepare.graph.request.example.json`
 - `costar-core/host-model-adapter/samples/review-prepare.profile.request.example.json`
@@ -120,7 +122,9 @@ Branch and commit metadata are intentionally omitted so the file stays stable af
 - `costar-core/host-model-adapter/samples/roleplay-generate.request.example.json`
 - `costar-core/host-model-e2e/host-model-e2e-checklist.md`
 - `costar-core/host-model-e2e/README.md`
+- `costar-core/host-model-e2e/runtime/codex-clean-insight-regression-smoke.mjs`
 - `costar-core/host-model-e2e/runtime/host-model-e2e-smoke.mjs`
+- `costar-core/host-model-e2e/runtime/host-model-persistence-graph-smoke.mjs`
 - `costar-core/host-model-e2e/scenarios/mock-cold-start.json`
 - `costar-core/host-model-e2e/scenarios/mock-incremental-update.json`
 - `costar-core/host-model-workflows/briefing-workflow.mjs`
@@ -323,4 +327,5 @@ Branch and commit metadata are intentionally omitted so the file stays stable af
 
 - `scripts/briefing-insights-smoke.mjs`
 - `scripts/check-public-repo.mjs`
+- `scripts/file-map-no-git-smoke.mjs`
 - `scripts/generate-file-map.mjs`

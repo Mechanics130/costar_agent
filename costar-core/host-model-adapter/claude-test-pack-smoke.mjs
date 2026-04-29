@@ -32,6 +32,10 @@ record(testPack.includes("costar-core/mcp/claude-clean-install-smoke.mjs"), "tes
 record(testPack.includes("doctor-claude-install.mjs --require-config"), "test pack points to installed bundle doctor", "");
 record(testPack.includes("review-prepare.profile.request.example.json"), "test pack points to review prepare sample", "");
 record(testPack.includes("host-model-e2e-smoke.mjs"), "test pack points to e2e smoke", "");
+record(testPack.includes("host-model-persistence-graph-smoke.mjs"), "test pack points to persistence graph smoke", "");
+record(testPack.includes("latent needs") && testPack.includes("key issues") && testPack.includes("attitude intent"), "test pack covers rich insight persistence", "");
+record(testPack.includes("source id") && testPack.includes("source title") && testPack.includes("timeline evidence"), "test pack covers source and timeline preservation", "");
+record(testPack.includes("person_self"), "test pack covers user self graph node", "");
 record(testPack.includes("FIRST_SESSION.md"), "test pack points to first-session guidance", "");
 record(resultsTemplate.includes("Hard acceptance questions"), "results template includes acceptance section", "");
 record(resultsTemplate.includes("Claude-native MCP entrypoint"), "results template includes MCP observation section", "");

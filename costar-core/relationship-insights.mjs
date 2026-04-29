@@ -18,6 +18,13 @@ const PLACEHOLDER_VALUES = new Set([
 ]);
 
 export function normalizeLatentNeeds(value) {
+  if (Array.isArray(value)) {
+    return {
+      counterpart: normalizeNeedItems(value),
+      self: []
+    };
+  }
+
   const source = toObject(value);
   return {
     counterpart: normalizeNeedItems(
@@ -28,7 +35,9 @@ export function normalizeLatentNeeds(value) {
         source.person,
         source.other_party,
         source.their_needs,
-        source.counterpart_needs
+        source.counterpart_needs,
+        source.needs,
+        source.items
       ])
     ),
     self: normalizeNeedItems(
@@ -55,6 +64,7 @@ export function normalizeKeyIssues(value) {
 
 export function normalizeAttitudeIntent(value) {
   const source = toObject(value);
+  const rootAsCounterpart = hasAttitudeIntentShape(source) ? source : null;
   return {
     counterpart: normalizeAttitudeIntentSide(
       firstObject([
@@ -63,6 +73,7 @@ export function normalizeAttitudeIntent(value) {
         source.relationship_person,
         source.person,
         source.other_party,
+        rootAsCounterpart,
         {
           attitude: source.counterpart_attitude,
           intent: source.counterpart_intent,
@@ -213,21 +224,31 @@ function normalizeKeyIssue(item) {
   if (!issue) {
     return null;
   }
+  const status = normalizeString(source.status || source.state).toLowerCase();
+  const evidence = normalizeEvidenceList(source.evidence || source.key_evidence);
+  const explicitConsensus = normalizeInsightStringArray(
+    source.consensus || source.agreements || source.aligned_points || source.common_ground,
+    6
+  );
+  const explicitNonConsensus = normalizeInsightStringArray(
+    source.non_consensus || source.disagreements || source.unresolved || source.differences,
+    6
+  );
+  const explicitKeyQuotes = normalizeInsightStringArray(
+    source.key_quotes || source.quotes || source.key_sentences || source.critical_quotes,
+    6
+  );
+  const inferredConsensus = explicitConsensus.length ? explicitConsensus : inferConsensusFromStatus(status, issue, evidence);
+  const inferredNonConsensus = explicitNonConsensus.length ? explicitNonConsensus : inferNonConsensusFromStatus(status, issue, evidence);
   return {
     issue,
-    consensus: normalizeInsightStringArray(
-      source.consensus || source.agreements || source.aligned_points || source.common_ground,
-      6
-    ),
-    non_consensus: normalizeInsightStringArray(
-      source.non_consensus || source.disagreements || source.unresolved || source.differences,
-      6
-    ),
-    key_quotes: normalizeInsightStringArray(
-      source.key_quotes || source.quotes || source.key_sentences || source.critical_quotes,
-      6
-    ),
-    evidence: normalizeEvidenceList(source.evidence || source.key_evidence),
+    consensus: inferredConsensus,
+    non_consensus: inferredNonConsensus,
+    key_quotes: uniqueStrings([
+      ...explicitKeyQuotes,
+      ...extractQuotedTexts(evidence)
+    ]).slice(0, 6),
+    evidence,
     confidence: normalizeConfidence(source.confidence)
   };
 }
@@ -298,7 +319,7 @@ function normalizeEvidenceList(values) {
 }
 
 function normalizeInsightStringArray(values, limit = 8, maxLength = 180) {
-  const items = Array.isArray(values) ? values : [];
+  const items = Array.isArray(values) ? values : (typeof values === "string" ? [values] : []);
   return uniqueStrings(
     items
       .map((item) => normalizeInsightText(item))
@@ -318,6 +339,69 @@ function firstObject(values) {
 
 function firstText(values) {
   return values.map((value) => normalizeInsightText(value)).find(Boolean) || "";
+}
+
+function inferConsensusFromStatus(status, issue, evidence) {
+  if (!statusImpliesConsensus(status)) {
+    return [];
+  }
+  return [firstText([evidence[0], issue])].filter(Boolean);
+}
+
+function inferNonConsensusFromStatus(status, issue, evidence) {
+  if (!statusImpliesNonConsensus(status)) {
+    return [];
+  }
+  return [firstText([evidence[0], issue])].filter(Boolean);
+}
+
+function statusImpliesConsensus(status) {
+  const normalized = normalizeString(status).toLowerCase();
+  if (!normalized || statusImpliesNonConsensus(normalized)) {
+    return false;
+  }
+  return normalized.includes("consensus")
+    || normalized.includes("agreed")
+    || normalized.includes("aligned");
+}
+
+function statusImpliesNonConsensus(status) {
+  const normalized = normalizeString(status).toLowerCase();
+  return normalized.includes("non_consensus")
+    || normalized.includes("non-consensus")
+    || normalized.includes("unresolved")
+    || normalized.includes("disagree")
+    || normalized.includes("difference");
+}
+
+function hasAttitudeIntentShape(source) {
+  return Boolean(
+    source
+      && typeof source === "object"
+      && !Array.isArray(source)
+      && (
+        source.attitude
+        || source.attitude_label
+        || source.intent
+        || source.likely_intent
+        || source.goal
+        || source.evidence
+        || source.key_evidence
+        || source.quotes
+      )
+  );
+}
+
+function extractQuotedTexts(values) {
+  const texts = Array.isArray(values) ? values : [];
+  const quotes = [];
+  for (const text of texts) {
+    const normalized = normalizeString(text);
+    for (const match of normalized.matchAll(/[“"]([^”"]{2,120})[”"]/g)) {
+      quotes.push(match[1]);
+    }
+  }
+  return uniqueStrings(quotes);
 }
 
 function normalizeInsightText(value) {

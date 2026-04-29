@@ -12,6 +12,16 @@ OpenClaw is the reasoning and orchestration layer. CoStar remains the durable re
 - Do not silently write durable state without going through CoStar commit tools.
 - Do not answer high-risk relationship inferences as final truth when CoStar expects review candidates.
 - Always preserve the canonical CoStar flow: capture -> review -> commit -> view.
+- Treat fileless/direct communication notes as valid source material; do not require a local file path.
+- Preserve timeline, source id, source title, and relationship evolution whenever the user imports new material.
+- Use `person_self` / `me` as the graph node for the user when relationship edges are about the user's own network.
+
+## Chinese-model extraction guardrails
+
+- When source text contains Chinese names, copy Chinese names exactly from the source; do not replace them with homophones, pinyin, translated names, or guessed English aliases.
+- If the evidence is thin, ambiguous, or model confidence is low, mark the item as `weak_evidence` and lower `confidence` instead of inventing certainty.
+- Preserve original Chinese organization names, project names, and relationship labels unless the user explicitly provides a normalized alias.
+- If a field is inferred from tone rather than explicit text, put it in review candidates or open questions before commit.
 
 ## Hard acceptance criteria
 
@@ -25,6 +35,13 @@ OpenClaw is the reasoning and orchestration layer. CoStar remains the durable re
 - Use OpenClaw as the host reasoning layer; do not ask the user for a separate model API.
 - Route all durable relationship writes through CoStar review and commit tools.
 - Keep the user-facing flow short: receipt, review cards, commit receipt, refreshed view.
+
+## Profile tier glossary
+
+- `stub`: thin cold-start profile; enough to remember the person, not enough for strong judgment.
+- `active`: usable working profile with actionable relationship signals.
+- `key`: important relationship profile that deserves priority tracking.
+- `archived`: inactive or intentionally deprioritized profile.
 
 ## Tool groups
 
@@ -90,10 +107,16 @@ OpenClaw is the reasoning and orchestration layer. CoStar remains the durable re
 For tools marked `requires_host_reasoning`, the host must provide `host_reasoning_output` as JSON.
 
 - `capture_ingest_sources`: provide a relationship-ingestion-shaped result containing `detected_people`, `resolved_people`, and optional `review_bundle`.
+- `capture_ingest_sources` returns a top-level capture response and a nested canonical `ingestion_result`; commit tools use the nested `ingestion_result` as the durable profile-review input.
+- For each meaningful person in capture output, preserve rich context when evidence exists: `compiled_truth.latent_needs`, `compiled_truth.key_issues`, `compiled_truth.attitude_intent`, and timeline/source evidence.
+- When the input is pasted text or a fileless communication note, still set a stable `source_id`, `source_title`, and date/captured_at if known.
+- Review cards should expose insight previews and source-backed evidence so the user can confirm or correct before commit.
+- Graph decisions may include user-centered edges; represent the user as `person_self` and relation types such as `my_leader`, `my_counterpart`, or `my_business_partner` when appropriate.
 - `briefing_generate`: provide `briefing`, plus optional `open_questions` and `notes`.
 - `roleplay_generate`: provide `simulation`, optional `coach_feedback`, `open_questions`, and `notes`.
 - `review_prepare_cards`: use existing CoStar review candidates and do not invent a new card shape.
 - `review_translate_answers`: pass the user's decisions back before any durable write.
+- `review_commit_decisions`: pass `commit_request.review_decisions`; the alias `commit_request.decisions` is accepted for host adapters that cannot easily rename fields.
 
 ## Receipt discipline
 
@@ -119,6 +142,7 @@ node costar-core/host-model-adapter/run-host-tool.mjs <request.json>
 - `costar-core/host-model-adapter/samples/roleplay-generate.request.example.json`
 - `costar-core/host-model-adapter/samples/review-protocol.profile-input.example.json`
 - `costar-core/host-model-adapter/samples/review-protocol.profile-answer.example.json`
+- `costar-core/host-model-adapter/samples/commit-decisions.request.example.json`
 - `costar-core/host-model-adapter/samples/review-protocol.graph-input.example.json`
 - `costar-core/host-model-adapter/samples/review-protocol.graph-answer.example.json`
 

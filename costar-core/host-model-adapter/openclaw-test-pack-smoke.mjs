@@ -34,6 +34,10 @@ record(testPack.includes("Can the user complete the full loop inside the host?")
 record(testPack.includes("Do generated results enter the same CoStar store / schema / review system?"), "OpenClaw test pack includes hard acceptance question 3", "");
 record(testPack.includes("Has CoStar avoided splitting into two data worlds?"), "OpenClaw test pack includes hard acceptance question 4", "");
 record(testPack.includes("host-model-e2e-smoke.mjs"), "OpenClaw test pack points to E2E smoke", "");
+record(testPack.includes("host-model-persistence-graph-smoke.mjs"), "OpenClaw test pack points to persistence graph smoke", "");
+record(testPack.includes("latent needs") && testPack.includes("key issues") && testPack.includes("attitude intent"), "OpenClaw test pack covers rich insight persistence", "");
+record(testPack.includes("source id") && testPack.includes("source title") && testPack.includes("timeline evidence"), "OpenClaw test pack covers source and timeline preservation", "");
+record(testPack.includes("person_self"), "OpenClaw test pack covers user self graph node", "");
 record(testPack.includes("LOCAL_CLAW_TEST_GUIDE.md"), "OpenClaw test pack points to local claw guide", "");
 record(resultsTemplate.includes("Hard acceptance questions"), "OpenClaw result template includes acceptance section", "");
 record(localGuide.includes("openclaw skills info costar"), "OpenClaw local guide verifies skill discovery", "");

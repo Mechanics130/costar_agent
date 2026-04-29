@@ -132,19 +132,21 @@ async function runMcpInitialize(serverPath) {
     stdio: ["pipe", "pipe", "pipe"]
   });
 
-  let stdoutBuffer = Buffer.alloc(0);
+  let stdoutBuffer = "";
   const responses = [];
 
+  child.stdout.setEncoding("utf8");
   child.stdout.on("data", (chunk) => {
-    stdoutBuffer = Buffer.concat([stdoutBuffer, chunk]);
-    let parsed;
-    do {
-      parsed = tryReadMessage(stdoutBuffer);
-      if (parsed) {
-        stdoutBuffer = parsed.rest;
-        responses.push(parsed.message);
+    stdoutBuffer += chunk;
+    let newlineIndex;
+    while ((newlineIndex = stdoutBuffer.indexOf("\n")) !== -1) {
+      const line = stdoutBuffer.slice(0, newlineIndex).trim();
+      stdoutBuffer = stdoutBuffer.slice(newlineIndex + 1);
+      if (!line) {
+        continue;
       }
-    } while (parsed);
+      responses.push(JSON.parse(line));
+    }
   });
 
   child.stdin.write(encodeMessage({
@@ -179,29 +181,5 @@ async function waitForResponse(responses, id, timeoutMs = 3000) {
 }
 
 function encodeMessage(payload) {
-  const body = Buffer.from(JSON.stringify(payload), "utf8");
-  const header = Buffer.from(`Content-Length: ${body.length}\r\n\r\n`, "utf8");
-  return Buffer.concat([header, body]);
-}
-
-function tryReadMessage(buffer) {
-  const separator = buffer.indexOf("\r\n\r\n");
-  if (separator === -1) {
-    return null;
-  }
-  const headerText = buffer.slice(0, separator).toString("utf8");
-  const lengthMatch = /Content-Length:\s*(\d+)/i.exec(headerText);
-  if (!lengthMatch) {
-    return null;
-  }
-  const bodyLength = Number(lengthMatch[1]);
-  const bodyStart = separator + 4;
-  const bodyEnd = bodyStart + bodyLength;
-  if (buffer.length < bodyEnd) {
-    return null;
-  }
-  return {
-    message: JSON.parse(buffer.slice(bodyStart, bodyEnd).toString("utf8")),
-    rest: buffer.slice(bodyEnd)
-  };
+  return `${JSON.stringify(payload)}\n`;
 }

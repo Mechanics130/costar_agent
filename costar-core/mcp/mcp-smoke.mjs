@@ -14,19 +14,25 @@ const child = spawn(process.execPath, [serverPath], {
 const responses = [];
 const failures = [];
 const checks = [];
-let stdoutBuffer = Buffer.alloc(0);
+let stdoutBuffer = "";
 let requestId = 0;
 
+child.stdout.setEncoding("utf8");
 child.stdout.on("data", (chunk) => {
-  stdoutBuffer = Buffer.concat([stdoutBuffer, chunk]);
-  let parsed;
-  do {
-    parsed = tryReadMessage(stdoutBuffer);
-    if (parsed) {
-      stdoutBuffer = parsed.rest;
-      responses.push(parsed.message);
+  stdoutBuffer += chunk;
+  let newlineIndex;
+  while ((newlineIndex = stdoutBuffer.indexOf("\n")) !== -1) {
+    const line = stdoutBuffer.slice(0, newlineIndex).trim();
+    stdoutBuffer = stdoutBuffer.slice(newlineIndex + 1);
+    if (!line) {
+      continue;
     }
-  } while (parsed);
+    try {
+      responses.push(JSON.parse(line));
+    } catch (error) {
+      failures.push(`failed to parse MCP response: ${error.message}`);
+    }
+  }
 });
 
 child.stderr.on("data", (chunk) => {
@@ -76,9 +82,7 @@ async function sendRequest(method, params) {
     method,
     params
   };
-  const body = Buffer.from(JSON.stringify(payload), "utf8");
-  const header = Buffer.from(`Content-Length: ${body.length}\r\n\r\n`, "utf8");
-  child.stdin.write(Buffer.concat([header, body]));
+  child.stdin.write(`${JSON.stringify(payload)}\n`);
   await sleep(50);
 }
 
@@ -93,28 +97,6 @@ async function waitForResponse(id, timeoutMs = 3000) {
   }
   failures.push(`timeout waiting for response ${id}`);
   return null;
-}
-
-function tryReadMessage(buffer) {
-  const separator = buffer.indexOf("\r\n\r\n");
-  if (separator === -1) {
-    return null;
-  }
-  const headerText = buffer.slice(0, separator).toString("utf8");
-  const lengthMatch = /Content-Length:\s*(\d+)/i.exec(headerText);
-  if (!lengthMatch) {
-    return null;
-  }
-  const bodyLength = Number(lengthMatch[1]);
-  const bodyStart = separator + 4;
-  const bodyEnd = bodyStart + bodyLength;
-  if (buffer.length < bodyEnd) {
-    return null;
-  }
-  return {
-    message: JSON.parse(buffer.slice(bodyStart, bodyEnd).toString("utf8")),
-    rest: buffer.slice(bodyEnd)
-  };
 }
 
 function record(ok, name, detail) {

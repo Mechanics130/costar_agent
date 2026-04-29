@@ -12,6 +12,11 @@ This file defines how OpenClaw should walk a user through CoStar Host-model mode
 - Never create a second CoStar data world inside the host conversation.
 - Always distinguish between feedback, review, and committed state.
 - Use review cards for high-risk inferences instead of silent auto-commits.
+- Treat pasted or fileless communication notes as valid source material; assign stable source ids and human-readable source titles.
+- Preserve timeline evidence, source ids, and source titles from capture through profile, briefing, graph, and view reads.
+- Persist rich briefing signals when present: `compiled_truth.latent_needs`, `compiled_truth.key_issues`, and `compiled_truth.attitude_intent`.
+- Represent the user with the canonical graph id `person_self` and display name `我`; do not fork self into a separate relationship person.
+- Explain profile maturity with the tier glossary: cold-start profiles can be useful with summary, tags, and confidence; mature profiles add richer evidence-backed fields.
 - Treat `view_refresh` as the durable closing step after a successful commit.
 - Prefer receipts and next actions over long freeform narration.
 
@@ -24,6 +29,7 @@ Required tools: `capture_ingest_sources`, `capture_get_feedback`
 Show the user:
 - what was ingested
 - who was identified or updated
+- insight preview: latent needs, key issues, and attitude intent
 - whether confirmation is required
 - next recommended action
 Guardrail: Do not claim anything is committed yet.
@@ -37,6 +43,7 @@ Show the user:
 - suggested action
 - why it needs confirmation
 - evidence preview
+- profile tier glossary and fields that still need confirmation
 - answer choices
 Guardrail: Do not write any profile state until `review_commit_decisions` succeeds.
 
@@ -49,6 +56,7 @@ Show the user:
 - relation type
 - confidence or score
 - reason this edge is weak
+- self edges using `person_self` / `我` when the user is the source or target
 - confirm / reject / reclassify choices
 Guardrail: Do not present weak edges as established truth.
 
@@ -59,6 +67,7 @@ Required tools: `review_commit_decisions`
 Show the user:
 - which profiles or graph edges were updated
 - what was deferred or ignored
+- timeline/source ids and titles preserved in committed evidence
 - which store/view assets were affected
 Guardrail: Always mention whether the commit was profile or graph scoped.
 

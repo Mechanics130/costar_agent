@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-import { mkdtempSync, existsSync, rmSync } from "node:fs";
+import { mkdtempSync, existsSync, rmSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -9,6 +9,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const repoRoot = path.resolve(__dirname, "..", "..");
 const cliPath = path.join(repoRoot, "bin", "costar.mjs");
+const hostToolPath = path.join(repoRoot, "costar-core", "host-model-adapter", "run-host-tool.mjs");
 
 const checks = [];
 const failures = [];
@@ -104,6 +105,37 @@ try {
   record(installOpenClaw.status === 0, "host install openclaw exits successfully", installOpenClaw.stderr || installOpenClaw.stdout);
   record(existsSync(path.join(installRoot, "CoStar-OpenClaw", "SKILL.md")), "host install openclaw creates skill file", "");
   record(existsSync(path.join(installRoot, "CoStar-OpenClaw", "PROMPT_PACKET.md")), "host install openclaw creates prompt packet", "");
+
+  const utf16RequestPath = path.join(installRoot, "utf16-host-tool-request.json");
+  writeFileSync(
+    utf16RequestPath,
+    `\uFEFF${JSON.stringify({
+      tool_name: "review_list_candidates",
+      tool_input: {
+        ingestion_result: {
+          review_bundle: {
+            candidates: [
+              {
+                person_name: "林舟",
+                needs_confirmation: true
+              }
+            ]
+          }
+        }
+      }
+    }, null, 2)}`,
+    "utf16le"
+  );
+  const utf16HostTool = spawnSync(process.execPath, [hostToolPath, utf16RequestPath], {
+    cwd: repoRoot,
+    encoding: "utf8",
+    timeout: 30000
+  });
+  record(utf16HostTool.status === 0, "run-host-tool accepts UTF-16LE request files from PowerShell", utf16HostTool.stderr || utf16HostTool.stdout);
+  if (utf16HostTool.status === 0) {
+    const parsed = JSON.parse(utf16HostTool.stdout);
+    record(parsed.pending_count === 1, "UTF-16LE host request preserves Chinese candidate", utf16HostTool.stdout);
+  }
 } catch (error) {
   failures.push({
     name: "host CLI smoke crashed",

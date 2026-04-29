@@ -54,6 +54,7 @@ Claude should focus on these files first:
 ### End-to-end validation
 
 - `costar-core/host-model-e2e/runtime/host-model-e2e-smoke.mjs`
+- `costar-core/host-model-e2e/runtime/host-model-persistence-graph-smoke.mjs`
 - `costar-core/host-model-e2e/host-model-e2e-checklist.md`
 
 ### Core contract / dispatcher layer
@@ -95,6 +96,7 @@ Claude should prefer this exact sequence:
 node bin/costar.mjs host install claude --apply-config
 node bin/costar.mjs host doctor claude
 node .costar-hosts/CoStar-Claude/doctor-claude-install.mjs --require-config
+printf '%s\n' '{"jsonrpc":"2.0","id":0,"method":"initialize","params":{"protocolVersion":"2025-11-25","capabilities":{},"clientInfo":{"name":"manual-stdio-smoke","version":"0.0.0"}}}' | node costar-core/mcp/costar-mcp-server.mjs
 node costar-core/host-install/host-installer-smoke.mjs
 node costar-core/mcp/mcp-smoke.mjs
 node costar-core/mcp/claude-bootstrap-smoke.mjs
@@ -108,9 +110,16 @@ node costar-core/host-model-adapter/run-host-tool.mjs costar-core/host-model-ada
 node costar-core/host-model-adapter/run-host-tool.mjs costar-core/host-model-adapter/samples/review-prepare.graph.request.example.json
 node costar-core/host-model-adapter/run-host-tool.mjs costar-core/host-model-adapter/samples/review-translate.graph.request.example.json
 node costar-core/host-model-e2e/runtime/host-model-e2e-smoke.mjs
+node costar-core/host-model-e2e/runtime/host-model-persistence-graph-smoke.mjs
 node costar-core/host-model-adapter/claude-test-pack-smoke.mjs
 node costar-core/host-model-adapter/host-adapter-smoke.mjs
 node costar-core/host-model-adapter/review-protocol-smoke.mjs
+```
+
+PowerShell equivalent for the manual MCP stdio check:
+
+```powershell
+'{"jsonrpc":"2.0","id":0,"method":"initialize","params":{"protocolVersion":"2025-11-25","capabilities":{},"clientInfo":{"name":"manual-stdio-smoke","version":"0.0.0"}}}' | node costar-core\mcp\costar-mcp-server.mjs
 ```
 
 Optional final confidence check:
@@ -134,6 +143,7 @@ Pass means:
 - the Claude test surface does not require a separate model config file
 - nothing in the flow depends on `base_url / api_key / model` setup by the user
 - the Claude-native MCP config and bootstrap path also avoid separate model API prompts
+- the Claude-native MCP server speaks newline-delimited JSON over stdio, so real Claude clients can initialize it without `Content-Length` framing
 - the optional Claude config install path also avoids separate model API prompts
 - the clean-install bundle remains usable without forcing the user back into repo-internal setup steps
 - the installed Claude bundle can self-verify from inside the bundle, not only through repo-root commands
@@ -160,6 +170,7 @@ Pass means:
 - review goes through `review_prepare_cards -> review_translate_answers -> review_commit_decisions`
 - durable writes still land through canonical CoStar commit paths
 - downstream reads come from the same profile / graph / view world
+- rich capture signals, timeline/source evidence, answer-only graph review decisions, and `person_self` graph reads persist across write/read boundaries
 
 ### Hard acceptance question 4
 

@@ -32,6 +32,10 @@ record(testPack.includes("Do generated results enter the same CoStar store / sch
 record(testPack.includes("Has CoStar avoided splitting into two data worlds?"), "codex test pack includes hard acceptance question 4", "");
 record(testPack.includes("review-prepare.profile.request.example.json"), "codex test pack points to review prepare sample", "");
 record(testPack.includes("host-model-e2e-smoke.mjs"), "codex test pack points to e2e smoke", "");
+record(testPack.includes("host-model-persistence-graph-smoke.mjs"), "codex test pack points to persistence graph smoke", "");
+record(testPack.includes("latent needs") && testPack.includes("key issues") && testPack.includes("attitude intent"), "codex test pack covers rich insight persistence", "");
+record(testPack.includes("source id") && testPack.includes("source title") && testPack.includes("timeline evidence"), "codex test pack covers source and timeline preservation", "");
+record(testPack.includes("person_self"), "codex test pack covers user self graph node", "");
 record(resultsTemplate.includes("Hard acceptance questions"), "codex results template includes acceptance section", "");
 record(resultsTemplate.includes("Capture:"), "codex results template includes tool-path observation section", "");
 

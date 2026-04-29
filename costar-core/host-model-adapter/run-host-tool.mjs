@@ -21,12 +21,20 @@ function readRequest(args) {
     throw new Error(`Request file not found: ${absolutePath}`);
   }
 
-  const raw = readFileSync(absolutePath, "utf8").replace(/^\uFEFF/, "");
+  const raw = decodeJsonFile(absolutePath).replace(/^\uFEFF/, "");
   const parsed = JSON.parse(raw);
   if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
     throw new Error("Host tool request must be a JSON object.");
   }
   return parsed;
+}
+
+function decodeJsonFile(filePath) {
+  const buffer = readFileSync(filePath);
+  if (buffer.length >= 2 && buffer[0] === 0xff && buffer[1] === 0xfe) {
+    return buffer.subarray(2).toString("utf16le");
+  }
+  return buffer.toString("utf8");
 }
 
 main().catch((error) => {

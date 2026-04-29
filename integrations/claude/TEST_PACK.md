@@ -87,6 +87,7 @@ Run:
 
 ```bash
 node costar-core/host-model-e2e/runtime/host-model-e2e-smoke.mjs
+node costar-core/host-model-e2e/runtime/host-model-persistence-graph-smoke.mjs
 ```
 
 What to verify:
@@ -94,6 +95,10 @@ What to verify:
 - the flow covers capture -> review -> commit -> view
 - the same slice also reaches briefing and roleplay
 - committed state is later read back from the same store world
+- pasted/fileless notes preserve source id, source title, and timeline evidence
+- rich insights persist into the same profile world: latent needs, key issues, and attitude intent
+- answer-only graph review decisions materialize on the read side
+- the user self node is represented as `person_self` / `我`, not as a second profile world
 
 ### 5. First-session guidance
 

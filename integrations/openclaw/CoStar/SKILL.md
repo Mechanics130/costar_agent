@@ -61,6 +61,28 @@ The installed bundle includes:
 - Keep responses concise and action-oriented.
 - Show what changed after every commit.
 
+## Rich capture requirements
+
+- Treat pasted notes, direct chat content, and fileless communication as valid source material.
+- When source material has no file path, create a stable `source_id` and a human-readable `source_title` before calling `capture_ingest_sources`.
+- Preserve rich relationship signals in `host_reasoning_output` when evidence supports them:
+  - `compiled_truth.latent_needs`
+  - `compiled_truth.key_issues`
+  - `compiled_truth.attitude_intent`
+- Show an insight preview in user feedback when CoStar returns latent needs, key issues, or attitude intent.
+
+## Timeline handling
+
+- Preserve timeline evidence from capture through profile, briefing, graph, and view reads.
+- Do not replace source ids or source titles with generic placeholders after commit.
+- If the user asks about "what happened before / after / in that meeting", read from CoStar profile or view state instead of reconstructing timeline only from the current chat.
+
+## Graph self node
+
+- Use `person_self` as the canonical graph id for the user and `我` as the display name.
+- Do not create a separate relationship profile for the user just because the user appears in a note.
+- Route weak self-related edges through graph review before treating them as established truth.
+
 ## If setup is missing
 
 Ask the user to run:

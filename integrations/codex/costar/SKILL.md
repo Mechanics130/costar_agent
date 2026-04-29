@@ -58,6 +58,28 @@ Read `SESSION_PROTOCOL.md` when you need the conversation sequence.
 - Keep responses concise and action-oriented.
 - Tell the user what changed after every commit.
 
+## Rich Capture Requirements
+
+- Treat pasted notes, direct chat content, and fileless communication as valid source material.
+- When source material has no file path, create a stable `source_id` and a human-readable `source_title` before calling `capture_ingest_sources`.
+- Preserve rich relationship signals in `host_reasoning_output` when evidence supports them:
+  - `compiled_truth.latent_needs`
+  - `compiled_truth.key_issues`
+  - `compiled_truth.attitude_intent`
+- Show an insight preview in user feedback when CoStar returns latent needs, key issues, or attitude intent.
+
+## Timeline Handling
+
+- Preserve timeline evidence from capture through profile, briefing, graph, and view reads.
+- Do not replace source ids or source titles with generic placeholders after commit.
+- If the user asks about “what happened before / after / in that meeting”, read from CoStar profile or view state instead of reconstructing timeline only from the current chat.
+
+## Graph Self Node
+
+- Use `person_self` as the canonical graph id for the user and `我` as the display name.
+- Do not create a separate relationship profile for the user just because the user appears in a note.
+- Route weak self-related edges through graph review before treating them as established truth.
+
 ## If Setup Is Missing
 
 Ask the user to run:

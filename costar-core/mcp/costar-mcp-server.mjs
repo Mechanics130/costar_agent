@@ -16,22 +16,27 @@ main().catch((error) => {
 });
 
 async function main() {
-  const stdin = process.stdin;
-  let buffer = Buffer.alloc(0);
+  let buffer = "";
 
-  stdin.on("data", (chunk) => {
-    buffer = Buffer.concat([buffer, chunk]);
-    let parsed;
-    do {
-      parsed = tryReadMessage(buffer);
-      if (parsed) {
-        buffer = parsed.rest;
-        void handleMessage(parsed.message);
+  process.stdin.setEncoding("utf8");
+  process.stdin.on("data", (chunk) => {
+    buffer += chunk;
+    let newlineIndex;
+    while ((newlineIndex = buffer.indexOf("\n")) !== -1) {
+      const line = buffer.slice(0, newlineIndex).trim();
+      buffer = buffer.slice(newlineIndex + 1);
+      if (!line) {
+        continue;
       }
-    } while (parsed);
+      try {
+        void handleMessage(JSON.parse(line));
+      } catch (error) {
+        process.stderr.write(`Failed to parse MCP message: ${error?.message || error}\n`);
+      }
+    }
   });
 
-  stdin.resume();
+  process.stdin.resume();
 }
 
 async function handleMessage(message) {
@@ -144,32 +149,6 @@ function guessFieldType(field) {
   return ["string", "object", "array", "boolean", "number", "null"];
 }
 
-function tryReadMessage(buffer) {
-  const separator = buffer.indexOf("\r\n\r\n");
-  if (separator === -1) {
-    return null;
-  }
-
-  const headerText = buffer.slice(0, separator).toString("utf8");
-  const lengthMatch = /Content-Length:\s*(\d+)/i.exec(headerText);
-  if (!lengthMatch) {
-    throw new Error("Missing Content-Length header.");
-  }
-
-  const bodyLength = Number(lengthMatch[1]);
-  const bodyStart = separator + 4;
-  const bodyEnd = bodyStart + bodyLength;
-  if (buffer.length < bodyEnd) {
-    return null;
-  }
-
-  const body = buffer.slice(bodyStart, bodyEnd).toString("utf8");
-  return {
-    message: JSON.parse(body),
-    rest: buffer.slice(bodyEnd)
-  };
-}
-
 function sendResult(id, result) {
   sendMessage({
     jsonrpc: "2.0",
@@ -190,9 +169,7 @@ function sendError(id, code, message) {
 }
 
 function sendMessage(payload) {
-  const body = Buffer.from(`${JSON.stringify(payload)}`, "utf8");
-  const header = Buffer.from(`Content-Length: ${body.length}\r\n\r\n`, "utf8");
-  process.stdout.write(Buffer.concat([header, body]));
+  process.stdout.write(`${JSON.stringify(payload)}\n`);
 }
 
 function normalizeString(value) {

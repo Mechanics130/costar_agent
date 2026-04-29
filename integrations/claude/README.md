@@ -74,6 +74,10 @@ Claude-native installs can now point at this local MCP server:
 node integrations/claude/run-costar-mcp.mjs
 ```
 
+The MCP server speaks newline-delimited JSON over stdio, matching real
+Claude Desktop / Claude Code expectations. It does not use `Content-Length`
+framing.
+
 The shipped Claude config templates and install script point to the bundle-local `run-costar-mcp.mjs`, which in turn resolves the durable CoStar repo.
 
 ## Fastest Local Install Path
@@ -135,6 +139,14 @@ CoStar should continue to handle:
 - schemas
 - review / commit
 - graph / view / profile deterministic logic
+
+## Data-World Guarantees
+
+Claude can reason over pasted notes, direct communication snippets, or local
+files, but durable truth still lives in the same CoStar stores. Rich capture
+fields such as latent needs, key issues, attitude intent, timeline evidence,
+source id/title, and `person_self` graph edges should all flow through the
+same review / commit / view system.
 
 ## Status
 

@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { spawnSync } from "node:child_process";
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import process from "node:process";
 
@@ -41,12 +41,54 @@ function valueAfter(flag) {
 }
 
 function listRepoFiles() {
-  const result = runGit(["ls-files", "--cached", "--others", "--exclude-standard"]);
+  const result = tryRunGit(["ls-files", "--cached", "--others", "--exclude-standard"]);
+  if (!result.ok) {
+    return listFilesystemFiles(repoRoot);
+  }
   return result
+    .stdout
     .split(/\r?\n/)
     .map((item) => item.trim())
     .filter(Boolean)
     .filter((item) => !item.startsWith("node_modules/"));
+}
+
+function listFilesystemFiles(root) {
+  const files = [];
+  walk(root, files);
+  return files.sort((left, right) => left.localeCompare(right));
+}
+
+function walk(directory, files) {
+  for (const entry of readdirSync(directory, { withFileTypes: true })) {
+    const absolutePath = path.join(directory, entry.name);
+    const repoPath = toRepoPath(absolutePath);
+    if (shouldSkipFilesystemPath(repoPath, entry.isDirectory())) {
+      continue;
+    }
+    if (entry.isDirectory()) {
+      walk(absolutePath, files);
+      continue;
+    }
+    files.push(repoPath);
+  }
+}
+
+function shouldSkipFilesystemPath(repoPath, isDirectory) {
+  const normalized = repoPath.replace(/\\/g, "/");
+  const pathWithSlash = isDirectory && !normalized.endsWith("/") ? `${normalized}/` : normalized;
+  if ([".git/", "node_modules/"].some((prefix) => pathWithSlash === prefix || pathWithSlash.startsWith(prefix))) {
+    return true;
+  }
+  let ignored = false;
+  for (const pattern of fallbackIgnoredPaths()) {
+    const negated = pattern.startsWith("!");
+    const normalizedPattern = negated ? pattern.slice(1) : pattern;
+    if (matchesFallbackIgnore(pathWithSlash, normalizedPattern)) {
+      ignored = !negated;
+    }
+  }
+  return ignored;
 }
 
 function groupByTopLevel(paths) {
@@ -130,17 +172,94 @@ function purposeFor(area) {
   return purposes[area] || "Project files";
 }
 
-function runGit(gitArgs) {
+function tryRunGit(gitArgs) {
   const result = spawnSync("git", gitArgs, {
     cwd: repoRoot,
     encoding: "utf8"
   });
   if (result.status !== 0) {
-    throw new Error(result.stderr || result.stdout || `git ${gitArgs.join(" ")} failed`);
+    return {
+      ok: false,
+      stdout: result.stdout || "",
+      stderr: result.stderr || ""
+    };
   }
-  return result.stdout.trim();
+  return {
+    ok: true,
+    stdout: result.stdout.trim(),
+    stderr: result.stderr || ""
+  };
 }
 
 function toRepoPath(absPath) {
   return path.relative(repoRoot, absPath).replace(/\\/g, "/");
+}
+
+function fallbackIgnoredPaths() {
+  return [
+    "**/.env.local",
+    "**/runtime/model-config.local.json",
+    "**/runtime/runs/",
+    "**/runtime/stores/",
+    "_feishu_drafts/",
+    "logs/temp/",
+    "logs/*.log",
+    "retest-b*.json",
+    "catpaw-host-model-retest-report-*.md",
+    "codex-host-model-clean-test-report-*.md",
+    "macos-codex-host-model-install-test-report-*.md",
+    "docs/catpaw-host-model-*.md",
+    "docs/feishu-update-snippet-*.md",
+    "validation-runs/",
+    "relationship-capture/scenarios/",
+    "relationship-graph/scenarios/",
+    "relationship-roleplay/scenarios/",
+    "relationship-ingestion/incremental-scenarios/",
+    "relationship-ingestion/flomo-import/output/",
+    "relationship-ingestion/samples/relationship-ingestion.response.realtest.json",
+    "relationship-view/scenarios/",
+    "relationship-view/views/smoke/",
+    "relationship-view/views/*.md",
+    "!relationship-view/views/.gitkeep",
+    "relationship-briefing/briefings/*.md",
+    "!relationship-briefing/briefings/.gitkeep",
+    "real-use-logs/*.md",
+    "!real-use-logs/README.md",
+    "!real-use-logs/TEMPLATE.md",
+    "!real-use-logs/INDEX.md",
+    ".DS_Store",
+    "Thumbs.db",
+    "node_modules/"
+  ];
+}
+
+function matchesFallbackIgnore(repoPath, pattern) {
+  if (pattern.endsWith("/") && repoPath.startsWith(pattern)) {
+    return true;
+  }
+  const regex = new RegExp(`^${globToRegex(pattern)}$`);
+  return regex.test(repoPath);
+}
+
+function globToRegex(pattern) {
+  let output = "";
+  for (let index = 0; index < pattern.length; index += 1) {
+    const char = pattern[index];
+    const next = pattern[index + 1];
+    if (char === "*" && next === "*") {
+      output += ".*";
+      index += 1;
+      continue;
+    }
+    if (char === "*") {
+      output += "[^/]*";
+      continue;
+    }
+    output += escapeRegexChar(char);
+  }
+  return output;
+}
+
+function escapeRegexChar(char) {
+  return /[.+?^${}()|[\]\\]/.test(char) ? `\\${char}` : char;
 }

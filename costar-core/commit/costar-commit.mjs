@@ -129,10 +129,11 @@ function validateCommitRequest(payload) {
     throw new Error("costar-commit requires target: profile_review | graph_review.");
   }
 
-  const commitRequest = payload.commit_request;
-  if (!commitRequest || typeof commitRequest !== "object" || Array.isArray(commitRequest)) {
+  const rawCommitRequest = payload.commit_request;
+  if (!rawCommitRequest || typeof rawCommitRequest !== "object" || Array.isArray(rawCommitRequest)) {
     throw new Error("costar-commit requires commit_request as a JSON object.");
   }
+  const commitRequest = normalizeCommitRequestForTarget(target, rawCommitRequest);
 
   return {
     target,
@@ -140,6 +141,127 @@ function validateCommitRequest(payload) {
     commit_id: normalizeOptionalString(payload.commit_id),
     commit_log_path: normalizeOptionalString(payload.commit_log_path)
   };
+}
+
+function normalizeCommitRequestForTarget(target, commitRequest) {
+  const normalized = { ...commitRequest };
+
+  if (target === "profile_review") {
+    normalized.ingestion_result = normalizeProfileIngestionResult(normalized.ingestion_result);
+    normalized.review_decisions = normalizeReviewDecisionsAlias({
+      reviewDecisions: normalized.review_decisions,
+      decisions: normalized.decisions,
+      target
+    });
+    return normalized;
+  }
+
+  normalized.graph_result = normalizeGraphResult(normalized.graph_result);
+  normalized.review_decisions = normalizeReviewDecisionsAlias({
+    reviewDecisions: normalized.review_decisions,
+    decisions: normalized.decisions,
+    target
+  });
+  return normalized;
+}
+
+function normalizeProfileIngestionResult(value) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    throw new Error(
+      "profile_review commit_request requires ingestion_result. If you used capture_ingest_sources, pass capture_result.ingestion_result or the full capture response."
+    );
+  }
+
+  const candidate = unwrapNestedResult(value, "ingestion_result");
+  if (!candidate || typeof candidate !== "object" || Array.isArray(candidate)) {
+    throw new Error("profile_review commit_request.ingestion_result must be a JSON object.");
+  }
+
+  if (candidate.skill === "relationship-ingestion") {
+    return candidate;
+  }
+
+  if (candidate.skill === "relationship-capture") {
+    throw new Error(
+      "profile_review commit_request.ingestion_result is a capture response without a nested ingestion_result. Pass capture_result.ingestion_result."
+    );
+  }
+
+  if (looksLikeIngestionResult(candidate)) {
+    return {
+      ...candidate,
+      skill: "relationship-ingestion"
+    };
+  }
+
+  throw new Error(
+    "profile_review commit_request.ingestion_result must be a relationship-ingestion result or a capture_ingest_sources response containing ingestion_result."
+  );
+}
+
+function normalizeGraphResult(value) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    throw new Error("graph_review commit_request requires graph_result.");
+  }
+
+  const candidate = unwrapNestedResult(value, "graph_result");
+  if (candidate?.skill === "relationship-graph") {
+    return candidate;
+  }
+
+  if (looksLikeGraphResult(candidate)) {
+    return {
+      ...candidate,
+      skill: "relationship-graph"
+    };
+  }
+
+  throw new Error("graph_review commit_request.graph_result must be a relationship-graph result.");
+}
+
+function unwrapNestedResult(value, nestedKey) {
+  if (value?.[nestedKey] && typeof value[nestedKey] === "object" && !Array.isArray(value[nestedKey])) {
+    return value[nestedKey];
+  }
+  return value;
+}
+
+function looksLikeIngestionResult(value) {
+  return Boolean(
+    value
+      && typeof value === "object"
+      && (
+        Array.isArray(value.detected_people)
+        || Array.isArray(value.resolved_people)
+        || Array.isArray(value.person_profiles)
+        || Array.isArray(value.review_bundle?.candidates)
+      )
+  );
+}
+
+function looksLikeGraphResult(value) {
+  return Boolean(
+    value
+      && typeof value === "object"
+      && (
+        value.graph
+        || Array.isArray(value.review_bundle?.edge_candidates)
+        || Array.isArray(value.related_people)
+      )
+  );
+}
+
+function normalizeReviewDecisionsAlias({ reviewDecisions, decisions, target }) {
+  if (Array.isArray(reviewDecisions)) {
+    return reviewDecisions;
+  }
+  if (Array.isArray(decisions)) {
+    return decisions;
+  }
+  if (reviewDecisions == null && decisions == null) {
+    return [];
+  }
+  throw new Error(`${target} commit_request.review_decisions must be an array. Alias decisions is also accepted.`);
 }
 
 function normalizeCommitTarget(value) {

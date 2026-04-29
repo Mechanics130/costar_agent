@@ -532,6 +532,7 @@ function buildProfileRead(profile, options) {
     .slice(0, options.timeline_limit)
     .map((item) => ({
       date: item.date,
+      source_id: item.source_id,
       source_title: item.source_title,
       relative_path: item.relative_path,
       event_summary: item.event_summary,

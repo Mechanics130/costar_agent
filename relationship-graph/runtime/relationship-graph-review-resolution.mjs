@@ -49,6 +49,11 @@ export function runRelationshipGraphReviewResolution(payload) {
   };
 
   const decisionMap = buildDecisionMap(request.review_decisions);
+  for (const decision of decisionMap.values()) {
+    if (!candidateMap.has(decision.edge_key)) {
+      candidateMap.set(decision.edge_key, buildCandidateFromDecision(decision));
+    }
+  }
 
   for (const candidate of candidateMap.values()) {
     const decision = decisionMap.get(candidate.edge_key);
@@ -133,7 +138,9 @@ function validateGraphReviewResolutionRequest(payload) {
     throw new Error("graph_result.skill 必须是 relationship-graph");
   }
 
-  const reviewDecisions = Array.isArray(payload.review_decisions) ? payload.review_decisions : [];
+  const reviewDecisions = Array.isArray(payload.review_decisions)
+    ? payload.review_decisions
+    : Array.isArray(payload.decisions) ? payload.decisions : [];
   const options = {
     ...DEFAULT_OPTIONS,
     ...(payload.options && typeof payload.options === "object" ? payload.options : {})
@@ -219,7 +226,24 @@ function normalizeDecision(decision) {
     target_person_name: targetName,
     final_action: normalizeGraphReviewAction(decision.final_action),
     corrected_relation_type: normalizeNullableString(decision.corrected_relation_type),
-    note: normalizeString(decision.note)
+    note: normalizeString(decision.note),
+    relation_type: normalizeString(decision.relation_type),
+    relation_score: Number.isFinite(Number(decision.relation_score)) ? Number(decision.relation_score) : 0
+  };
+}
+
+function buildCandidateFromDecision(decision) {
+  return {
+    edge_key: decision.edge_key,
+    source_person_ref: decision.source_person_ref,
+    source_person_name: decision.source_person_name,
+    target_person_ref: decision.target_person_ref,
+    target_person_name: decision.target_person_name,
+    relation_type: decision.corrected_relation_type || decision.relation_type || "user_confirmed_relation",
+    relation_score: decision.relation_score || defaultReviewedRelationScore(decision.final_action),
+    reason: decision.note || "Host supplied this relationship edge during review.",
+    suggested_action: "host_supplied",
+    review_priority: 0
   };
 }
 
@@ -235,8 +259,8 @@ function finalizeDecisionRecord({ candidate, decision, processedAt, operator }) 
     note: decision.note,
     operator,
     reviewed_at: processedAt,
-    relation_type: candidate.relation_type,
-    relation_score: candidate.relation_score
+    relation_type: decision.relation_type || candidate.relation_type,
+    relation_score: decision.relation_score || candidate.relation_score || defaultReviewedRelationScore(decision.final_action)
   };
 }
 
@@ -382,5 +406,15 @@ function normalizeGraphReviewAction(value) {
 
 function edgeKey(left, right) {
   return [left, right].map((item) => normalizeString(item)).sort().join("::");
+}
+
+function defaultReviewedRelationScore(action) {
+  if (action === "downgrade") {
+    return 10;
+  }
+  if (action === "defer" || action === "reject") {
+    return 0;
+  }
+  return 80;
 }
 

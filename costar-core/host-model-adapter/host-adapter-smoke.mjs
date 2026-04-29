@@ -31,6 +31,12 @@ for (const host of ["claude", "codex", "openclaw"]) {
   record(output.includes("capture_ingest_sources"), `${host} packet mentions capture tool`, "");
   record(output.includes("briefing_generate"), `${host} packet mentions briefing tool`, "");
   record(output.includes("roleplay_generate"), `${host} packet mentions roleplay tool`, "");
+  record(output.includes("compiled_truth.latent_needs"), `${host} packet preserves latent needs`, "");
+  record(output.includes("compiled_truth.key_issues"), `${host} packet preserves key issues`, "");
+  record(output.includes("compiled_truth.attitude_intent"), `${host} packet preserves attitude intent`, "");
+  record(output.includes("source_id") && output.includes("source_title"), `${host} packet preserves source identity`, "");
+  record(output.includes("person_self"), `${host} packet defines self graph node`, "");
+  record(output.includes("Profile tier glossary"), `${host} packet includes profile tier glossary`, "");
 }
 
 if (failures.length) {

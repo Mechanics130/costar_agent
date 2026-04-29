@@ -172,15 +172,17 @@ function validateReviewResolutionRequest(payload) {
     throw new Error("review request 必须是对象");
   }
 
-  const ingestionResult = payload.ingestion_result;
+  const ingestionResult = normalizeIngestionResult(payload.ingestion_result);
   if (!ingestionResult || typeof ingestionResult !== "object") {
-    throw new Error("缺少 ingestion_result");
+    throw new Error("Missing ingestion_result. Pass capture_result.ingestion_result or a relationship-ingestion result.");
   }
   if (ingestionResult.skill !== "relationship-ingestion") {
-    throw new Error("ingestion_result.skill 必须是 relationship-ingestion");
+    throw new Error("ingestion_result.skill must be relationship-ingestion. Full capture responses are accepted only when they contain a nested ingestion_result.");
   }
 
-  const reviewDecisions = Array.isArray(payload.review_decisions) ? payload.review_decisions : [];
+  const reviewDecisions = Array.isArray(payload.review_decisions)
+    ? payload.review_decisions
+    : Array.isArray(payload.decisions) ? payload.decisions : [];
   const existingProfiles = Array.isArray(payload.existing_profiles) ? payload.existing_profiles : [];
   const options = {
     ...DEFAULT_OPTIONS,
@@ -212,12 +214,38 @@ function validateReviewResolutionRequest(payload) {
   };
 }
 
+function normalizeIngestionResult(value) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return value;
+  }
+  if (value.ingestion_result && typeof value.ingestion_result === "object" && !Array.isArray(value.ingestion_result)) {
+    return value.ingestion_result;
+  }
+  if (value.skill === "relationship-ingestion") {
+    return value;
+  }
+  if (
+    Array.isArray(value.detected_people)
+    || Array.isArray(value.resolved_people)
+    || Array.isArray(value.person_profiles)
+    || Array.isArray(value.review_bundle?.candidates)
+  ) {
+    return {
+      ...value,
+      skill: "relationship-ingestion"
+    };
+  }
+  return value;
+}
+
 function buildIngestionContext(ingestionResult) {
   const personProfiles = Array.isArray(ingestionResult.person_profiles)
     ? ingestionResult.person_profiles.map((profile) => normalizeRelationshipProfile(profile))
     : [];
   const resolvedPeople = Array.isArray(ingestionResult.resolved_people) ? ingestionResult.resolved_people : [];
   const profileUpdates = Array.isArray(ingestionResult.profile_updates) ? ingestionResult.profile_updates : [];
+  const evidenceItems = Array.isArray(ingestionResult.evidence) ? ingestionResult.evidence : [];
+  const sourceManifest = buildSourceManifest(ingestionResult);
   const reviewBundle = ingestionResult.review_bundle && typeof ingestionResult.review_bundle === "object"
     ? ingestionResult.review_bundle
     : { candidates: [] };
@@ -268,6 +296,9 @@ function buildIngestionContext(ingestionResult) {
     profilesByKey,
     resolvedByKey,
     profileUpdatesByKey,
+    evidenceItems,
+    evidenceByIndex: buildEvidenceByIndex(evidenceItems),
+    sourceManifest,
     reviewBundle,
     orderedCandidates
   };
@@ -282,10 +313,10 @@ function buildBaseProfile(candidate, context) {
 
   const profileUpdate = context.profileUpdatesByKey.get(key);
   const resolved = context.resolvedByKey.get(key);
-  return synthesizeProfile(candidate, profileUpdate, resolved);
+  return synthesizeProfile(candidate, profileUpdate, resolved, context);
 }
 
-function synthesizeProfile(candidate, profileUpdate, resolved) {
+function synthesizeProfile(candidate, profileUpdate, resolved, context = {}) {
   const tags = deriveFieldArray(candidate, profileUpdate, "compiled_truth.tags", "tags");
   const traits = deriveFieldArray(candidate, profileUpdate, "compiled_truth.traits", "traits");
   const preferences = deriveFieldArray(candidate, profileUpdate, "compiled_truth.preferences", "preferences");
@@ -316,6 +347,7 @@ function synthesizeProfile(candidate, profileUpdate, resolved) {
     ...(Array.isArray(candidate.evidence_preview) ? candidate.evidence_preview : []),
     ...(Array.isArray(profileUpdate?.evidence) ? profileUpdate.evidence : [])
   ]);
+  const timeline = buildSynthesizedTimeline({ candidate, profileUpdate, context, evidencePreview });
   const resolutionAction = normalizeResolutionAction(
     profileUpdate?.resolution_action || resolved?.resolution_action || candidate.suggested_action || "review"
   );
@@ -344,11 +376,11 @@ function synthesizeProfile(candidate, profileUpdate, resolved) {
       open_questions: openQuestions,
       next_actions: nextActions
     },
-    timeline: [],
+    timeline,
     evidence_summary: {
       excerpt_count: evidencePreview.length,
-      source_count: 0,
-      last_updated_at: "",
+      source_count: new Set(timeline.map((item) => item.source_id).filter(Boolean)).size,
+      last_updated_at: latestTimelineDate(timeline),
       key_evidence: evidencePreview
     },
     linked_relationships: {
@@ -465,6 +497,17 @@ function applyProfileDecision(baseProfile, candidate, decision) {
   if (Array.isArray(overrides.aliases)) {
     profile.aliases = normalizeStringArray([...profile.aliases, ...overrides.aliases]);
   }
+  if (Array.isArray(overrides.timeline_append)) {
+    const existingCount = profile.timeline.length;
+    const appended = overrides.timeline_append.map((item, index) => normalizeTimelineInput(item, existingCount + index));
+    profile.timeline = [...profile.timeline, ...appended];
+  }
+  if (Array.isArray(overrides.evidence_append)) {
+    profile.evidence_summary.key_evidence = normalizeStringArray([
+      ...profile.evidence_summary.key_evidence,
+      ...overrides.evidence_append
+    ]);
+  }
 
   if (decision.notes) {
     profile.compiled_truth.open_questions = normalizeStringArray([
@@ -486,6 +529,8 @@ function finalizeCommittedProfile({ profile, finalAction, processedAt, _origin }
   committed.evidence_summary.excerpt_count = Array.isArray(committed.evidence_summary.key_evidence)
     ? committed.evidence_summary.key_evidence.length
     : 0;
+  committed.evidence_summary.source_count = new Set(committed.timeline.map((item) => item.source_id).filter(Boolean)).size;
+  committed.evidence_summary.last_updated_at = committed.evidence_summary.last_updated_at || latestTimelineDate(committed.timeline);
   committed.linked_relationships.detected_as = true;
   committed.linked_relationships.matched_existing_person_name = committed.linked_relationships.matched_existing_person_name
     || committed.person_name;
@@ -652,6 +697,169 @@ function buildUnresolvedRecord(candidate) {
     confidence: normalizeConfidence(candidate.confidence || "low"),
     reason: candidate.questions?.[0] || "需要用户确认后再提交实体变更"
   };
+}
+
+function buildSourceManifest(ingestionResult) {
+  const explicitManifest = Array.isArray(ingestionResult.source_manifest)
+    ? ingestionResult.source_manifest
+    : [];
+  const rawSources = Array.isArray(ingestionResult.sources)
+    ? ingestionResult.sources
+    : [];
+  const evidenceSources = Array.isArray(ingestionResult.evidence)
+    ? ingestionResult.evidence.map((item) => ({
+        source_id: item.source_id,
+        source_title: item.source_title,
+        relative_path: item.source_relative_path,
+        captured_at: item.source_captured_at
+      }))
+    : [];
+
+  const merged = new Map();
+  [...explicitManifest, ...rawSources, ...evidenceSources].forEach((source, index) => {
+    const normalized = normalizeSourceItem(source, index);
+    if (!normalized) {
+      return;
+    }
+    const existing = merged.get(normalized.source_id);
+    merged.set(normalized.source_id, existing ? { ...normalized, ...existing } : normalized);
+  });
+
+  return Array.from(merged.values());
+}
+
+function normalizeSourceItem(source, index) {
+  if (!source || typeof source !== "object") {
+    return null;
+  }
+  const sourceId = firstNonEmpty([
+    source.source_id,
+    source.id,
+    source.evidence_id ? `source-${source.evidence_id}` : "",
+    `source-${index + 1}`
+  ]);
+  return {
+    source_id: sourceId,
+    source_title: firstNonEmpty([
+      source.source_title,
+      source.title,
+      source.name,
+      source.relative_path,
+      source.path,
+      "Direct communication input"
+    ]),
+    relative_path: firstNonEmpty([source.relative_path, source.source_relative_path, source.path, source.file_path]),
+    captured_at: firstNonEmpty([source.captured_at, source.source_captured_at, source.date, source.created_at, source.updated_at]),
+    source_type: firstNonEmpty([source.source_type, source.type])
+  };
+}
+
+function buildEvidenceByIndex(evidenceItems) {
+  const map = new Map();
+  evidenceItems.forEach((item, index) => {
+    const evidenceIndex = Number.isInteger(item?.excerpt_index) ? item.excerpt_index : index + 1;
+    map.set(evidenceIndex, item);
+  });
+  return map;
+}
+
+function buildSynthesizedTimeline({ candidate, profileUpdate, context, evidencePreview }) {
+  const explicitTimeline = firstTimelineArray([
+    profileUpdate?.timeline,
+    profileUpdate?.timeline_append,
+    candidate?.timeline,
+    extractFieldCurrentValue(candidate, "timeline"),
+    extractFieldCurrentValue(candidate, "profile.timeline"),
+    extractFieldCurrentValue(candidate, "timeline_append")
+  ]);
+  if (explicitTimeline.length) {
+    return explicitTimeline.map((item, index) => normalizeTimelineInput(item, index, context.sourceManifest?.[0]));
+  }
+
+  const matchedIndexes = normalizeIntegerArray([
+    ...(Array.isArray(profileUpdate?.matched_excerpt_indices) ? profileUpdate.matched_excerpt_indices : []),
+    ...(Array.isArray(candidate?.matched_excerpt_indices) ? candidate.matched_excerpt_indices : [])
+  ]);
+  const matchedEvidence = matchedIndexes
+    .map((index) => context.evidenceByIndex?.get(index))
+    .filter(Boolean);
+  if (matchedEvidence.length) {
+    return matchedEvidence.map((item, index) => normalizeTimelineInput(evidenceToTimelineItem(item), index, context.sourceManifest?.[0]));
+  }
+
+  if (Array.isArray(context.evidenceItems) && context.evidenceItems.length === 1) {
+    return [normalizeTimelineInput(evidenceToTimelineItem(context.evidenceItems[0]), 0, context.sourceManifest?.[0])];
+  }
+
+  const source = context.sourceManifest?.[0] || null;
+  if (!source) {
+    return [];
+  }
+  const fallbackText = evidencePreview[0] || deriveFieldValue(candidate, profileUpdate, "compiled_truth.summary", "summary");
+  return [
+    normalizeTimelineInput({
+      source_id: source.source_id,
+      source_title: source.source_title,
+      relative_path: source.relative_path,
+      date: source.captured_at,
+      event_summary: fallbackText || source.source_title,
+      matched_excerpt_index: 1
+    }, 0, source)
+  ];
+}
+
+function evidenceToTimelineItem(evidence) {
+  return {
+    source_id: evidence?.source_id,
+    source_title: evidence?.source_title,
+    relative_path: evidence?.source_relative_path,
+    date: evidence?.source_captured_at,
+    event_summary: evidence?.excerpt || evidence?.text || evidence?.summary,
+    matched_excerpt_index: evidence?.excerpt_index
+  };
+}
+
+function normalizeTimelineInput(item, index, fallbackSource = null) {
+  if (typeof item === "string") {
+    return {
+      timeline_id: `timeline-${index + 1}`,
+      date: fallbackSource?.captured_at || "pending",
+      source_id: fallbackSource?.source_id || `source-${index + 1}`,
+      source_title: fallbackSource?.source_title || "Direct communication input",
+      relative_path: fallbackSource?.relative_path || "",
+      event_summary: item,
+      matched_excerpt_index: index + 1
+    };
+  }
+  const source = item && typeof item === "object" ? item : {};
+  return {
+    timeline_id: firstNonEmpty([source.timeline_id, `timeline-${index + 1}`]),
+    date: firstNonEmpty([source.date, source.captured_at, source.source_captured_at, fallbackSource?.captured_at, "pending"]),
+    source_id: firstNonEmpty([source.source_id, fallbackSource?.source_id, `source-${index + 1}`]),
+    source_title: firstNonEmpty([source.source_title, source.title, fallbackSource?.source_title, "Direct communication input"]),
+    relative_path: firstNonEmpty([source.relative_path, source.source_relative_path, fallbackSource?.relative_path]),
+    event_summary: firstNonEmpty([source.event_summary, source.summary, source.excerpt, source.text, source.source_title, "Imported relationship event"]),
+    matched_excerpt_index: Number.isInteger(source.matched_excerpt_index)
+      ? source.matched_excerpt_index
+      : Number.isInteger(source.excerpt_index) ? source.excerpt_index : index + 1
+  };
+}
+
+function firstTimelineArray(values) {
+  return values.find((value) => Array.isArray(value) && value.length) || [];
+}
+
+function normalizeIntegerArray(values) {
+  return values
+    .map((value) => Number(value))
+    .filter((value) => Number.isInteger(value));
+}
+
+function latestTimelineDate(timeline) {
+  const dates = timeline
+    .map((item) => String(item.date || "").trim())
+    .filter((date) => date && date !== "pending");
+  return dates.sort().at(-1) || "";
 }
 
 function deriveFieldArray(candidate, profileUpdate, fieldName, fallbackKey) {
