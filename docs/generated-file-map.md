@@ -6,7 +6,7 @@ Branch and commit metadata are intentionally omitted so the file stays stable af
 
 ## Repository Snapshot
 
-- Tracked / public candidate files counted: 250
+- Tracked / public candidate files counted: 253
 
 ## Top-Level Map
 
@@ -16,7 +16,7 @@ Branch and commit metadata are intentionally omitted so the file stays stable af
 | `(root)` | 17 | Repository metadata and entry docs |
 | `assets` | 3 | Branding and public assets |
 | `bin` | 1 | CLI entrypoint |
-| `costar-core` | 72 | Shared core, stores, host-model tools, commits, MCP bridge |
+| `costar-core` | 75 | Shared core, stores, host-model tools, commits, MCP bridge |
 | `docs` | 12 | Public architecture, support, testing, and product notes |
 | `examples` | 13 | Public mock examples |
 | `integrations` | 43 | Host adapters for Claude, Codex, and OpenClaw |
@@ -140,9 +140,12 @@ Branch and commit metadata are intentionally omitted so the file stays stable af
 - `costar-core/mcp/claude-final-user-pack-smoke.mjs`
 - `costar-core/mcp/costar-mcp-server.mjs`
 - `costar-core/mcp/mcp-smoke.mjs`
+- `costar-core/memory/memory-candidates-smoke.mjs`
+- `costar-core/memory/memory-candidates.mjs`
 - `costar-core/memory/memory-ids.mjs`
 - `costar-core/memory/memory-store-smoke.mjs`
 - `costar-core/memory/memory-store.mjs`
+- `costar-core/memory/samples/memory-candidates.request.example.json`
 - `costar-core/memory/samples/memory-store.empty.example.json`
 - `costar-core/memory/schemas/memory-store.schema.json`
 - `costar-core/package.json`
