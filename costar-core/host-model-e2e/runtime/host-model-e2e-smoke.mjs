@@ -49,6 +49,11 @@ record(
   ""
 );
 record(
+  writableTargets.some((item) => item.target === "memory_review"),
+  "memory_review writable target exists",
+  ""
+);
+record(
   dispatcher.supported_tools.length === tools.length,
   "dispatcher and contract tool counts match",
   `${dispatcher.supported_tools.length} vs ${tools.length}`
@@ -74,7 +79,7 @@ const feedbackPreview = runHostModelTool({
 
 record(feedbackPreview.confirmation_request.required === true, "capture_get_feedback returns confirmation request", "");
 record(feedbackPreview.processing_feedback.updated_people_count === 1, "capture_get_feedback counts updates", "");
-record(commitInfo.writable_targets.length === 2, "commit layer exposes exactly two writable targets", "");
+record(commitInfo.writable_targets.length === 3, "commit layer exposes exactly three writable targets", "");
 
 const captureResult = await runHostModelTool({
   tool_name: "capture_ingest_sources",

@@ -6,6 +6,7 @@ import { runRelationshipView } from "../../relationship-view/runtime/relationshi
 import { runHostModelCaptureWorkflow } from "../host-model-workflows/capture-workflow.mjs";
 import { runHostModelBriefingWorkflow } from "../host-model-workflows/briefing-workflow.mjs";
 import { runHostModelRoleplayWorkflow } from "../host-model-workflows/roleplay-workflow.mjs";
+import { buildMemoryReviewCards, translateMemoryReviewAnswers } from "../memory/memory-review.mjs";
 import { buildHostReviewPrompt, translateHostReviewAnswers } from "../host-model-adapter/review-protocol.mjs";
 import {
   getHostModelToolDefinition,
@@ -53,6 +54,17 @@ export function runHostModelTool(payload) {
       return buildReviewPromptCards(toolInput);
     case "review_translate_answers":
       return buildReviewCommitPayload(toolInput);
+    case "memory_review_prepare_cards":
+      return buildMemoryReviewCards(toolInput);
+    case "memory_review_translate_answers":
+      return buildMemoryCommitPayload(toolInput);
+    case "memory_commit_decisions":
+      return runCoStarCommit({
+        target: "memory_review",
+        commit_id: normalizeString(toolInput.commit_id),
+        commit_log_path: normalizeString(toolInput.commit_log_path),
+        commit_request: normalizeObject(toolInput.commit_request) || toolInput
+      });
     case "profile_get":
       return runRelationshipProfile({
         mode: "get_profile",
@@ -165,6 +177,23 @@ function buildReviewCommitPayload(toolInput) {
   return translateHostReviewAnswers(toolInput);
 }
 
+function buildMemoryCommitPayload(toolInput) {
+  return {
+    target: "memory_review",
+    commit_id: normalizeString(toolInput.commit_id),
+    commit_log_path: normalizeString(toolInput.commit_log_path),
+    commit_request: {
+      memory_store_path: normalizeString(toolInput.memory_store_path || toolInput.store_path),
+      source_refs: Array.isArray(toolInput.source_refs) ? toolInput.source_refs : [],
+      candidates: Array.isArray(toolInput.candidates) ? toolInput.candidates : [],
+      review_decisions: translateMemoryReviewAnswers(toolInput),
+      operator: normalizeString(toolInput.operator),
+      notes: normalizeString(toolInput.notes),
+      options: normalizeObject(toolInput.options) || {}
+    }
+  };
+}
+
 function buildCaptureFeedbackPreview(toolInput) {
   const ingestionResult = toolInput?.ingestion_result;
   if (!ingestionResult || typeof ingestionResult !== "object") {
@@ -228,4 +257,8 @@ function pickLimitOption(toolInput) {
 
 function normalizeString(value) {
   return String(value ?? "").trim();
+}
+
+function normalizeObject(value) {
+  return value && typeof value === "object" && !Array.isArray(value) ? value : null;
 }

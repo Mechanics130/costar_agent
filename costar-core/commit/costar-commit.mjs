@@ -17,6 +17,7 @@ import {
   upsertCommitLogEntry,
   writeCommitLog
 } from "./commit-log-store.mjs";
+import { commitMemoryReviewDecisions } from "../memory/memory-commit.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -30,6 +31,10 @@ const COMMIT_TARGETS = {
   graph_review: {
     target: "graph_review",
     skill: "relationship-graph-review-resolution"
+  },
+  memory_review: {
+    target: "memory_review",
+    skill: "costar-memory-review"
   }
 };
 
@@ -86,13 +91,15 @@ export function runCoStarCommit(payload) {
       version: info.version,
       ...request.commit_request
     });
-  } else {
+  } else if (request.target === "graph_review") {
     const info = getRelationshipGraphReviewResolutionSkillInfo();
     result = runRelationshipGraphReviewResolution({
       skill: info.skill,
       version: info.version,
       ...request.commit_request
     });
+  } else {
+    result = commitMemoryReviewDecisions(request.commit_request);
   }
 
   const finalized = {
@@ -126,7 +133,7 @@ function validateCommitRequest(payload) {
 
   const target = normalizeCommitTarget(payload.target);
   if (!target) {
-    throw new Error("costar-commit requires target: profile_review | graph_review.");
+    throw new Error("costar-commit requires target: profile_review | graph_review | memory_review.");
   }
 
   const rawCommitRequest = payload.commit_request;
@@ -148,6 +155,21 @@ function normalizeCommitRequestForTarget(target, commitRequest) {
 
   if (target === "profile_review") {
     normalized.ingestion_result = normalizeProfileIngestionResult(normalized.ingestion_result);
+    normalized.review_decisions = normalizeReviewDecisionsAlias({
+      reviewDecisions: normalized.review_decisions,
+      decisions: normalized.decisions,
+      target
+    });
+    return normalized;
+  }
+
+  if (target === "memory_review") {
+    normalized.memory_store_path = normalizeOptionalString(normalized.memory_store_path || normalized.store_path);
+    if (!normalized.memory_store_path) {
+      throw new Error("memory_review commit_request requires memory_store_path.");
+    }
+    normalized.source_refs = normalizeObjectArray(normalized.source_refs);
+    normalized.candidates = normalizeObjectArray(normalized.candidates);
     normalized.review_decisions = normalizeReviewDecisionsAlias({
       reviewDecisions: normalized.review_decisions,
       decisions: normalized.decisions,
@@ -270,6 +292,10 @@ function normalizeCommitTarget(value) {
     return normalized;
   }
   return null;
+}
+
+function normalizeObjectArray(value) {
+  return Array.isArray(value) ? value.filter((item) => item && typeof item === "object" && !Array.isArray(item)) : [];
 }
 
 function normalizeOptionalString(value) {
