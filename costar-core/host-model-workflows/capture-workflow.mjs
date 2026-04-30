@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 import { buildCaptureResponseArtifact } from "../artifacts/capture-artifacts.mjs";
+import { buildMemoryCandidatesFromIngestion } from "../memory/memory-candidates.mjs";
 import { withExtractionWarnings } from "./extraction-guardrails.mjs";
 import { __capture_internal, getRelationshipCaptureSkillInfo } from "../../relationship-capture/runtime/relationship-capture.mjs";
 
@@ -16,6 +17,7 @@ export async function runHostModelCaptureWorkflow(payload) {
 
   const processingFeedback = __capture_internal.buildProcessingFeedbackFromIngestion(ingestionResult);
   const confirmationRequest = __capture_internal.buildConfirmationRequestFromIngestion(ingestionResult);
+  const memoryCandidateResult = buildMemoryCandidatesFromIngestion(ingestionResult);
 
   const response = buildCaptureResponseArtifact({
     skill: "relationship-capture",
@@ -40,8 +42,13 @@ export async function runHostModelCaptureWorkflow(payload) {
     : [];
   response.processing_feedback.insight_preview = insightPreview;
   response.processing_feedback.extraction_warnings = extractionWarnings;
+  response.processing_feedback.memory_candidates = memoryCandidateResult.candidates;
+  response.processing_feedback.memory_candidate_count = memoryCandidateResult.candidates.length;
   response.user_feedback.insight_preview = insightPreview;
   response.user_feedback.extraction_warnings = extractionWarnings;
+  response.user_feedback.memory_candidate_count = memoryCandidateResult.candidates.length;
+  response.source_refs = memoryCandidateResult.source_refs;
+  response.memory_candidates = memoryCandidateResult.candidates;
   response.host_model = summarizeHostModel(payload.host_model);
   response.source = "host_model_adapter";
   return response;

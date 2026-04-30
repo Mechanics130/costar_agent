@@ -1,0 +1,338 @@
+// SPDX-License-Identifier: Apache-2.0
+import { loadMemoryStore } from "./memory-store.mjs";
+
+export function runMemoryLint({
+  storePath,
+  memory_store_path: memoryStorePathAlias,
+  now = new Date().toISOString(),
+  zombieDays = 90,
+  zombie_days: zombieDaysAlias
+} = {}) {
+  const memoryStorePath = normalizeString(storePath || memoryStorePathAlias);
+  if (!memoryStorePath) {
+    throw new Error("runMemoryLint requires storePath or memory_store_path.");
+  }
+
+  const checkedAt = normalizeString(now) || new Date().toISOString();
+  const zombieWindowDays = Number(zombieDaysAlias ?? zombieDays) || 90;
+  const store = loadMemoryStore({ storePath: memoryStorePath });
+  const activeEntities = normalizeArray(store.entities).filter((entity) => normalizeString(entity.status) === "active");
+  const activeFacts = normalizeArray(store.facts).filter((fact) => normalizeString(fact.status) === "active");
+  const entityById = new Map(activeEntities.map((entity) => [entity.entity_id, entity]));
+  const factsByEntity = groupBy(activeFacts, (fact) => normalizeString(fact.entity_id));
+
+  const overdueCommitments = findOverdueCommitments(activeFacts, entityById, checkedAt);
+  const overdueFactIds = new Set(overdueCommitments.map((issue) => issue.fact_id));
+  const zombieFacts = findZombieFacts(activeFacts, entityById, checkedAt, zombieWindowDays);
+  const zombieFactIds = new Set(zombieFacts.map((issue) => issue.fact_id));
+  const possibleConflicts = findPossibleConflicts(activeFacts, entityById);
+  const conflictEntityIds = new Set(possibleConflicts.map((issue) => issue.entity_id));
+  const isolatedEntities = findIsolatedEntities({
+    entities: activeEntities,
+    factsByEntity,
+    interactions: store.interactions,
+    relationships: store.relationships
+  });
+  const knowledgeGaps = findKnowledgeGaps({
+    entities: activeEntities,
+    factsByEntity,
+    overdueFactIds,
+    zombieFactIds,
+    conflictEntityIds
+  });
+
+  const issues = {
+    overdue_commitments: overdueCommitments,
+    zombie_facts: zombieFacts,
+    isolated_entities: isolatedEntities,
+    possible_conflicts: possibleConflicts,
+    knowledge_gaps: knowledgeGaps
+  };
+  const issueCounts = Object.fromEntries(
+    Object.entries(issues).map(([key, value]) => [key, value.length])
+  );
+  const totalIssues = Object.values(issueCounts).reduce((sum, count) => sum + count, 0);
+
+  return {
+    status: totalIssues > 0 ? "needs_attention" : "healthy",
+    memory_store_path: store.store_path,
+    checked_at: checkedAt,
+    issue_counts: issueCounts,
+    issues,
+    markdown_report: renderMemoryLintMarkdown({ checkedAt, issueCounts, issues, totalIssues, zombieWindowDays })
+  };
+}
+
+function findOverdueCommitments(facts, entityById, checkedAt) {
+  return facts
+    .filter((fact) => normalizeString(fact.fact_type) === "commitment")
+    .map((fact) => {
+      const dueDate = extractFirstDate(fact.value);
+      if (!dueDate || compareDateOnly(dueDate, checkedAt) >= 0) {
+        return null;
+      }
+      return {
+        issue_type: "overdue_commitment",
+        severity: "high",
+        entity_id: normalizeString(fact.entity_id),
+        entity_name: entityName(entityById, fact.entity_id),
+        fact_id: normalizeString(fact.fact_id),
+        due_date: dueDate,
+        value: normalizeString(fact.value),
+        recommended_action: "Confirm whether this commitment was completed, renegotiate it, or archive the fact."
+      };
+    })
+    .filter(Boolean);
+}
+
+function findZombieFacts(facts, entityById, checkedAt, zombieWindowDays) {
+  return facts
+    .map((fact) => {
+      const committedAt = normalizeString(fact.date_committed || fact.date_observed);
+      if (!committedAt || daysBetween(committedAt, checkedAt) < zombieWindowDays) {
+        return null;
+      }
+      const quality = normalizeObject(fact.quality);
+      if (Number(quality.retrieval_count || 0) > 0) {
+        return null;
+      }
+      return {
+        issue_type: "zombie_fact",
+        severity: "medium",
+        entity_id: normalizeString(fact.entity_id),
+        entity_name: entityName(entityById, fact.entity_id),
+        fact_id: normalizeString(fact.fact_id),
+        age_days: daysBetween(committedAt, checkedAt),
+        value: normalizeString(fact.value),
+        recommended_action: "Review whether this fact is still useful, stale, or should be archived."
+      };
+    })
+    .filter(Boolean);
+}
+
+function findIsolatedEntities({ entities, factsByEntity, interactions, relationships }) {
+  const connectedEntityIds = new Set();
+  for (const interaction of normalizeArray(interactions)) {
+    for (const participant of normalizeArray(interaction.participants)) {
+      connectedEntityIds.add(normalizeString(participant));
+    }
+  }
+  for (const relationship of normalizeArray(relationships)) {
+    connectedEntityIds.add(normalizeString(relationship.source_entity_id));
+    connectedEntityIds.add(normalizeString(relationship.target_entity_id));
+  }
+
+  return entities
+    .filter((entity) => !normalizeArray(factsByEntity.get(entity.entity_id)).length)
+    .filter((entity) => !connectedEntityIds.has(normalizeString(entity.entity_id)))
+    .map((entity) => ({
+      issue_type: "isolated_entity",
+      severity: "medium",
+      entity_id: normalizeString(entity.entity_id),
+      entity_name: normalizeString(entity.canonical_name),
+      recommended_action: "Add source-backed facts or merge/archive this entity if it was created by mistake."
+    }));
+}
+
+function findPossibleConflicts(facts, entityById) {
+  const grouped = groupBy(facts, (fact) => `${normalizeString(fact.entity_id)}::${normalizeString(fact.fact_type)}`);
+  const issues = [];
+  for (const group of grouped.values()) {
+    if (group.length < 2) {
+      continue;
+    }
+    const conflict = findConflictPair(group);
+    if (!conflict) {
+      continue;
+    }
+    issues.push({
+      issue_type: "possible_conflict",
+      severity: "medium",
+      entity_id: normalizeString(conflict.left.entity_id),
+      entity_name: entityName(entityById, conflict.left.entity_id),
+      fact_type: normalizeString(conflict.left.fact_type),
+      fact_ids: [conflict.left.fact_id, conflict.right.fact_id],
+      values: [normalizeString(conflict.left.value), normalizeString(conflict.right.value)],
+      recommended_action: "Ask the user which fact is current, or mark one fact as superseded."
+    });
+  }
+  return issues;
+}
+
+function findKnowledgeGaps({ entities, factsByEntity, overdueFactIds, zombieFactIds, conflictEntityIds }) {
+  return entities
+    .map((entity) => {
+      const allFacts = normalizeArray(factsByEntity.get(entity.entity_id));
+      const usableFacts = allFacts.filter((fact) =>
+        !overdueFactIds.has(fact.fact_id)
+        && !zombieFactIds.has(fact.fact_id)
+      );
+
+      if (allFacts.length === 0) {
+        return {
+          issue_type: "knowledge_gap",
+          severity: "low",
+          entity_id: normalizeString(entity.entity_id),
+          entity_name: normalizeString(entity.canonical_name),
+          known_fact_count: 0,
+          recommended_action: "Import or confirm at least two source-backed facts before relying on this entity."
+        };
+      }
+
+      if (usableFacts.length === 1 && !conflictEntityIds.has(entity.entity_id)) {
+        return {
+          issue_type: "knowledge_gap",
+          severity: "low",
+          entity_id: normalizeString(entity.entity_id),
+          entity_name: normalizeString(entity.canonical_name),
+          known_fact_count: 1,
+          recommended_action: "Capture more evidence before using this profile for high-stakes briefing."
+        };
+      }
+
+      return null;
+    })
+    .filter(Boolean);
+}
+
+function findConflictPair(facts) {
+  for (let leftIndex = 0; leftIndex < facts.length; leftIndex += 1) {
+    for (let rightIndex = leftIndex + 1; rightIndex < facts.length; rightIndex += 1) {
+      if (looksConflicting(facts[leftIndex].value, facts[rightIndex].value)) {
+        return {
+          left: facts[leftIndex],
+          right: facts[rightIndex]
+        };
+      }
+    }
+  }
+  return null;
+}
+
+function looksConflicting(leftValue, rightValue) {
+  const left = tokenize(leftValue);
+  const right = tokenize(rightValue);
+  const opposingPairs = [
+    ["short", "long"],
+    ["async", "live"],
+    ["approve", "block"],
+    ["positive", "negative"],
+    ["high", "low"],
+    ["fast", "slow"]
+  ];
+  return opposingPairs.some(([leftTerm, rightTerm]) =>
+    (left.has(leftTerm) && right.has(rightTerm)) || (left.has(rightTerm) && right.has(leftTerm))
+  );
+}
+
+function renderMemoryLintMarkdown({ checkedAt, issueCounts, issues, totalIssues, zombieWindowDays }) {
+  const lines = [
+    "# CoStar Memory Lint",
+    "",
+    `- Checked at: ${checkedAt}`,
+    `- Status: ${totalIssues > 0 ? "needs_attention" : "healthy"}`,
+    `- Zombie threshold: ${zombieWindowDays} days`,
+    "",
+    "## Summary",
+    "",
+    `- Overdue commitments: ${issueCounts.overdue_commitments}`,
+    `- Zombie facts: ${issueCounts.zombie_facts}`,
+    `- Isolated entities: ${issueCounts.isolated_entities}`,
+    `- Possible conflicting facts: ${issueCounts.possible_conflicts}`,
+    `- Knowledge gaps: ${issueCounts.knowledge_gaps}`,
+    ""
+  ];
+
+  appendIssueSection(lines, "Overdue commitments", issues.overdue_commitments, (issue) =>
+    `${issue.entity_name}: ${issue.value} (due ${issue.due_date})`
+  );
+  appendIssueSection(lines, "Zombie facts", issues.zombie_facts, (issue) =>
+    `${issue.entity_name}: ${issue.value} (${issue.age_days} days old, never retrieved)`
+  );
+  appendIssueSection(lines, "Isolated entities", issues.isolated_entities, (issue) =>
+    `${issue.entity_name}: no facts, interactions, or relationships`
+  );
+  appendIssueSection(lines, "Possible conflicting facts", issues.possible_conflicts, (issue) =>
+    `${issue.entity_name}: ${issue.values.join(" | ")}`
+  );
+  appendIssueSection(lines, "Knowledge gaps", issues.knowledge_gaps, (issue) =>
+    `${issue.entity_name}: ${issue.known_fact_count} usable fact(s)`
+  );
+
+  return `${lines.join("\n")}\n`;
+}
+
+function appendIssueSection(lines, title, items, renderItem) {
+  lines.push(`## ${title}`, "");
+  if (!items.length) {
+    lines.push("- No issues found.", "");
+    return;
+  }
+  for (const item of items) {
+    lines.push(`- ${renderItem(item)}`);
+    lines.push(`  Recommended action: ${item.recommended_action}`);
+  }
+  lines.push("");
+}
+
+function extractFirstDate(value) {
+  const matched = normalizeString(value).match(/\b\d{4}-\d{2}-\d{2}\b/);
+  return matched ? matched[0] : "";
+}
+
+function compareDateOnly(left, right) {
+  return dateOnly(left).localeCompare(dateOnly(right));
+}
+
+function dateOnly(value) {
+  const normalized = normalizeString(value);
+  const matched = normalized.match(/\d{4}-\d{2}-\d{2}/);
+  return matched ? matched[0] : "";
+}
+
+function daysBetween(left, right) {
+  const leftMs = Date.parse(dateOnly(left));
+  const rightMs = Date.parse(dateOnly(right));
+  if (!Number.isFinite(leftMs) || !Number.isFinite(rightMs)) {
+    return 0;
+  }
+  return Math.max(0, Math.floor((rightMs - leftMs) / 86_400_000));
+}
+
+function entityName(entityById, entityId) {
+  return normalizeString(entityById.get(normalizeString(entityId))?.canonical_name) || normalizeString(entityId);
+}
+
+function groupBy(values, keyFn) {
+  const map = new Map();
+  for (const value of normalizeArray(values)) {
+    const key = keyFn(value);
+    if (!map.has(key)) {
+      map.set(key, []);
+    }
+    map.get(key).push(value);
+  }
+  return map;
+}
+
+function tokenize(value) {
+  return new Set(
+    normalizeString(value)
+      .toLowerCase()
+      .split(/[^\p{L}\p{N}]+/u)
+      .map((term) => term.trim())
+      .filter(Boolean)
+  );
+}
+
+function normalizeObject(value) {
+  return value && typeof value === "object" && !Array.isArray(value) ? value : {};
+}
+
+function normalizeArray(value) {
+  return Array.isArray(value) ? value : [];
+}
+
+function normalizeString(value) {
+  return String(value ?? "").trim();
+}

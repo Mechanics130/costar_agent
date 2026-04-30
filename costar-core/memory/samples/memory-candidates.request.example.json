@@ -1,0 +1,35 @@
+{
+  "source_manifest": [
+    {
+      "source_id": "src_001",
+      "source_type": "meeting_note",
+      "source_title": "Mock launch review",
+      "captured_at": "2026-04-30"
+    }
+  ],
+  "person_profiles": [
+    {
+      "person_name": "Riley Chen",
+      "person_ref": "person_riley_chen",
+      "resolution_action": "update",
+      "confidence": "medium",
+      "compiled_truth": {
+        "summary": "Riley cares about launch risk.",
+        "preferences": ["Wants concrete rollback plans."],
+        "boundaries": ["Needs rollback plan before launch."],
+        "latent_needs": {
+          "counterpart": [
+            {
+              "need": "Riley may need political cover before approving launch.",
+              "evidence": ["Riley sounded cautious."],
+              "confidence": "low"
+            }
+          ]
+        }
+      },
+      "evidence_summary": {
+        "key_evidence": ["Riley asked for rollback plan twice."]
+      }
+    }
+  ]
+}

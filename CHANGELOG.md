@@ -5,6 +5,23 @@ All notable changes to CoStar will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project follows [Semantic Versioning](https://semver.org/).
 
+## [0.3.0] - 2026-04-30
+
+### Added
+
+- Atomic memory store for source refs, entities, candidates, facts, interactions, relationships, and artifacts.
+- Memory candidate generation from capture results with source excerpts and confidence labels.
+- Memory review and commit path for accepted or edited long-term facts.
+- Briefing evidence trace with `facts_included`, `memory_evidence`, artifact refs, and fact retrieval tracking.
+- `memory_lint` host tool and `costar memory lint` CLI for overdue commitments, zombie facts, isolated entities, possible conflicts, and knowledge gaps.
+- Public Memory V0.3 documentation and release-surface checks.
+
+### Changed
+
+- `briefing_generate` can accept `memory_store_path` and write briefing artifact refs into the same atomic memory store.
+- `test:memory` now covers store, candidates, review / commit, briefing evidence, and lint.
+- Public hygiene checks now guard memory runtime store and private memory file names.
+
 ## [0.2.0] - 2026-04-24
 
 ### Added

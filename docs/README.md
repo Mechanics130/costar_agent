@@ -9,6 +9,7 @@ evaluate, and share CoStar.
 - [Pitch in Chinese](pitch-zh.md)
 - [Comparison notes](comparison.md)
 - [Architecture overview](architecture.md)
+- [Memory V0.3](memory-v0.3.md)
 - [Support matrix](support-matrix.md)
 - [Tester package](tester-package.md)
 - [Codex acceptance test manual](codex-acceptance-test-manual.md)

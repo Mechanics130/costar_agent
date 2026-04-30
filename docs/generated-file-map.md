@@ -6,7 +6,7 @@ Branch and commit metadata are intentionally omitted so the file stays stable af
 
 ## Repository Snapshot
 
-- Tracked / public candidate files counted: 243
+- Tracked / public candidate files counted: 261
 
 ## Top-Level Map
 
@@ -16,8 +16,8 @@ Branch and commit metadata are intentionally omitted so the file stays stable af
 | `(root)` | 17 | Repository metadata and entry docs |
 | `assets` | 3 | Branding and public assets |
 | `bin` | 1 | CLI entrypoint |
-| `costar-core` | 67 | Shared core, stores, host-model tools, commits, MCP bridge |
-| `docs` | 10 | Public architecture, support, testing, and product notes |
+| `costar-core` | 82 | Shared core, stores, host-model tools, commits, MCP bridge |
+| `docs` | 13 | Public architecture, support, testing, and product notes |
 | `examples` | 13 | Public mock examples |
 | `integrations` | 43 | Host adapters for Claude, Codex, and OpenClaw |
 | `relationship-briefing` | 9 | Brief generation |
@@ -140,6 +140,21 @@ Branch and commit metadata are intentionally omitted so the file stays stable af
 - `costar-core/mcp/claude-final-user-pack-smoke.mjs`
 - `costar-core/mcp/costar-mcp-server.mjs`
 - `costar-core/mcp/mcp-smoke.mjs`
+- `costar-core/memory/memory-briefing-smoke.mjs`
+- `costar-core/memory/memory-candidates-smoke.mjs`
+- `costar-core/memory/memory-candidates.mjs`
+- `costar-core/memory/memory-commit-smoke.mjs`
+- `costar-core/memory/memory-commit.mjs`
+- `costar-core/memory/memory-ids.mjs`
+- `costar-core/memory/memory-lint-smoke.mjs`
+- `costar-core/memory/memory-lint.mjs`
+- `costar-core/memory/memory-retrieval.mjs`
+- `costar-core/memory/memory-review.mjs`
+- `costar-core/memory/memory-store-smoke.mjs`
+- `costar-core/memory/memory-store.mjs`
+- `costar-core/memory/samples/memory-candidates.request.example.json`
+- `costar-core/memory/samples/memory-store.empty.example.json`
+- `costar-core/memory/schemas/memory-store.schema.json`
 - `costar-core/package.json`
 - `costar-core/relationship-insights.mjs`
 - `costar-core/stores/graph-review-store.mjs`
@@ -157,10 +172,13 @@ Branch and commit metadata are intentionally omitted so the file stays stable af
 - `docs/codex-acceptance-test-manual.md`
 - `docs/comparison.md`
 - `docs/host-adapter-public-hygiene.md`
+- `docs/memory-v0.3.md`
 - `docs/pitch-en.md`
 - `docs/pitch-zh.md`
 - `docs/product-shell-handoff.md`
 - `docs/README.md`
+- `docs/superpowers/plans/2026-04-30-v03-memory-mvp-acceptance.md`
+- `docs/superpowers/plans/2026-04-30-v03-memory-mvp-implementation.md`
 - `docs/support-matrix.md`
 - `docs/tester-package.md`
 
