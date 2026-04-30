@@ -1,12 +1,12 @@
 # CoStar V0.3 Memory MVP 测试验收方案
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans when running this acceptance plan step-by-step. Record every command, pass/fail result, bug, and evidence path.
+> **面向测试 Agent：** 按本文档验收时必须使用 `superpowers:executing-plans` 逐步执行。每个命令都要记录执行结果、PASS/FAIL、问题级别和证据路径。完成前必须使用 `superpowers:verification-before-completion`，不能凭感觉宣布通过。
 
-**Goal:** Verify CoStar V0.3 Memory MVP works across local CLI, host-model adapters, and the existing V0.2 compatibility surface.
+**验收目标：** 验证 CoStar V0.3 Memory MVP 是否能在本地 CLI、host-model adapters、以及既有 V0.2 兼容面上稳定工作。
 
-**Architecture:** Tests are split into automated local checks, memory-specific CLI checks, and host acceptance checks for Claude / Codex / OpenClaw / CatPaw. Test data must use mock people and isolated temporary stores only.
+**验收架构：** 测试分为自动化预检、memory 专项验收、宿主验收和发布门槛检查。测试数据必须使用 mock 人物与隔离临时 store，不允许使用真实人名、真实会议纪要或私有飞书链接。
 
-**Tech Stack:** Node.js >=18, npm, CoStar CLI, local JSON stores, Claude / Codex / OpenClaw / CatPaw host-model skill surfaces where available.
+**依赖环境：** Node.js >=18、npm、Git、CoStar CLI、本地 JSON store，以及可用时的 Claude / Codex / OpenClaw / CatPaw 宿主环境。
 
 ---
 
@@ -27,47 +27,50 @@
 - 所有测试使用 mock 数据，不使用真实人名、真实会议纪要或私有飞书链接。
 - 所有测试使用隔离临时目录，不污染开发 store。
 - 先跑自动化，再跑宿主验收。
-- 任何 P0/P1 问题都必须阻断 V0.3 发布。
+- 任意 P0/P1 问题都必须阻断 V0.3 发布。
+- 如果宿主暂不可测，必须写清楚原因、影响范围和补测计划。
 
 ---
 
-## 0. Scope
+## 0. 测试范围
 
-This plan tests V0.3 only after the implementation branch is available.
+本文档只验收 V0.3 Memory MVP，不重新验收完整商业化产品。
 
-### In Scope
+### 本轮必须覆盖
 
-- Atomic memory store.
-- Memory candidates.
-- Memory review cards.
-- Memory commit.
-- Briefing evidence trace.
-- Fact retrieval tracking.
-- Memory lint.
-- V0.2 host-model compatibility.
-- Public repo hygiene.
+- Atomic memory store。
+- Memory candidates。
+- Memory review cards。
+- Memory commit。
+- Briefing evidence trace。
+- Fact retrieval tracking。
+- Memory lint。
+- V0.2 host-model 兼容性。
+- 公开仓库卫生检查。
 
-### Out Of Scope
+### 本轮不覆盖
 
-- Full SaaS authentication.
-- SQLite migration.
-- Cloud sync.
-- Multi-user isolation.
-- Full Web UI.
-- Non-people domain transfer test.
+- SaaS 用户认证。
+- SQLite 迁移。
+- 云同步。
+- 多用户隔离。
+- 完整 Web UI。
+- 非人脉领域迁移测试。
 
 ---
 
-## 1. Test Environment
+## 1. 测试环境
 
-### Required Machine Setup
+### 机器准备
 
-- Node.js >=18.
-- npm available.
-- Git available.
-- Clean test directory outside development repo.
+必须具备：
 
-Recommended directories:
+- Node.js >=18。
+- npm 可用。
+- Git 可用。
+- 位于开发仓库之外的干净测试目录。
+
+推荐目录：
 
 ```plaintext
 D:/tmp/costar-v03-acceptance/
@@ -75,14 +78,14 @@ D:/tmp/costar-v03-acceptance/stores/
 D:/tmp/costar-v03-acceptance/reports/
 ```
 
-### Test Data Rules
+### 测试数据规则
 
-- Use only fictional people.
-- Do not use Lenny's real meeting notes.
-- Do not use private Feishu links.
-- Do not use local absolute paths from development examples in public reports.
+- 只使用虚构人物。
+- 不使用 Lenny 的真实会议纪要。
+- 不使用私有飞书链接。
+- 测试报告中不写入开发机本地绝对路径，除非它是测试临时目录。
 
-Mock people:
+Mock 人物：
 
 ```plaintext
 Riley Chen - Product Lead
@@ -92,18 +95,18 @@ Jordan Lee - Sales Lead
 
 ---
 
-## 2. Automated Preflight
+## 2. 自动化预检
 
-- [ ] **Step 1: Clone or copy test repo**
+- [ ] **步骤 1：克隆或复制测试仓库**
 
-Run in a clean directory:
+在干净目录执行：
 
 ```bash
 git clone https://github.com/Mechanics130/costar_agent.git costar-v03-test
 cd costar-v03-test
 ```
 
-If testing private branch before public release:
+如果测试的是私有分支：
 
 ```bash
 git remote add private https://github.com/Mechanics130/costar_agent-lenny1.git
@@ -111,88 +114,76 @@ git fetch private feature/v0.3-memory-mvp
 git switch -c feature/v0.3-memory-mvp FETCH_HEAD
 ```
 
-Expected: repo checks out cleanly.
+预期：仓库可以干净 checkout。
 
-- [ ] **Step 2: Install dependencies**
-
-Run:
+- [ ] **步骤 2：安装依赖**
 
 ```bash
 npm install
 ```
 
-Expected: install succeeds without requiring model API keys.
+预期：安装成功，且不要求配置 CoStar 专用模型 API key。
 
-- [ ] **Step 3: Run baseline tests**
-
-Run:
+- [ ] **步骤 3：运行基础测试**
 
 ```bash
 npm test
 ```
 
-Expected: PASS.
+预期：PASS。
 
-- [ ] **Step 4: Run host-model tests**
-
-Run:
+- [ ] **步骤 4：运行 host-model 测试**
 
 ```bash
 npm run test:host-model
 ```
 
-Expected: PASS.
+预期：PASS。
 
-- [ ] **Step 5: Run memory tests**
-
-Run:
+- [ ] **步骤 5：运行 memory 测试**
 
 ```bash
 npm run test:memory
 ```
 
-Expected: PASS.
+预期：PASS。
 
-- [ ] **Step 6: Run public hygiene**
-
-Run:
+- [ ] **步骤 6：运行公开仓库卫生检查**
 
 ```bash
 node scripts/check-public-repo.mjs
 npm pack --dry-run --json
 ```
 
-Expected: no private docs, runtime stores, real user data, local absolute paths, or Feishu drafts are included.
+预期：不包含私有文档、runtime stores、真实用户数据、本地开发绝对路径或飞书草稿。
 
 ---
 
-## 3. Memory Store Acceptance
+## 3. Memory Store 验收
 
-- [ ] **Step 1: Create isolated store path**
+- [ ] **步骤 1：创建隔离 store 路径**
 
-Use:
+使用：
 
 ```plaintext
 D:/tmp/costar-v03-acceptance/stores/memory-store.json
 ```
 
-- [ ] **Step 2: Run memory store smoke**
-
-Run:
+- [ ] **步骤 2：运行 store smoke test**
 
 ```bash
 node costar-core/memory/memory-store-smoke.mjs
 ```
 
-Expected:
+预期：
 
 ```plaintext
 memory-store-smoke passed
 ```
 
-- [ ] **Step 3: Verify schema fields**
+- [ ] **步骤 3：检查 schema 顶层字段**
 
-Open generated or sample store and confirm top-level arrays:
+打开生成的 store 或 sample，确认存在：
 
 ```plaintext
 sources
@@ -204,29 +195,27 @@ relationships
 artifacts
 ```
 
-Pass condition: all exist and are arrays.
+通过标准：全部存在，且都是数组。
 
 ---
 
-## 4. Candidate Review Acceptance
+## 4. Candidate Review 验收
 
-- [ ] **Step 1: Run candidate smoke**
-
-Run:
+- [ ] **步骤 1：运行 candidate smoke test**
 
 ```bash
 node costar-core/memory/memory-candidates-smoke.mjs
 ```
 
-Expected:
+预期：
 
 ```plaintext
 memory-candidates-smoke passed
 ```
 
-- [ ] **Step 2: Confirm candidate fields**
+- [ ] **步骤 2：检查 candidate 字段**
 
-Inspect candidate output and confirm every candidate has:
+每个 candidate 必须包含：
 
 ```plaintext
 candidate_id
@@ -238,11 +227,11 @@ source_excerpt
 review_status
 ```
 
-Pass condition: no candidate is missing source evidence.
+通过标准：没有 candidate 缺失证据来源。
 
-- [ ] **Step 3: Confirm SPECULATIVE guardrail**
+- [ ] **步骤 3：验证 SPECULATIVE 护栏**
 
-Use or create a mock host output that includes:
+使用或构造包含低置信度隐形需求的 mock output：
 
 ```json
 {
@@ -258,69 +247,65 @@ Use or create a mock host output that includes:
 }
 ```
 
-Expected:
+预期：
 
-- Candidate may be generated.
-- Candidate confidence is `speculative`.
-- It does not become an active durable fact without explicit user review.
+- 可以生成 candidate。
+- candidate confidence 是 `speculative`。
+- 没有用户显式 review 前，它不能成为 active durable fact。
 
 ---
 
-## 5. Commit Acceptance
+## 5. Commit 验收
 
-- [ ] **Step 1: Run memory commit smoke**
-
-Run:
+- [ ] **步骤 1：运行 memory commit smoke test**
 
 ```bash
 node costar-core/memory/memory-commit-smoke.mjs
 ```
 
-Expected:
+预期：
 
 ```plaintext
 memory-commit-smoke passed
 ```
 
-- [ ] **Step 2: Verify accepted fact write**
+- [ ] **步骤 2：检查 accepted fact 写入**
 
-Open the test memory store.
+打开测试 memory store。
 
-Expected:
+预期：
 
-- `facts.length` increased.
-- accepted fact has `review.reviewed_at`.
-- accepted fact has `source_id`.
-- accepted fact has `source_excerpt`.
+- `facts.length` 增加。
+- accepted fact 有 `review.reviewed_at`。
+- accepted fact 有 `source_id`。
+- accepted fact 有 `source_excerpt`。
 
-- [ ] **Step 3: Verify speculative deferral**
+- [ ] **步骤 3：检查 speculative defer**
 
-Expected:
+预期：
 
-- SPECULATIVE candidate remains in `candidates` or deferred result.
-- SPECULATIVE candidate does not appear as `status: active` fact unless the test explicitly edits/accepts it into a non-speculative durable fact.
+- SPECULATIVE candidate 保留在 `candidates` 或 deferred result。
+- 除非测试中明确编辑并确认，否则 SPECULATIVE candidate 不能出现为 `status: active` fact。
 
 ---
 
-## 6. Briefing Evidence Acceptance
+## 6. Briefing Evidence 验收
 
-- [ ] **Step 1: Run briefing memory smoke**
-
-Run:
+- [ ] **步骤 1：运行 briefing memory smoke test**
 
 ```bash
 node costar-core/memory/memory-briefing-smoke.mjs
 ```
 
-Expected:
+预期：
 
 ```plaintext
 memory-briefing-smoke passed
 ```
 
-- [ ] **Step 2: Generate a briefing with memory store**
+- [ ] **步骤 2：生成带 memory store 的 briefing**
 
-Prepare a mock request that includes:
+准备 mock request：
 
 ```json
 {
@@ -330,8 +315,18 @@ Prepare a mock request that includes:
   "host_reasoning_output": {
     "briefing": {
       "quick_brief": "Lead with rollback confidence.",
-      "relationship_read": { "current_state": "cautious", "likely_intent": "risk control", "attitude": "careful", "trust_level": "medium" },
-      "approach_strategy": { "goal_translation": "Align on safe launch", "recommended_opening": "Start with risk controls", "recommended_style": "concrete", "why_now": "launch window is near" },
+      "relationship_read": {
+        "current_state": "cautious",
+        "likely_intent": "risk control",
+        "attitude": "careful",
+        "trust_level": "medium"
+      },
+      "approach_strategy": {
+        "goal_translation": "Align on safe launch",
+        "recommended_opening": "Start with risk controls",
+        "recommended_style": "concrete",
+        "why_now": "launch window is near"
+      },
       "talking_points": ["Show rollback plan"],
       "watchouts": ["Do not overpromise"],
       "questions_to_ask": ["What risk would block launch?"],
@@ -341,53 +336,49 @@ Prepare a mock request that includes:
 }
 ```
 
-Run through the host tool or direct workflow command used by the implementation.
+通过 host tool 或实现中指定的 direct workflow command 执行。
 
-Expected response contains:
+预期 response 包含：
 
 ```plaintext
 memory_evidence.facts_included
 memory_evidence.evidence_trace_available
 ```
 
-- [ ] **Step 3: Verify artifact**
+- [ ] **步骤 3：检查 artifact 写回**
 
-Open memory store after briefing.
+打开 briefing 后的 memory store。
 
-Expected:
+预期：
 
-- `artifacts.length` increased.
-- newest artifact has `artifact_type: "briefing"`.
-- newest artifact has non-empty `facts_included`.
-- included fact `quality.retrieval_count` increased.
+- `artifacts.length` 增加。
+- 最新 artifact 的 `artifact_type` 是 `briefing`。
+- 最新 artifact 的 `facts_included` 非空。
+- 被引用 fact 的 `quality.retrieval_count` 增加。
 
 ---
 
-## 7. Memory Lint Acceptance
+## 7. Memory Lint 验收
 
-- [ ] **Step 1: Run lint smoke**
-
-Run:
+- [ ] **步骤 1：运行 lint smoke test**
 
 ```bash
 node costar-core/memory/memory-lint-smoke.mjs
 ```
 
-Expected:
+预期：
 
 ```plaintext
 memory-lint-smoke passed
 ```
 
-- [ ] **Step 2: Run CLI lint**
-
-Run:
+- [ ] **步骤 2：运行 CLI lint**
 
 ```bash
 node bin/costar.mjs memory lint --store D:/tmp/costar-v03-acceptance/stores/memory-store.json
 ```
 
-Expected markdown sections:
+预期 markdown 包含：
 
 ```plaintext
 过期承诺
@@ -397,179 +388,171 @@ Expected markdown sections:
 知识缺口
 ```
 
-- [ ] **Step 3: Confirm lint is read-only**
+- [ ] **步骤 3：确认 lint 默认只读**
 
-Record file timestamp before and after lint.
+记录 lint 前后的文件时间戳和 store 内容。
 
-Expected:
+通过标准：
 
-- Lint command does not modify facts, entities, or sources.
-- If it writes a report file, it writes only to requested report path or artifacts, not hidden data changes.
+- lint 命令不修改 facts、entities、sources。
+- 如果写 report 文件，只能写入显式指定的 report path 或 artifacts，不能产生隐藏数据变更。
 
 ---
 
-## 8. Host Acceptance Matrix
+## 8. 宿主验收矩阵
 
 ### Claude
 
-- [ ] Install:
+- [ ] 安装：
 
 ```bash
 node bin/costar.mjs host install claude --target-dir D:/tmp/costar-v03-acceptance/Claude --apply-config
 ```
 
-- [ ] Doctor:
+- [ ] Doctor：
 
 ```bash
 node D:/tmp/costar-v03-acceptance/Claude/CoStar-Claude/doctor-claude-install.mjs --require-config
 ```
 
-- [ ] In Claude, ask:
+- [ ] 在 Claude 中输入：
 
 ```plaintext
 Use CoStar to import this mock meeting note, show memory candidates, ask me to confirm them, commit accepted facts, generate a briefing for Riley Chen, and show the evidence trace.
 ```
 
-Expected:
+预期：
 
-- No CoStar model API config required.
-- User sees memory candidates.
-- User can confirm candidates.
-- Briefing includes evidence trace.
-- Store is the same CoStar memory store.
+- 不需要配置 CoStar 专用模型 API。
+- 用户能看到 memory candidates。
+- 用户能确认 candidates。
+- briefing 包含 evidence trace。
+- 结果写入同一套 CoStar memory store。
 
 ### Codex
 
-- [ ] Install:
+- [ ] 安装：
 
 ```bash
 node bin/costar.mjs host install codex --target-dir D:/tmp/costar-v03-acceptance/Codex --apply-skill
 ```
 
-- [ ] Doctor:
+- [ ] Doctor：
 
 ```bash
 node bin/costar.mjs host doctor codex
 ```
 
-- [ ] In a clean Codex project, ask:
+- [ ] 在干净 Codex 项目中输入：
 
 ```plaintext
 Use CoStar to run a V0.3 memory loop with mock people only: import, candidate review, commit, briefing evidence, memory lint.
 ```
 
-Expected:
+预期：
 
-- No model API config required.
-- Codex can use host-model mode.
-- Memory store contains facts and artifact refs.
+- 不需要配置 CoStar 专用模型 API。
+- Codex 能使用 host-model mode。
+- Memory store 包含 facts 和 artifact refs。
 
 ### OpenClaw
 
-- [ ] Install:
+- [ ] 安装：
 
 ```bash
 node bin/costar.mjs host install openclaw --target-dir D:/tmp/costar-v03-acceptance/OpenClaw
 ```
 
-- [ ] Doctor:
+- [ ] Doctor：
 
 ```bash
 node bin/costar.mjs host doctor openclaw
 ```
 
-- [ ] In OpenClaw, run equivalent mock loop.
+- [ ] 在 OpenClaw 中运行等价 mock loop。
 
-Expected:
+预期：
 
-- Full chain works in host.
-- No second CoStar data world.
-- Lint can read same memory store.
+- 宿主内完整链路可用。
+- 不产生第二套 CoStar 数据世界。
+- lint 能读取同一套 memory store。
 
 ### CatPaw
 
-CatPaw is treated as Cursor/Trae-like host compatibility.
+CatPaw 按 Cursor / Trae-like host compatibility 处理。
 
-- [ ] Use the public host-model prompt packet and tool contract.
-- [ ] Run import → review → commit → briefing evidence → lint.
+- [ ] 使用公开 host-model prompt packet 和 tool contract。
+- [ ] 运行 import → review → commit → briefing evidence → lint。
 
-Expected:
+预期：
 
-- Tool contract is understandable.
-- Host can complete loop using its bound model.
-- Results are written to same CoStar store.
+- Tool contract 可被宿主理解。
+- 宿主可使用自己绑定的模型完成闭环。
+- 结果写入同一套 CoStar store。
 
 ---
 
-## 9. Regression Acceptance
+## 9. 回归验收
 
-- [ ] **Step 1: V0.2 flow still works**
-
-Run:
+- [ ] **步骤 1：V0.2 host-model 流程仍可用**
 
 ```bash
 npm run test:host-model
 ```
 
-Expected: PASS.
+预期：PASS。
 
-- [ ] **Step 2: Legacy profile still reads**
-
-Run an existing profile sample:
+- [ ] **步骤 2：legacy profile 仍可读取**
 
 ```bash
 node relationship-profile/runtime/run-relationship-profile.mjs relationship-profile/samples/relationship-profile.request.get.example.json
 ```
 
-Expected: command still succeeds.
+预期：命令成功。
 
-- [ ] **Step 3: Graph still reads**
-
-Run:
+- [ ] **步骤 3：graph 仍可读取**
 
 ```bash
 node relationship-graph/runtime/run-relationship-graph.mjs relationship-graph/samples/relationship-graph.request.get-person-graph.example.json
 ```
 
-Expected: command still succeeds.
+预期：命令成功。
 
-- [ ] **Step 4: View still refreshes**
-
-Run:
+- [ ] **步骤 4：view 仍可 refresh**
 
 ```bash
 node relationship-view/runtime/run-relationship-view.mjs relationship-view/samples/relationship-view.request.refresh-person.example.json
 ```
 
-Expected: command still succeeds.
+预期：命令成功。
 
 ---
 
-## 10. Release Gate
+## 10. 发布门槛
 
-V0.3 can release only if all are true:
+V0.3 只有全部满足以下条件才可以发布：
 
-- [ ] `npm test` PASS.
-- [ ] `npm run test:memory` PASS.
-- [ ] `npm run test:host-model` PASS.
-- [ ] `node scripts/check-public-repo.mjs` PASS.
-- [ ] `npm pack --dry-run --json` contains no runtime stores or private materials.
-- [ ] `README.md` includes V0.3 update notes.
-- [ ] `README.zh-CN.md` includes V0.3 update notes.
-- [ ] `CHANGELOG.md` includes V0.3 update notes.
-- [ ] Claude host acceptance PASS or documented as not blocking with explicit reason.
-- [ ] Codex host acceptance PASS.
-- [ ] OpenClaw host acceptance PASS.
-- [ ] CatPaw compatibility PASS.
-- [ ] SPECULATIVE durable-write guardrail PASS.
-- [ ] Briefing evidence trace coverage for main test cases is at least 80%.
-- [ ] Feedback path can record useful/not useful result.
+- [ ] `npm test` PASS。
+- [ ] `npm run test:memory` PASS。
+- [ ] `npm run test:host-model` PASS。
+- [ ] `node scripts/check-public-repo.mjs` PASS。
+- [ ] `npm pack --dry-run --json` 不包含 runtime stores 或私有材料。
+- [ ] `README.md` 包含 V0.3 update notes。
+- [ ] `README.zh-CN.md` 包含 V0.3 update notes。
+- [ ] `CHANGELOG.md` 包含 V0.3 update notes。
+- [ ] Claude host acceptance PASS，或有明确不阻断原因。
+- [ ] Codex host acceptance PASS。
+- [ ] OpenClaw host acceptance PASS。
+- [ ] CatPaw compatibility PASS。
+- [ ] SPECULATIVE durable-write guardrail PASS。
+- [ ] briefing evidence trace 在主测试用例中的覆盖率至少 80%。
+- [ ] feedback path 能记录 useful / not useful。
 
 ---
 
-## 11. Bug Report Template
+## 11. Bug 报告模板
 
-Use this format for any V0.3 bug:
+任何 V0.3 bug 都使用以下格式：
 
 ```markdown
 # CoStar V0.3 Bug Report
