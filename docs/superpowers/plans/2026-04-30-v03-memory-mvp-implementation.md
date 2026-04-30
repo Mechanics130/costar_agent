@@ -16,10 +16,10 @@
 
 关联文档：
 
-- CoStar V0.3 正式产品建设方案 by codex：https://www.feishu.cn/docx/RbSfdg3D4oumhTxPHn8cZE8GnKg
-- CoStar V0.3 Memory MVP 建设方案 by codex：https://www.feishu.cn/docx/JVkDdlOnxonmekxDYJTcW9MenKf
+- CoStar V0.3 正式产品建设方案 by codex：见团队飞书 V0.3 Memory 文件夹。
+- CoStar V0.3 Memory MVP 建设方案 by codex：见团队飞书 V0.3 Memory 文件夹。
 - CoStar V0.3 测试验收方案 by codex：与本文档配套，面向 Claude / Codex / OpenClaw / CatPaw 测试者。
-- 私有仓库：https://github.com/Mechanics130/costar_agent-lenny1
+- 私有仓库：见团队 GitHub 私有备份仓库配置。
 - 公开仓库：https://github.com/Mechanics130/costar_agent
 
 执行原则：
@@ -37,7 +37,7 @@
 
 所有实现先在私有仓库完成。
 
-- 私有仓库：`https://github.com/Mechanics130/costar_agent-lenny1`
+- 私有仓库：见团队 GitHub 私有备份仓库配置。
 - 公开仓库：`https://github.com/Mechanics130/costar_agent`
 - 基线分支：`develop`
 - 功能分支：`feature/v0.3-memory-mvp`

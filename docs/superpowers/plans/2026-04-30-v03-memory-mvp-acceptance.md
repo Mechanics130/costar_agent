@@ -16,10 +16,10 @@
 
 关联文档：
 
-- CoStar V0.3 正式产品建设方案 by codex：https://www.feishu.cn/docx/RbSfdg3D4oumhTxPHn8cZE8GnKg
-- CoStar V0.3 Memory MVP 建设方案 by codex：https://www.feishu.cn/docx/JVkDdlOnxonmekxDYJTcW9MenKf
+- CoStar V0.3 正式产品建设方案 by codex：见团队飞书 V0.3 Memory 文件夹。
+- CoStar V0.3 Memory MVP 建设方案 by codex：见团队飞书 V0.3 Memory 文件夹。
 - CoStar V0.3 技术实施计划 by codex：与本文档配套，面向开发执行。
-- 私有仓库：https://github.com/Mechanics130/costar_agent-lenny1
+- 私有仓库：见团队 GitHub 私有备份仓库配置。
 - 公开仓库：https://github.com/Mechanics130/costar_agent
 
 验收原则：
@@ -109,7 +109,7 @@ cd costar-v03-test
 如果测试的是私有分支：
 
 ```bash
-git remote add private https://github.com/Mechanics130/costar_agent-lenny1.git
+git remote add private <private-repo-url>
 git fetch private feature/v0.3-memory-mvp
 git switch -c feature/v0.3-memory-mvp FETCH_HEAD
 ```

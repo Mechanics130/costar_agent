@@ -6,7 +6,7 @@ Branch and commit metadata are intentionally omitted so the file stays stable af
 
 ## Repository Snapshot
 
-- Tracked / public candidate files counted: 243
+- Tracked / public candidate files counted: 245
 
 ## Top-Level Map
 
@@ -17,7 +17,7 @@ Branch and commit metadata are intentionally omitted so the file stays stable af
 | `assets` | 3 | Branding and public assets |
 | `bin` | 1 | CLI entrypoint |
 | `costar-core` | 67 | Shared core, stores, host-model tools, commits, MCP bridge |
-| `docs` | 10 | Public architecture, support, testing, and product notes |
+| `docs` | 12 | Public architecture, support, testing, and product notes |
 | `examples` | 13 | Public mock examples |
 | `integrations` | 43 | Host adapters for Claude, Codex, and OpenClaw |
 | `relationship-briefing` | 9 | Brief generation |
@@ -161,6 +161,8 @@ Branch and commit metadata are intentionally omitted so the file stays stable af
 - `docs/pitch-zh.md`
 - `docs/product-shell-handoff.md`
 - `docs/README.md`
+- `docs/superpowers/plans/2026-04-30-v03-memory-mvp-acceptance.md`
+- `docs/superpowers/plans/2026-04-30-v03-memory-mvp-implementation.md`
 - `docs/support-matrix.md`
 - `docs/tester-package.md`
 
