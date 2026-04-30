@@ -37,7 +37,7 @@ CoStar is designed around a simple loop:
    - surface implicit needs, key issues, consensus / non-consensus, key quotes, and attitude / intent reads
    - keep it short enough to read before a conversation
 
-4. `memory` (V0.3 development)
+4. `memory` (V0.3 release candidate)
    - keep source-backed atomic facts in one long-term memory store
    - require review / commit before durable writes
    - let briefing show which memory facts were used
@@ -66,7 +66,7 @@ for the current acceptance scope.
 
 ## Memory V0.3
 
-The V0.3 branch adds an atomic memory layer under `costar-core/memory/`.
+V0.3 adds an atomic memory layer under `costar-core/memory/`.
 It is designed as the long-term fact source for CoStar, not a second data
 world. Existing profile, graph, and view stores remain compatible read models,
 while new source-backed facts go through memory candidates, user review, and
