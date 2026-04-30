@@ -183,6 +183,88 @@ const TOOL_DEFINITIONS = [
     commit_target: "profile_review | graph_review"
   },
   {
+    name: "memory_review_prepare_cards",
+    category: "deterministic",
+    read_only: true,
+    requires_host_reasoning: false,
+    purpose: "Turn memory candidates into stable host-facing review cards with source evidence and a canonical answer schema.",
+    input_contract: {
+      required: ["candidates"],
+      optional: ["source_refs", "limit", "options"]
+    },
+    output_contract: {
+      primary_fields: ["status", "source_type", "pending_count", "explanation", "candidates_preview", "prompt_cards"]
+    },
+    side_effects: [],
+    receipt_required: false,
+    commit_target: null
+  },
+  {
+    name: "memory_review_translate_answers",
+    category: "deterministic",
+    read_only: true,
+    requires_host_reasoning: false,
+    purpose: "Translate host memory review answers into the canonical memory_review commit payload.",
+    input_contract: {
+      required: ["memory_store_path", "candidates", "answers"],
+      optional: ["source_refs", "commit_id", "commit_log_path", "operator", "notes", "options"]
+    },
+    output_contract: {
+      primary_fields: ["target", "commit_id", "commit_request"]
+    },
+    side_effects: [],
+    receipt_required: false,
+    commit_target: null
+  },
+  {
+    name: "memory_commit_decisions",
+    category: "commit",
+    read_only: false,
+    requires_host_reasoning: false,
+    purpose: "Commit reviewed memory candidates into the canonical CoStar atomic memory store.",
+    input_contract: {
+      required: ["memory_store_path", "candidates", "review_decisions"],
+      optional: ["source_refs", "commit_id", "commit_log_path", "operator", "notes", "options"],
+      aliases: {
+        store_path: "memory_store_path",
+        decisions: "review_decisions"
+      },
+      default_paths: {
+        memory_store_path: "costar-core/memory/runtime/stores/memory-store.json"
+      }
+    },
+    output_contract: {
+      primary_fields: ["status", "memory_store_path", "memory_store_delta", "committed_records", "user_feedback"]
+    },
+    side_effects: ["writes atomic memory store through the only approved memory commit path"],
+    receipt_required: true,
+    commit_target: "memory_review"
+  },
+  {
+    name: "memory_lint",
+    category: "deterministic",
+    read_only: true,
+    requires_host_reasoning: false,
+    purpose: "Check the atomic memory store for overdue commitments, stale facts, isolated entities, conflicts, and knowledge gaps.",
+    input_contract: {
+      required: ["memory_store_path"],
+      optional: ["now", "zombie_days", "zombieDays"],
+      aliases: {
+        store_path: "memory_store_path",
+        storePath: "memory_store_path"
+      },
+      default_paths: {
+        memory_store_path: "costar-core/memory/runtime/stores/memory-store.json"
+      }
+    },
+    output_contract: {
+      primary_fields: ["status", "issue_counts", "issues", "markdown_report"]
+    },
+    side_effects: [],
+    receipt_required: false,
+    commit_target: null
+  },
+  {
     name: "profile_get",
     category: "deterministic",
     read_only: true,
@@ -235,6 +317,7 @@ const TOOL_DEFINITIONS = [
         "person_ref",
         "target_profile",
         "profile_store_path",
+        "memory_store_path",
         "meeting_context",
         "recent_interactions",
         "constraints",
@@ -243,7 +326,8 @@ const TOOL_DEFINITIONS = [
         "options"
       ],
       default_paths: {
-        profile_store_path: "relationship-profile/runtime/stores/relationship-profile-store.json"
+        profile_store_path: "relationship-profile/runtime/stores/relationship-profile-store.json",
+        memory_store_path: "costar-core/memory/runtime/stores/memory-store.json"
       },
       host_reasoning_output_schema: {
         wrapper: "host_reasoning_output.briefing",
@@ -261,9 +345,9 @@ const TOOL_DEFINITIONS = [
       }
     },
     output_contract: {
-      primary_fields: ["briefing", "briefing_file", "receipt", "host_model"]
+      primary_fields: ["briefing", "briefing_file", "facts_included", "memory_evidence", "receipt", "host_model"]
     },
-    side_effects: ["may write briefing markdown if enabled"],
+    side_effects: ["may write briefing markdown if enabled", "may write memory artifact when memory_store_path is supplied"],
     receipt_required: true,
     commit_target: null
   },

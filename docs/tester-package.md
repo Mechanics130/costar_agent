@@ -11,6 +11,7 @@ Testers should validate:
 - Host-model install and doctor for the host they use.
 - The first user loop: import material, receive feedback, confirm candidates, commit updates, refresh view, and read briefing / graph.
 - The enhanced Briefing output: implicit needs, key issues, consensus / non-consensus, key quotes, and attitude / intent.
+- V0.3 memory behavior: candidates require review, committed facts enter the atomic memory store, briefing reports evidence, and memory lint detects risky records.
 - Public hygiene: no private local paths, internal API URLs, or real personal data in examples.
 
 Testers should not validate:
@@ -26,8 +27,15 @@ Run repository checks:
 
 ```bash
 npm test
+npm run test:memory
 npm run test:host-model
 npm run docs:file-map
+```
+
+Memory lint:
+
+```bash
+node bin/costar.mjs memory lint --store costar-core/memory/runtime/stores/memory-store.json
 ```
 
 Claude:
@@ -68,6 +76,8 @@ npm run test:briefing-insights
 - Did generated results enter the same store / schema / review / commit system?
 - Did CoStar avoid splitting into two data worlds?
 - Was the enhanced Briefing useful and evidence-grounded?
+- Did Briefing expose `facts_included` or `memory_evidence` when a memory store was supplied?
+- Did memory lint report stale or risky records without requiring a model call?
 
 ## Bug Report Minimum
 

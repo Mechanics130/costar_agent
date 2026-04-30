@@ -26,6 +26,11 @@ export function resolveCommitLogPath({ target, commitRequest, commitLogPath, def
     return path.join(path.dirname(graphStorePath), DEFAULT_LOG_NAME);
   }
 
+  const memoryStorePath = normalizeString(commitRequest?.memory_store_path);
+  if (target === "memory_review" && memoryStorePath) {
+    return path.join(path.dirname(memoryStorePath), DEFAULT_LOG_NAME);
+  }
+
   return path.join(defaultRoot, "stores", DEFAULT_LOG_NAME);
 }
 
