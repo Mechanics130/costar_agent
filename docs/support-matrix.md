@@ -13,6 +13,7 @@ still needs real host-product validation.
 | Codex host-model skill | Supported | Supported | No | Local install and doctor ready; real Codex acceptance still required |
 | OpenClaw host-model bundle | Supported | Supported | No | Local install and doctor ready; real OpenClaw acceptance still required |
 | Cursor host-model adapter | Not yet | Not yet | Target: no | Planned after host contract is validated |
+| V0.3 atomic memory layer | Supported | Supported | No in host-model mode | Development branch; deterministic tests ready |
 
 ## Feature Support
 
@@ -24,8 +25,11 @@ still needs real host-product validation.
 | Commit to profile / graph store | Supported | Supported | No second data world |
 | Persistent view refresh | Supported | Supported | Same view store and markdown output |
 | Briefing | Supported | Supported | Includes enhanced insight fields in `0.2.0` |
+| Briefing evidence trace | Supported in V0.3 | Supported in V0.3 | Requires `memory_store_path`; returns `facts_included` and `memory_evidence` |
 | Graph | Supported | Supported | Deterministic graph logic; host may explain results |
 | Roleplay | Supported | Supported | Host can provide language quality; CoStar keeps contracts |
+| Atomic memory review / commit | Supported in V0.3 | Supported in V0.3 | Uses `memory_review_prepare_cards`, `memory_review_translate_answers`, and `memory_commit_decisions` |
+| Memory lint | Supported in V0.3 | Supported in V0.3 | CLI and host tool detect stale or risky memory records |
 
 ## Release Gate
 
@@ -35,4 +39,5 @@ A host path can move from "local ready" to "public recommended" only when:
 - The user does not configure a separate CoStar model API.
 - The user can complete import, feedback, review, commit, view, briefing, and graph in the host.
 - Generated results enter the same store / schema / review / commit system.
+- Memory facts, briefing evidence, and lint results remain attached to the same atomic memory store.
 - Test notes and bugs use the public bug report template.

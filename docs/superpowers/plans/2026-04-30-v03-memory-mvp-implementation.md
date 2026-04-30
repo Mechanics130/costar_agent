@@ -253,7 +253,7 @@ git commit -m "feat: add atomic memory store foundation"
 
 - [ ] **步骤 1：写 candidate smoke test**
 
-测试输入使用 mock 人名，例如 `Riley Chen`，不得使用真实用户材料。
+测试输入使用 mock 人名，例如 `Riley Chen`，不得使用 private maintainer data。
 
 测试必须覆盖：
 
@@ -628,12 +628,11 @@ README 中增加 V0.3 能力概览和 Quick Start。CHANGELOG 增加：
 `scripts/check-public-repo.mjs` 需要禁止以下内容进入公开包：
 
 ```plaintext
-memory-store.real
-memory-store.private
-relationship-memory/runtime/stores/
-真实用户材料
-本地绝对路径
-飞书草稿链接
+memory-store.<private-suffix>
+relationship-memory/<runtime-store-dir>/
+private maintainer data
+machine-specific full paths
+draft doc links
 ```
 
 - [ ] **步骤 4：运行发布前检查**
@@ -646,7 +645,7 @@ node scripts/check-public-repo.mjs
 npm pack --dry-run --json
 ```
 
-预期：全部通过，且 npm pack 不包含 runtime stores、真实用户材料或飞书草稿。
+预期：全部通过，且 npm pack 不包含 runtime stores、private maintainer data 或 draft docs。
 
 - [ ] **步骤 5：提交**
 

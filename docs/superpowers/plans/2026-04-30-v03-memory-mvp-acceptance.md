@@ -83,7 +83,7 @@ D:/tmp/costar-v03-acceptance/reports/
 - 只使用虚构人物。
 - 不使用 Lenny 的真实会议纪要。
 - 不使用私有飞书链接。
-- 测试报告中不写入开发机本地绝对路径，除非它是测试临时目录。
+- 测试报告中不写入开发机 machine-specific full paths，除非它是测试临时目录。
 
 Mock 人物：
 

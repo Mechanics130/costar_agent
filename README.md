@@ -37,6 +37,12 @@ CoStar is designed around a simple loop:
    - surface implicit needs, key issues, consensus / non-consensus, key quotes, and attitude / intent reads
    - keep it short enough to read before a conversation
 
+4. `memory` (V0.3 development)
+   - keep source-backed atomic facts in one long-term memory store
+   - require review / commit before durable writes
+   - let briefing show which memory facts were used
+   - lint memory for stale commitments, zombie facts, conflicts, isolated entities, and knowledge gaps
+
 ## Host-Model Mode
 
 CoStar now has host-model adapter bundles for Claude, Codex, and OpenClaw.
@@ -57,6 +63,24 @@ node bin/costar.mjs host doctor openclaw
 
 See [support matrix](docs/support-matrix.md) and [tester package](docs/tester-package.md)
 for the current acceptance scope.
+
+## Memory V0.3
+
+The V0.3 branch adds an atomic memory layer under `costar-core/memory/`.
+It is designed as the long-term fact source for CoStar, not a second data
+world. Existing profile, graph, and view stores remain compatible read models,
+while new source-backed facts go through memory candidates, user review, and
+commit.
+
+Useful commands:
+
+```bash
+npm run test:memory
+node bin/costar.mjs memory lint --store costar-core/memory/runtime/stores/memory-store.json
+```
+
+See [Memory V0.3](docs/memory-v0.3.md) for the data model, migration boundary,
+briefing evidence trace, and release checks.
 
 ## Advanced Skills
 
@@ -101,6 +125,7 @@ If you want to share CoStar with someone else, start with:
 - [Chinese pitch](docs/pitch-zh.md)
 - [Comparison notes](docs/comparison.md)
 - [Architecture overview](docs/architecture.md)
+- [Memory V0.3](docs/memory-v0.3.md)
 - [Examples](examples/README.md)
 
 ## Community
@@ -127,6 +152,7 @@ Available commands:
 - `costar roleplay`
 - `costar graph`
 - `costar view`
+- `costar memory lint`
 - `costar doctor`
 
 ## Repository Layout
@@ -136,6 +162,7 @@ costar_agent/
   assets/branding/            Brand assets for GitHub and docs
   bin/                        CoStar CLI entrypoint
   costar-core/                 Shared stores, commits, host tools, and MCP bridge
+  costar-core/memory/          Atomic memory store, review, retrieval, and lint
   examples/                   Small public example stories
   integrations/claude/        Claude host-model adapter bundle
   integrations/codex/         Codex host-model skill adapter
@@ -155,6 +182,7 @@ Do not commit:
 
 - `relationship-ingestion/runtime/model-config.local.json`
 - runtime run outputs
+- memory runtime stores
 - validation workspaces
 - private real-data scenarios
 
