@@ -6,6 +6,7 @@ import { runRelationshipView } from "../../relationship-view/runtime/relationshi
 import { runHostModelCaptureWorkflow } from "../host-model-workflows/capture-workflow.mjs";
 import { runHostModelBriefingWorkflow } from "../host-model-workflows/briefing-workflow.mjs";
 import { runHostModelRoleplayWorkflow } from "../host-model-workflows/roleplay-workflow.mjs";
+import { runMemoryLint } from "../memory/memory-lint.mjs";
 import { buildMemoryReviewCards, translateMemoryReviewAnswers } from "../memory/memory-review.mjs";
 import { buildHostReviewPrompt, translateHostReviewAnswers } from "../host-model-adapter/review-protocol.mjs";
 import {
@@ -65,6 +66,8 @@ export function runHostModelTool(payload) {
         commit_log_path: normalizeString(toolInput.commit_log_path),
         commit_request: normalizeObject(toolInput.commit_request) || toolInput
       });
+    case "memory_lint":
+      return runMemoryLint(toolInput);
     case "profile_get":
       return runRelationshipProfile({
         mode: "get_profile",

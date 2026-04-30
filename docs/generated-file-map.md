@@ -6,7 +6,7 @@ Branch and commit metadata are intentionally omitted so the file stays stable af
 
 ## Repository Snapshot
 
-- Tracked / public candidate files counted: 258
+- Tracked / public candidate files counted: 260
 
 ## Top-Level Map
 
@@ -16,7 +16,7 @@ Branch and commit metadata are intentionally omitted so the file stays stable af
 | `(root)` | 17 | Repository metadata and entry docs |
 | `assets` | 3 | Branding and public assets |
 | `bin` | 1 | CLI entrypoint |
-| `costar-core` | 80 | Shared core, stores, host-model tools, commits, MCP bridge |
+| `costar-core` | 82 | Shared core, stores, host-model tools, commits, MCP bridge |
 | `docs` | 12 | Public architecture, support, testing, and product notes |
 | `examples` | 13 | Public mock examples |
 | `integrations` | 43 | Host adapters for Claude, Codex, and OpenClaw |
@@ -146,6 +146,8 @@ Branch and commit metadata are intentionally omitted so the file stays stable af
 - `costar-core/memory/memory-commit-smoke.mjs`
 - `costar-core/memory/memory-commit.mjs`
 - `costar-core/memory/memory-ids.mjs`
+- `costar-core/memory/memory-lint-smoke.mjs`
+- `costar-core/memory/memory-lint.mjs`
 - `costar-core/memory/memory-retrieval.mjs`
 - `costar-core/memory/memory-review.mjs`
 - `costar-core/memory/memory-store-smoke.mjs`

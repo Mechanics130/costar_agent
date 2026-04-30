@@ -14,6 +14,7 @@ import {
   hostInstallFolder,
   installHostBundle
 } from "../costar-core/host-install/host-installer.mjs";
+import { runMemoryLint } from "../costar-core/memory/memory-lint.mjs";
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const args = process.argv.slice(2);
@@ -35,6 +36,7 @@ Commands:
   roleplay     Run relationship-roleplay
   graph        Run relationship-graph
   view         Run relationship-view
+  memory       Inspect atomic memory health
   doctor       Run repository checks
   help         Show this help
 
@@ -46,6 +48,7 @@ Examples:
   costar host doctor claude
   costar host install codex --apply-skill
   costar host install openclaw
+  costar memory lint --store costar-core/memory/runtime/stores/memory-store.json
   costar briefing relationship-briefing/samples/relationship-briefing.request.example.json
 
 Host-model mode:
@@ -413,6 +416,51 @@ function runHostCommand(rest) {
   process.exit(1);
 }
 
+function printMemoryHelp() {
+  console.log(`CoStar memory commands
+
+Usage:
+  costar memory lint --store <memory-store.json> [--now <iso-date>] [--zombie-days <days>] [--json]
+
+Examples:
+  costar memory lint --store costar-core/memory/runtime/stores/memory-store.json
+  costar memory lint --store ./memory-store.json --zombie-days 120
+`);
+}
+
+function runMemoryCommand(rest) {
+  const subcommand = trimOrEmpty(rest[0]).toLowerCase();
+  if (!subcommand || subcommand === "help" || subcommand === "--help" || subcommand === "-h") {
+    printMemoryHelp();
+    process.exit(0);
+  }
+
+  if (subcommand !== "lint") {
+    console.error(`Unknown memory subcommand: ${subcommand}`);
+    printMemoryHelp();
+    process.exit(1);
+  }
+
+  const flags = rest.slice(1);
+  const storePath = parseFlag(
+    flags,
+    ["--store", "--store-path", "--memory-store-path"],
+    path.join(repoRoot, "costar-core", "memory", "runtime", "stores", "memory-store.json")
+  );
+  const report = runMemoryLint({
+    storePath,
+    now: parseFlag(flags, ["--now"], new Date().toISOString()),
+    zombieDays: Number(parseFlag(flags, ["--zombie-days"], "90")) || 90
+  });
+
+  if (hasFlag(flags, ["--json"])) {
+    console.log(JSON.stringify(report, null, 2));
+  } else {
+    console.log(report.markdown_report);
+  }
+  process.exit(0);
+}
+
 if (!command || command === "--help" || command === "-h" || command === "help") {
   printHelp();
   process.exit(0);
@@ -429,6 +477,10 @@ if (command === "init") {
 
 if (command === "host") {
   runHostCommand(args.slice(1));
+}
+
+if (command === "memory") {
+  runMemoryCommand(args.slice(1));
 }
 
 const commandMap = {
@@ -448,5 +500,4 @@ if (!commandMap[command]) {
 }
 
 runScript(commandMap[command], args.slice(1));
-
 

@@ -241,6 +241,30 @@ const TOOL_DEFINITIONS = [
     commit_target: "memory_review"
   },
   {
+    name: "memory_lint",
+    category: "deterministic",
+    read_only: true,
+    requires_host_reasoning: false,
+    purpose: "Check the atomic memory store for overdue commitments, stale facts, isolated entities, conflicts, and knowledge gaps.",
+    input_contract: {
+      required: ["memory_store_path"],
+      optional: ["now", "zombie_days", "zombieDays"],
+      aliases: {
+        store_path: "memory_store_path",
+        storePath: "memory_store_path"
+      },
+      default_paths: {
+        memory_store_path: "costar-core/memory/runtime/stores/memory-store.json"
+      }
+    },
+    output_contract: {
+      primary_fields: ["status", "issue_counts", "issues", "markdown_report"]
+    },
+    side_effects: [],
+    receipt_required: false,
+    commit_target: null
+  },
+  {
     name: "profile_get",
     category: "deterministic",
     read_only: true,
