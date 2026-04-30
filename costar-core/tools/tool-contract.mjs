@@ -293,6 +293,7 @@ const TOOL_DEFINITIONS = [
         "person_ref",
         "target_profile",
         "profile_store_path",
+        "memory_store_path",
         "meeting_context",
         "recent_interactions",
         "constraints",
@@ -301,7 +302,8 @@ const TOOL_DEFINITIONS = [
         "options"
       ],
       default_paths: {
-        profile_store_path: "relationship-profile/runtime/stores/relationship-profile-store.json"
+        profile_store_path: "relationship-profile/runtime/stores/relationship-profile-store.json",
+        memory_store_path: "costar-core/memory/runtime/stores/memory-store.json"
       },
       host_reasoning_output_schema: {
         wrapper: "host_reasoning_output.briefing",
@@ -319,9 +321,9 @@ const TOOL_DEFINITIONS = [
       }
     },
     output_contract: {
-      primary_fields: ["briefing", "briefing_file", "receipt", "host_model"]
+      primary_fields: ["briefing", "briefing_file", "facts_included", "memory_evidence", "receipt", "host_model"]
     },
-    side_effects: ["may write briefing markdown if enabled"],
+    side_effects: ["may write briefing markdown if enabled", "may write memory artifact when memory_store_path is supplied"],
     receipt_required: true,
     commit_target: null
   },

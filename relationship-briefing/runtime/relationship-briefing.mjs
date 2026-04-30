@@ -378,6 +378,8 @@ function normalizeBriefingOutput({ parsed, request, profile, context, config, so
     ? uniqueStrings(parsed.open_questions.map((item) => normalizeString(item)).filter(Boolean))
     : [];
   const status = openQuestions.length ? "needs_review" : "success";
+  const factsIncluded = normalizeFactRefs(parsed?.facts_included || briefing.facts_included);
+  const memoryEvidence = normalizeMemoryEvidence(parsed?.memory_evidence || briefing.memory_evidence, factsIncluded);
 
   return {
     skill: SKILL_NAME,
@@ -419,6 +421,8 @@ function normalizeBriefingOutput({ parsed, request, profile, context, config, so
       questions_to_ask: normalizeArray(briefing.questions_to_ask, 6),
       next_actions: normalizeArray(briefing.next_actions, 6)
     },
+    facts_included: factsIncluded,
+    memory_evidence: memoryEvidence,
     user_feedback: {
       headline: `已为 ${profile.person_name} 生成会前简报`,
       summary_lines: [
@@ -435,6 +439,41 @@ function normalizeBriefingOutput({ parsed, request, profile, context, config, so
     },
     open_questions: openQuestions,
     notes: normalizeString(parsed?.notes)
+  };
+}
+
+function normalizeFactRefs(values) {
+  if (!Array.isArray(values)) {
+    return [];
+  }
+  return values
+    .map((item) => {
+      if (item && typeof item === "object" && !Array.isArray(item)) {
+        return {
+          ...item,
+          fact_id: normalizeString(item.fact_id),
+          entity_id: normalizeString(item.entity_id),
+          fact_type: normalizeString(item.fact_type),
+          value: normalizeString(item.value),
+          confidence: normalizeString(item.confidence),
+          source_id: normalizeString(item.source_id),
+          source_excerpt: normalizeString(item.source_excerpt)
+        };
+      }
+      const factId = normalizeString(item);
+      return factId ? { fact_id: factId } : null;
+    })
+    .filter((item) => item?.fact_id);
+}
+
+function normalizeMemoryEvidence(value, fallbackFactsIncluded = []) {
+  const source = value && typeof value === "object" && !Array.isArray(value) ? value : {};
+  const factsIncluded = normalizeFactRefs(source.facts_included || fallbackFactsIncluded);
+  return {
+    target_entity: source.target_entity && typeof source.target_entity === "object" ? source.target_entity : null,
+    facts_included: factsIncluded,
+    evidence_trace_available: Boolean(source.evidence_trace_available || factsIncluded.length > 0),
+    artifact_ref: source.artifact_ref && typeof source.artifact_ref === "object" ? source.artifact_ref : null
   };
 }
 
@@ -755,4 +794,3 @@ export const __briefing_internal = {
   writeBriefingMarkdown,
   persistRunArtifacts
 };
-

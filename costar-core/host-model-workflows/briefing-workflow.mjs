@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 import { __briefing_internal, getRelationshipBriefingSkillInfo } from "../../relationship-briefing/runtime/relationship-briefing.mjs";
+import { recordBriefingArtifact, searchFactsForBriefing } from "../memory/memory-retrieval.mjs";
 
 const REQUIRED_BRIEFING_FIELDS = [
   "quick_brief",
@@ -15,6 +16,13 @@ export async function runHostModelBriefingWorkflow(payload) {
   const request = __briefing_internal.validateBriefingRequest(payload);
   const profile = __briefing_internal.resolveTargetProfile(request);
   const context = __briefing_internal.deriveBriefingContext(request, profile);
+  const memoryStorePath = normalizeString(payload.memory_store_path || payload.store_path);
+  const memoryHits = searchFactsForBriefing({
+    storePath: memoryStorePath,
+    personName: profile.person_name || request.person_name,
+    personRef: profile.person_ref || request.person_ref,
+    conversationGoal: request.conversation_goal
+  });
   const parsed = normalizeBriefingReasoning(payload.host_reasoning_output);
   const model = buildHostModelDescriptor(payload.host_model, "briefing");
   const result = __briefing_internal.normalizeBriefingOutput({
@@ -35,9 +43,12 @@ export async function runHostModelBriefingWorkflow(payload) {
         slug: ""
       };
 
+  const memoryEvidence = buildMemoryEvidence({ memoryStorePath, memoryHits, briefingFile });
   const response = {
     ...result,
     briefing_file: briefingFile,
+    facts_included: memoryEvidence.facts_included,
+    memory_evidence: memoryEvidence,
     host_model: summarizeHostModel(payload.host_model),
     run_directory: null
   };
@@ -131,6 +142,32 @@ function summarizeHostModel(hostModel) {
     model: normalizeString(hostModel?.model || hostModel?.name) || "",
     target: normalizeString(hostModel?.target || hostModel?.host || hostModel?.adapter) || "",
     reasoning_mode: "host_supplied"
+  };
+}
+
+function buildMemoryEvidence({ memoryStorePath, memoryHits, briefingFile }) {
+  const factsIncluded = Array.isArray(memoryHits?.facts_included) ? memoryHits.facts_included : [];
+  const targetEntity = memoryHits?.target_entity || null;
+  const evidence = {
+    target_entity: targetEntity,
+    facts_included: factsIncluded,
+    evidence_trace_available: factsIncluded.length > 0,
+    artifact_ref: null
+  };
+
+  if (!memoryStorePath || !targetEntity) {
+    return evidence;
+  }
+
+  const artifactResult = recordBriefingArtifact({
+    storePath: memoryStorePath,
+    targetEntities: [targetEntity.entity_id],
+    factsIncluded,
+    artifactPath: briefingFile?.path || ""
+  });
+  return {
+    ...evidence,
+    artifact_ref: artifactResult.artifact
   };
 }
 
