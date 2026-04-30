@@ -227,7 +227,8 @@
         "reviewed_at": { "type": "string" },
         "reviewed_by": { "type": "string" },
         "proposed_reflection": { "type": "object" },
-        "confirmed_reflection": { "type": ["object", "null"] }
+        "confirmed_reflection": { "type": ["object", "null"] },
+        "review_notes": { "type": "string" }
       }
     },
     "extraction_hint": {

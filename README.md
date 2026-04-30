@@ -41,6 +41,7 @@ CoStar is designed around a simple loop:
    - keep source-backed atomic facts in one long-term memory store
    - require review / commit before durable writes
    - let briefing show which memory facts were used
+   - record user corrections as feedback, reflection candidates, and reusable extraction hints
    - lint memory for stale commitments, zombie facts, conflicts, isolated entities, and knowledge gaps
 
 ## Host-Model Mode
@@ -81,6 +82,10 @@ node bin/costar.mjs memory lint --store costar-core/memory/runtime/stores/memory
 
 See [Memory V0.3](docs/memory-v0.3.md) for the data model, migration boundary,
 briefing evidence trace, and release checks.
+
+V0.3.1 development adds a lightweight feedback loop: CoStar records review diffs,
+fact or artifact feedback, user-confirmed error reflections, and active
+extraction hints that hosts can inject into later capture or briefing runs.
 
 ## Advanced Skills
 

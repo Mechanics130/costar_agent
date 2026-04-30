@@ -28,6 +28,11 @@ for (const host of ["claude", "codex", "openclaw"]) {
   record(output.includes("review_commit_decisions"), `${host} packet mentions commit tool`, "");
   record(output.includes("review_prepare_cards"), `${host} packet mentions review card tool`, "");
   record(output.includes("review_translate_answers"), `${host} packet mentions review translation tool`, "");
+  record(output.includes("memory_feedback_record"), `${host} packet mentions memory feedback tool`, "");
+  record(output.includes("memory_reflection_prepare_cards"), `${host} packet mentions memory reflection cards tool`, "");
+  record(output.includes("memory_reflection_commit"), `${host} packet mentions memory reflection commit tool`, "");
+  record(output.includes("memory_hints_get"), `${host} packet mentions memory hints tool`, "");
+  record(output.includes("memory_feedback_report"), `${host} packet mentions memory feedback report tool`, "");
   record(output.includes("capture_ingest_sources"), `${host} packet mentions capture tool`, "");
   record(output.includes("briefing_generate"), `${host} packet mentions briefing tool`, "");
   record(output.includes("roleplay_generate"), `${host} packet mentions roleplay tool`, "");

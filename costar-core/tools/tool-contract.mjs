@@ -265,6 +265,130 @@ const TOOL_DEFINITIONS = [
     commit_target: null
   },
   {
+    name: "memory_feedback_record",
+    category: "commit",
+    read_only: false,
+    requires_host_reasoning: false,
+    purpose: "Record user feedback about a memory fact or generated artifact, update quality counters, and optionally create a reflection candidate.",
+    input_contract: {
+      required: ["memory_store_path", "target_type", "feedback_type"],
+      optional: [
+        "target_id",
+        "user_note",
+        "source_refs",
+        "proposed_reflection",
+        "operator",
+        "metadata"
+      ],
+      aliases: {
+        store_path: "memory_store_path"
+      },
+      default_paths: {
+        memory_store_path: "costar-core/memory/runtime/stores/memory-store.json"
+      }
+    },
+    output_contract: {
+      primary_fields: ["status", "memory_store_path", "feedback_event", "reflection_candidate", "memory_store_delta"]
+    },
+    side_effects: ["writes feedback_events and may update fact quality counters or reflection_candidates"],
+    receipt_required: true,
+    commit_target: "memory_feedback"
+  },
+  {
+    name: "memory_reflection_prepare_cards",
+    category: "deterministic",
+    read_only: true,
+    requires_host_reasoning: false,
+    purpose: "Turn pending memory reflection candidates into user-confirmable review cards.",
+    input_contract: {
+      required: ["reflection_candidates"],
+      optional: ["limit"]
+    },
+    output_contract: {
+      primary_fields: ["status", "source_type", "pending_count", "explanation", "candidates_preview", "prompt_cards"]
+    },
+    side_effects: [],
+    receipt_required: false,
+    commit_target: null
+  },
+  {
+    name: "memory_reflection_commit",
+    category: "commit",
+    read_only: false,
+    requires_host_reasoning: false,
+    purpose: "Commit user-confirmed reflection candidates into active extraction hints in the same memory store.",
+    input_contract: {
+      required: ["memory_store_path", "review_decisions"],
+      optional: ["operator"],
+      aliases: {
+        store_path: "memory_store_path",
+        decisions: "review_decisions"
+      },
+      default_paths: {
+        memory_store_path: "costar-core/memory/runtime/stores/memory-store.json"
+      }
+    },
+    output_contract: {
+      primary_fields: ["status", "memory_store_path", "memory_store_delta"]
+    },
+    side_effects: ["updates reflection_candidates and writes active hints"],
+    receipt_required: true,
+    commit_target: "memory_reflection"
+  },
+  {
+    name: "memory_hints_get",
+    category: "deterministic",
+    read_only: true,
+    requires_host_reasoning: false,
+    purpose: "Retrieve confirmed extraction hints for a person, field type, or global scope before capture or briefing.",
+    input_contract: {
+      required: ["memory_store_path"],
+      optional: ["scope", "limit"],
+      aliases: {
+        store_path: "memory_store_path"
+      },
+      default_paths: {
+        memory_store_path: "costar-core/memory/runtime/stores/memory-store.json"
+      }
+    },
+    output_contract: {
+      primary_fields: ["status", "memory_store_path", "scope", "hint_count", "hints"]
+    },
+    side_effects: [],
+    receipt_required: false,
+    commit_target: null
+  },
+  {
+    name: "memory_feedback_report",
+    category: "deterministic",
+    read_only: true,
+    requires_host_reasoning: false,
+    purpose: "Summarize feedback events, review diffs, reflection review status, and active hint count for memory iteration.",
+    input_contract: {
+      required: ["memory_store_path"],
+      optional: [],
+      aliases: {
+        store_path: "memory_store_path"
+      },
+      default_paths: {
+        memory_store_path: "costar-core/memory/runtime/stores/memory-store.json"
+      }
+    },
+    output_contract: {
+      primary_fields: [
+        "status",
+        "feedback_type_counts",
+        "fact_quality_summary",
+        "review_diff_summary",
+        "reflection_summary",
+        "hint_count"
+      ]
+    },
+    side_effects: [],
+    receipt_required: false,
+    commit_target: null
+  },
+  {
     name: "profile_get",
     category: "deterministic",
     read_only: true,

@@ -17,7 +17,7 @@
 - Modify `costar-core/memory/memory-commit.mjs`: record review diffs during memory review commits.
 - Create `costar-core/memory/memory-feedback.mjs`: record feedback, update fact quality counters, create reflection candidates, commit confirmed reflections into hints, and retrieve hints.
 - Create `costar-core/memory/memory-feedback-smoke.mjs`: red/green smoke coverage for feedback events, reflection confirmation, and hint retrieval.
-- Modify `costar-core/tools/host-model-dispatcher.mjs`: expose `memory_feedback_record`, `memory_reflection_prepare_cards`, `memory_reflection_commit`, and `memory_hints_get`.
+- Modify `costar-core/tools/host-model-dispatcher.mjs`: expose `memory_feedback_record`, `memory_reflection_prepare_cards`, `memory_reflection_commit`, `memory_hints_get`, and `memory_feedback_report`.
 - Modify `costar-core/tools/tool-contract.mjs`: publish tool contracts for host-model mode.
 - Modify `costar-core/host-model-adapter/host-adapter-smoke.mjs`: assert prompt packets mention feedback/hint tools.
 - Modify `package.json`: include `memory-feedback-smoke.mjs` in `npm run test:memory`.
@@ -214,6 +214,7 @@ memory_feedback_record
 memory_reflection_prepare_cards
 memory_reflection_commit
 memory_hints_get
+memory_feedback_report
 ```
 
 - [ ] **Step 4: Run host smoke to verify it passes**
