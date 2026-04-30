@@ -1,0 +1,179 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/Mechanics130/costar_agent/main/costar-core/memory/schemas/memory-store.schema.json",
+  "title": "CoStar Atomic Memory Store",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "updated_at",
+    "sources",
+    "entities",
+    "candidates",
+    "facts",
+    "interactions",
+    "relationships",
+    "artifacts"
+  ],
+  "properties": {
+    "version": { "type": "string" },
+    "updated_at": { "type": "string" },
+    "sources": { "type": "array", "items": { "$ref": "#/$defs/source_ref" } },
+    "entities": { "type": "array", "items": { "$ref": "#/$defs/entity" } },
+    "candidates": { "type": "array", "items": { "$ref": "#/$defs/candidate" } },
+    "facts": { "type": "array", "items": { "$ref": "#/$defs/fact" } },
+    "interactions": { "type": "array", "items": { "$ref": "#/$defs/interaction" } },
+    "relationships": { "type": "array", "items": { "$ref": "#/$defs/relationship" } },
+    "artifacts": { "type": "array", "items": { "$ref": "#/$defs/artifact_ref" } }
+  },
+  "$defs": {
+    "source_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_id", "source_type", "source_title", "ingested_at"],
+      "properties": {
+        "source_id": { "type": "string" },
+        "source_type": { "type": "string" },
+        "source_title": { "type": "string" },
+        "source_date": { "type": "string" },
+        "ingested_at": { "type": "string" },
+        "ingested_by": { "type": "string" },
+        "hash": { "type": "string" },
+        "size": { "type": "integer", "minimum": 0 },
+        "privacy_level": { "type": "string", "enum": ["normal", "sensitive"] },
+        "retention_policy": { "type": "string", "enum": ["metadata_only", "excerpt_only", "full_text_local"] }
+      }
+    },
+    "entity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["entity_id", "entity_type", "canonical_name", "status"],
+      "properties": {
+        "entity_id": { "type": "string" },
+        "entity_type": { "type": "string", "enum": ["person", "organization", "project", "topic"] },
+        "canonical_name": { "type": "string" },
+        "aliases": { "type": "array", "items": { "type": "string" } },
+        "key_attributes": { "type": "object" },
+        "first_seen_at": { "type": "string" },
+        "last_updated_at": { "type": "string" },
+        "status": { "type": "string", "enum": ["active", "archived", "merged"] },
+        "merged_into": { "type": ["string", "null"] }
+      }
+    },
+    "candidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "candidate_id",
+        "candidate_type",
+        "suggested_action",
+        "confidence",
+        "source_id",
+        "source_excerpt",
+        "review_status"
+      ],
+      "properties": {
+        "candidate_id": { "type": "string" },
+        "candidate_type": { "type": "string", "enum": ["entity", "fact", "interaction", "relationship"] },
+        "suggested_action": { "type": "string", "enum": ["create_new", "update_existing", "reject", "conflict_with_existing"] },
+        "target_entity_hint": { "type": "object" },
+        "proposed_value": { "type": "object" },
+        "confidence": { "type": "string", "enum": ["confirmed", "inferred", "speculative"] },
+        "source_id": { "type": "string" },
+        "source_excerpt": { "type": "string" },
+        "review_status": { "type": "string", "enum": ["pending", "accepted", "edited", "rejected"] }
+      }
+    },
+    "fact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fact_id",
+        "entity_id",
+        "fact_type",
+        "value",
+        "confidence",
+        "source_id",
+        "date_committed",
+        "status",
+        "review",
+        "quality"
+      ],
+      "properties": {
+        "fact_id": { "type": "string" },
+        "entity_id": { "type": "string" },
+        "fact_type": {
+          "type": "string",
+          "enum": ["role", "preference", "concern", "style", "constraint", "commitment", "history", "need", "issue", "attitude_intent"]
+        },
+        "value": { "type": "string" },
+        "confidence": { "type": "string", "enum": ["confirmed", "inferred", "speculative"] },
+        "source_id": { "type": "string" },
+        "source_excerpt": { "type": "string" },
+        "date_observed": { "type": "string" },
+        "date_committed": { "type": "string" },
+        "status": { "type": "string", "enum": ["active", "flagged", "superseded", "archived"] },
+        "superseded_by": { "type": ["string", "null"] },
+        "review": { "type": "object" },
+        "quality": { "type": "object" }
+      }
+    },
+    "interaction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["interaction_id", "participants", "source_id", "interaction_date", "summary"],
+      "properties": {
+        "interaction_id": { "type": "string" },
+        "participants": { "type": "array", "items": { "type": "string" } },
+        "source_id": { "type": "string" },
+        "interaction_date": { "type": "string" },
+        "summary": { "type": "string" },
+        "issue_map": { "type": "array" },
+        "attitudes": { "type": "array" },
+        "needs": { "type": "array" },
+        "facts_created": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "relationship": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "relationship_id",
+        "source_entity_id",
+        "target_entity_id",
+        "relationship_category",
+        "relationship_roles",
+        "confidence",
+        "status"
+      ],
+      "properties": {
+        "relationship_id": { "type": "string" },
+        "source_entity_id": { "type": "string" },
+        "target_entity_id": { "type": "string" },
+        "relationship_category": { "type": "string" },
+        "relationship_roles": { "type": "array", "items": { "type": "string" } },
+        "confidence": { "type": "string", "enum": ["confirmed", "inferred", "speculative"] },
+        "source_id": { "type": "string" },
+        "source_excerpt": { "type": "string" },
+        "status": { "type": "string", "enum": ["active", "flagged", "archived"] },
+        "evidence_fact_ids": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "artifact_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifact_id", "artifact_type", "created_at"],
+      "properties": {
+        "artifact_id": { "type": "string" },
+        "artifact_type": { "type": "string", "enum": ["briefing", "view", "graph", "lint_report"] },
+        "created_at": { "type": "string" },
+        "target_entities": { "type": "array", "items": { "type": "string" } },
+        "facts_included": { "type": "array", "items": { "type": "string" } },
+        "interactions_included": { "type": "array", "items": { "type": "string" } },
+        "source_refs": { "type": "array", "items": { "type": "string" } },
+        "file_path": { "type": "string" },
+        "user_feedback": { "type": ["object", "null"] }
+      }
+    }
+  }
+}
