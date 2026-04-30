@@ -181,6 +181,10 @@ try {
   assert.equal(store.facts.some((fact) => fact.value.includes("political cover")), false);
   assert.equal(store.candidates.find((item) => item.candidate_id === "cand_fact_noise")?.review_status, "rejected");
   assert.equal(store.candidates.find((item) => item.candidate_id === "cand_fact_speculative")?.review_status, "pending");
+  assert.equal(store.review_diffs.length, 1);
+  assert.equal(store.review_diffs[0].accepted_count, 2);
+  assert.equal(store.review_diffs[0].rejected_or_deferred_count, 2);
+  assert.equal(store.review_diffs[0].field_diffs.some((item) => item.field === "fact.value"), true);
 
   console.log("memory-commit-smoke passed");
 } finally {

@@ -13,7 +13,11 @@
     "facts",
     "interactions",
     "relationships",
-    "artifacts"
+    "artifacts",
+    "feedback_events",
+    "review_diffs",
+    "reflection_candidates",
+    "hints"
   ],
   "properties": {
     "version": { "type": "string" },
@@ -24,7 +28,11 @@
     "facts": { "type": "array", "items": { "$ref": "#/$defs/fact" } },
     "interactions": { "type": "array", "items": { "$ref": "#/$defs/interaction" } },
     "relationships": { "type": "array", "items": { "$ref": "#/$defs/relationship" } },
-    "artifacts": { "type": "array", "items": { "$ref": "#/$defs/artifact_ref" } }
+    "artifacts": { "type": "array", "items": { "$ref": "#/$defs/artifact_ref" } },
+    "feedback_events": { "type": "array", "items": { "$ref": "#/$defs/feedback_event" } },
+    "review_diffs": { "type": "array", "items": { "$ref": "#/$defs/review_diff" } },
+    "reflection_candidates": { "type": "array", "items": { "$ref": "#/$defs/reflection_candidate" } },
+    "hints": { "type": "array", "items": { "$ref": "#/$defs/extraction_hint" } }
   },
   "$defs": {
     "source_ref": {
@@ -173,6 +181,68 @@
         "source_refs": { "type": "array", "items": { "type": "string" } },
         "file_path": { "type": "string" },
         "user_feedback": { "type": ["object", "null"] }
+      }
+    },
+    "feedback_event": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["feedback_id", "target_type", "feedback_type", "created_at"],
+      "properties": {
+        "feedback_id": { "type": "string" },
+        "target_type": { "type": "string", "enum": ["fact", "artifact", "review_diff", "briefing", "graph", "view"] },
+        "target_id": { "type": "string" },
+        "feedback_type": { "type": "string", "enum": ["useful", "wrong", "stale", "missing", "needs_merge", "other"] },
+        "user_note": { "type": "string" },
+        "operator": { "type": "string" },
+        "created_at": { "type": "string" },
+        "source_refs": { "type": "array", "items": { "type": "string" } },
+        "metadata": { "type": "object" }
+      }
+    },
+    "review_diff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["review_diff_id", "created_at", "candidate_count", "field_diffs"],
+      "properties": {
+        "review_diff_id": { "type": "string" },
+        "created_at": { "type": "string" },
+        "operator": { "type": "string" },
+        "candidate_count": { "type": "integer", "minimum": 0 },
+        "accepted_count": { "type": "integer", "minimum": 0 },
+        "edited_count": { "type": "integer", "minimum": 0 },
+        "rejected_or_deferred_count": { "type": "integer", "minimum": 0 },
+        "source_ids": { "type": "array", "items": { "type": "string" } },
+        "field_diffs": { "type": "array", "items": { "type": "object" } }
+      }
+    },
+    "reflection_candidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reflection_id", "feedback_id", "review_status", "created_at", "proposed_reflection"],
+      "properties": {
+        "reflection_id": { "type": "string" },
+        "feedback_id": { "type": "string" },
+        "review_status": { "type": "string", "enum": ["pending", "accepted", "edited", "rejected"] },
+        "created_at": { "type": "string" },
+        "reviewed_at": { "type": "string" },
+        "reviewed_by": { "type": "string" },
+        "proposed_reflection": { "type": "object" },
+        "confirmed_reflection": { "type": ["object", "null"] }
+      }
+    },
+    "extraction_hint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["hint_id", "reflection_id", "scope", "hint_text", "created_at", "status"],
+      "properties": {
+        "hint_id": { "type": "string" },
+        "reflection_id": { "type": "string" },
+        "scope": { "type": "string" },
+        "hint_text": { "type": "string" },
+        "created_at": { "type": "string" },
+        "status": { "type": "string", "enum": ["active", "archived"] },
+        "usage_count": { "type": "integer", "minimum": 0 },
+        "last_used_at": { "type": ["string", "null"] }
       }
     }
   }
