@@ -9,7 +9,7 @@ CoStar V0.3 adds an atomic memory layer for source-backed, reviewable, and reusa
 - Users can review, accept, edit, reject, or defer memory candidates before durable write.
 - Briefing can retrieve confirmed memory facts and report `facts_included` plus `memory_evidence`.
 - Briefing artifact refs are written back to the same memory store, including which facts were used.
-- V0.3.1 development adds feedback events, review diffs, reflection candidates, and confirmed extraction hints.
+- V0.3.1 adds feedback events, review diffs, reflection candidates, and confirmed extraction hints.
 - `costar memory lint` can find stale commitments, zombie facts, isolated entities, likely conflicts, and knowledge gaps.
 
 ## Data Model
