@@ -1,6 +1,6 @@
 {
   "name": "costar",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "CoStar is an open-core skill engine for durable relationship context.",
   "type": "module",
   "license": "Apache-2.0",

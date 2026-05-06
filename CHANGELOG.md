@@ -5,6 +5,19 @@ All notable changes to CoStar will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project follows [Semantic Versioning](https://semver.org/).
 
+## [0.3.1] - 2026-05-06
+
+### Added
+
+- Memory feedback loop for user corrections, review diffs, reflection candidates, and confirmed extraction hints.
+- Host-model tools for recording memory feedback, preparing reflection cards, committing confirmed reflections, retrieving active hints, and reporting feedback state.
+- Smoke coverage for feedback persistence, hint activation, and host prompt packet exposure.
+
+### Changed
+
+- Memory commit now records proposed-to-committed review diffs so future host runs can learn from user edits without creating a second CoStar data world.
+- Public memory documentation now explains the user-confirmed feedback loop and clarifies that the host model translates feedback while CoStar remains the system of record.
+
 ## [0.3.0] - 2026-04-30
 
 ### Added

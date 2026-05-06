@@ -8,6 +8,7 @@ remaining work needed to turn CoStar into a cleaner open-core product.
 - Wave 1: complete as of 2026-04-21
 - Wave 2: complete as of 2026-04-21
 - Wave 3: complete for the current public engine and host-model release slice as of 2026-04-24
+- V0.3.1 release candidate: in validation as of 2026-05-06, focused on the memory feedback loop.
 
 ## Wave 1 - Public release hygiene
 

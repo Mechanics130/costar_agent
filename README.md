@@ -83,7 +83,7 @@ node bin/costar.mjs memory lint --store costar-core/memory/runtime/stores/memory
 See [Memory V0.3](docs/memory-v0.3.md) for the data model, migration boundary,
 briefing evidence trace, and release checks.
 
-V0.3.1 development adds a lightweight feedback loop: CoStar records review diffs,
+V0.3.1 adds a lightweight feedback loop: CoStar records review diffs,
 fact or artifact feedback, user-confirmed error reflections, and active
 extraction hints that hosts can inject into later capture or briefing runs.
 
