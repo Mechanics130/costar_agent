@@ -29,10 +29,15 @@ for (const host of ["claude", "codex", "openclaw"]) {
   record(output.includes("review_prepare_cards"), `${host} packet mentions review card tool`, "");
   record(output.includes("review_translate_answers"), `${host} packet mentions review translation tool`, "");
   record(output.includes("memory_feedback_record"), `${host} packet mentions memory feedback tool`, "");
-  record(output.includes("memory_reflection_prepare_cards"), `${host} packet mentions memory reflection cards tool`, "");
-  record(output.includes("memory_reflection_commit"), `${host} packet mentions memory reflection commit tool`, "");
-  record(output.includes("memory_hints_get"), `${host} packet mentions memory hints tool`, "");
   record(output.includes("memory_feedback_report"), `${host} packet mentions memory feedback report tool`, "");
+  record(output.includes("Experimental, disabled by default: turn pending memory reflection candidates"), `${host} packet marks memory reflection cards tool experimental`, "");
+  record(output.includes("Experimental, disabled by default: commit user-confirmed reflection candidates"), `${host} packet marks memory reflection commit experimental`, "");
+  record(output.includes("Experimental, disabled by default: retrieve confirmed extraction hints"), `${host} packet marks memory hints experimental`, "");
+  record(!output.includes("call `memory_reflection_prepare_cards`"), `${host} default workflow does not call memory reflection cards`, "");
+  record(!output.includes("call `memory_reflection_commit`"), `${host} default workflow does not call memory reflection commit`, "");
+  record(!output.includes("call `memory_hints_get`"), `${host} default workflow does not call memory hints`, "");
+  record(output.includes("record feedback and measure quality"), `${host} packet frames feedback as quality measurement`, "");
+  record(output.includes("experimental and disabled by default"), `${host} packet explains reflection and hints are disabled by default`, "");
   record(output.includes("capture_ingest_sources"), `${host} packet mentions capture tool`, "");
   record(output.includes("briefing_generate"), `${host} packet mentions briefing tool`, "");
   record(output.includes("roleplay_generate"), `${host} packet mentions roleplay tool`, "");

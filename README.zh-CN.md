@@ -69,7 +69,7 @@ node bin/costar.mjs memory lint --store costar-core/memory/runtime/stores/memory
 
 详细说明见 [Memory V0.3](docs/memory-v0.3.md)。
 
-V0.3.1 增加轻量反馈闭环：CoStar 会记录 review 前后的差异、用户对事实或产物的反馈、经用户确认的错误归因，以及后续可注入 capture / briefing 的 active hints。宿主模型负责把自然语言反馈翻译成结构化候选，CoStar 负责持久化、约束和复用。
+V0.3.2 收缩默认反馈闭环：CoStar 稳定记录 review 前后的差异、用户对事实或产物的反馈，以及 feedback report 质量报告。错误归因候选和 extraction hints 保留为实验能力，默认关闭；在积累足够 review_diff 样本前，不作为默认用户流程或公开主卖点。
 
 ## 快速开始
 

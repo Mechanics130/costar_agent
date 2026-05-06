@@ -269,7 +269,7 @@ const TOOL_DEFINITIONS = [
     category: "commit",
     read_only: false,
     requires_host_reasoning: false,
-    purpose: "Record user feedback about a memory fact or generated artifact, update quality counters, and optionally create a reflection candidate.",
+    purpose: "Record user feedback about a memory fact or generated artifact and update quality counters. Reflection candidates are only created when experimental reflection input is explicitly provided.",
     input_contract: {
       required: ["memory_store_path", "target_type", "feedback_type"],
       optional: [
@@ -290,7 +290,7 @@ const TOOL_DEFINITIONS = [
     output_contract: {
       primary_fields: ["status", "memory_store_path", "feedback_event", "reflection_candidate", "memory_store_delta"]
     },
-    side_effects: ["writes feedback_events and may update fact quality counters or reflection_candidates"],
+    side_effects: ["writes feedback_events", "may update fact quality counters", "may write reflection_candidates only when experimental proposed_reflection is provided"],
     receipt_required: true,
     commit_target: "memory_feedback"
   },
@@ -299,7 +299,9 @@ const TOOL_DEFINITIONS = [
     category: "deterministic",
     read_only: true,
     requires_host_reasoning: false,
-    purpose: "Turn pending memory reflection candidates into user-confirmable review cards.",
+    stability: "experimental",
+    default_enabled: false,
+    purpose: "Experimental, disabled by default: turn pending memory reflection candidates into user-confirmable review cards.",
     input_contract: {
       required: ["reflection_candidates"],
       optional: ["limit"]
@@ -316,7 +318,9 @@ const TOOL_DEFINITIONS = [
     category: "commit",
     read_only: false,
     requires_host_reasoning: false,
-    purpose: "Commit user-confirmed reflection candidates into active extraction hints in the same memory store.",
+    stability: "experimental",
+    default_enabled: false,
+    purpose: "Experimental, disabled by default: commit user-confirmed reflection candidates into active extraction hints in the same memory store.",
     input_contract: {
       required: ["memory_store_path", "review_decisions"],
       optional: ["operator"],
@@ -340,7 +344,9 @@ const TOOL_DEFINITIONS = [
     category: "deterministic",
     read_only: true,
     requires_host_reasoning: false,
-    purpose: "Retrieve confirmed extraction hints for a person, field type, or global scope before capture or briefing.",
+    stability: "experimental",
+    default_enabled: false,
+    purpose: "Experimental, disabled by default: retrieve confirmed extraction hints for a person, field type, or global scope before capture or briefing.",
     input_contract: {
       required: ["memory_store_path"],
       optional: ["scope", "limit"],
@@ -363,7 +369,7 @@ const TOOL_DEFINITIONS = [
     category: "deterministic",
     read_only: true,
     requires_host_reasoning: false,
-    purpose: "Summarize feedback events, review diffs, reflection review status, and active hint count for memory iteration.",
+    purpose: "Summarize stable feedback events and review diffs for quality measurement, with experimental reflection / hint counts included only as diagnostics.",
     input_contract: {
       required: ["memory_store_path"],
       optional: [],
