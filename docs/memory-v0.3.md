@@ -9,6 +9,7 @@ CoStar V0.3 adds an atomic memory layer for source-backed, reviewable, and reusa
 - Users can review, accept, edit, reject, or defer memory candidates before durable write.
 - Briefing can retrieve confirmed memory facts and report `facts_included` plus `memory_evidence`.
 - Briefing artifact refs are written back to the same memory store, including which facts were used.
+- V0.3.1 development adds feedback events, review diffs, reflection candidates, and confirmed extraction hints.
 - `costar memory lint` can find stale commitments, zombie facts, isolated entities, likely conflicts, and knowledge gaps.
 
 ## Data Model
@@ -22,6 +23,10 @@ The atomic memory store is a JSON document with these top-level arrays:
 - `interactions`: source-backed meetings or exchanges.
 - `relationships`: evidence-backed links between entities.
 - `artifacts`: generated outputs such as briefings, views, graphs, and lint reports.
+- `feedback_events`: user feedback on facts, generated artifacts, review diffs, or briefing outputs.
+- `review_diffs`: proposed-to-committed deltas from user review decisions.
+- `reflection_candidates`: host-structured explanations for why an extraction or briefing judgment was wrong.
+- `hints`: user-confirmed extraction rules that can be injected into later capture or briefing runs.
 
 Every durable fact should have:
 
@@ -43,6 +48,25 @@ V0.3 keeps the same review / commit discipline as V0.2:
 - Accepted or edited candidates can be committed to memory.
 - Rejected or deferred candidates must not silently become active facts.
 - Commit results must enter the same store / schema / review / commit system.
+
+## Feedback Loop
+
+V0.3.1 keeps the host-model boundary: the host model may translate natural-language
+feedback into structured JSON, but CoStar stores and constrains the result.
+
+The minimum loop is:
+
+1. A user accepts, edits, rejects, or adds information during review.
+2. CoStar records a `review_diff` that captures the proposed value, committed value, and decision pattern.
+3. A user can mark a fact or artifact as `useful`, `wrong`, `stale`, `missing`, or `needs_merge`.
+4. CoStar writes a `feedback_event`, updates fact quality counters, and may create a `reflection_candidate`.
+5. The user confirms or edits the reflection candidate.
+6. CoStar turns the confirmed reflection into an active extraction `hint`.
+7. Hosts can call `memory_hints_get` before later capture or briefing runs.
+
+This is not model self-grading. The durable reward signal comes from user
+behavior, user correction, source evidence, and post-conversation review.
+The model acts as a translator; CoStar remains the system of record.
 
 ## Briefing Evidence
 

@@ -6,7 +6,7 @@ Branch and commit metadata are intentionally omitted so the file stays stable af
 
 ## Repository Snapshot
 
-- Tracked / public candidate files counted: 261
+- Tracked / public candidate files counted: 264
 
 ## Top-Level Map
 
@@ -16,8 +16,8 @@ Branch and commit metadata are intentionally omitted so the file stays stable af
 | `(root)` | 17 | Repository metadata and entry docs |
 | `assets` | 3 | Branding and public assets |
 | `bin` | 1 | CLI entrypoint |
-| `costar-core` | 82 | Shared core, stores, host-model tools, commits, MCP bridge |
-| `docs` | 13 | Public architecture, support, testing, and product notes |
+| `costar-core` | 84 | Shared core, stores, host-model tools, commits, MCP bridge |
+| `docs` | 14 | Public architecture, support, testing, and product notes |
 | `examples` | 13 | Public mock examples |
 | `integrations` | 43 | Host adapters for Claude, Codex, and OpenClaw |
 | `relationship-briefing` | 9 | Brief generation |
@@ -145,6 +145,8 @@ Branch and commit metadata are intentionally omitted so the file stays stable af
 - `costar-core/memory/memory-candidates.mjs`
 - `costar-core/memory/memory-commit-smoke.mjs`
 - `costar-core/memory/memory-commit.mjs`
+- `costar-core/memory/memory-feedback-smoke.mjs`
+- `costar-core/memory/memory-feedback.mjs`
 - `costar-core/memory/memory-ids.mjs`
 - `costar-core/memory/memory-lint-smoke.mjs`
 - `costar-core/memory/memory-lint.mjs`
@@ -179,6 +181,7 @@ Branch and commit metadata are intentionally omitted so the file stays stable af
 - `docs/README.md`
 - `docs/superpowers/plans/2026-04-30-v03-memory-mvp-acceptance.md`
 - `docs/superpowers/plans/2026-04-30-v03-memory-mvp-implementation.md`
+- `docs/superpowers/plans/2026-04-30-v031-memory-feedback-loop.md`
 - `docs/support-matrix.md`
 - `docs/tester-package.md`
 

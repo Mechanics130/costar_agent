@@ -176,6 +176,7 @@ for (const file of [
   "costar-core/memory/memory-candidates.mjs",
   "costar-core/memory/memory-review.mjs",
   "costar-core/memory/memory-commit.mjs",
+  "costar-core/memory/memory-feedback.mjs",
   "costar-core/memory/memory-retrieval.mjs",
   "costar-core/memory/memory-lint.mjs",
   "relationship-capture/runtime/run-relationship-capture.mjs",

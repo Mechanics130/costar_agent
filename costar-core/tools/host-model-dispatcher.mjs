@@ -6,6 +6,13 @@ import { runRelationshipView } from "../../relationship-view/runtime/relationshi
 import { runHostModelCaptureWorkflow } from "../host-model-workflows/capture-workflow.mjs";
 import { runHostModelBriefingWorkflow } from "../host-model-workflows/briefing-workflow.mjs";
 import { runHostModelRoleplayWorkflow } from "../host-model-workflows/roleplay-workflow.mjs";
+import {
+  buildMemoryReflectionCards,
+  commitMemoryReflectionDecisions,
+  getMemoryFeedbackReport,
+  getMemoryHints,
+  recordMemoryFeedback
+} from "../memory/memory-feedback.mjs";
 import { runMemoryLint } from "../memory/memory-lint.mjs";
 import { buildMemoryReviewCards, translateMemoryReviewAnswers } from "../memory/memory-review.mjs";
 import { buildHostReviewPrompt, translateHostReviewAnswers } from "../host-model-adapter/review-protocol.mjs";
@@ -66,6 +73,16 @@ export function runHostModelTool(payload) {
         commit_log_path: normalizeString(toolInput.commit_log_path),
         commit_request: normalizeObject(toolInput.commit_request) || toolInput
       });
+    case "memory_feedback_record":
+      return recordMemoryFeedback(toolInput);
+    case "memory_reflection_prepare_cards":
+      return buildMemoryReflectionCards(toolInput);
+    case "memory_reflection_commit":
+      return commitMemoryReflectionDecisions(toolInput);
+    case "memory_hints_get":
+      return getMemoryHints(toolInput);
+    case "memory_feedback_report":
+      return getMemoryFeedbackReport(toolInput);
     case "memory_lint":
       return runMemoryLint(toolInput);
     case "profile_get":

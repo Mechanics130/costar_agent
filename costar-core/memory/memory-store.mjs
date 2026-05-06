@@ -18,7 +18,11 @@ export function createEmptyMemoryStore(version = MEMORY_STORE_VERSION) {
     facts: [],
     interactions: [],
     relationships: [],
-    artifacts: []
+    artifacts: [],
+    feedback_events: [],
+    review_diffs: [],
+    reflection_candidates: [],
+    hints: []
   };
 }
 
@@ -58,7 +62,11 @@ export function normalizeMemoryStore(value, storePath = "") {
     facts: normalizeObjectArray(source.facts),
     interactions: normalizeObjectArray(source.interactions),
     relationships: normalizeObjectArray(source.relationships),
-    artifacts: normalizeObjectArray(source.artifacts)
+    artifacts: normalizeObjectArray(source.artifacts),
+    feedback_events: normalizeObjectArray(source.feedback_events),
+    review_diffs: normalizeObjectArray(source.review_diffs),
+    reflection_candidates: normalizeObjectArray(source.reflection_candidates),
+    hints: normalizeObjectArray(source.hints)
   };
 }
 
@@ -70,7 +78,11 @@ export function countMemoryRecords(store) {
     facts: normalizeObjectArray(store?.facts).length,
     interactions: normalizeObjectArray(store?.interactions).length,
     relationships: normalizeObjectArray(store?.relationships).length,
-    artifacts: normalizeObjectArray(store?.artifacts).length
+    artifacts: normalizeObjectArray(store?.artifacts).length,
+    feedback_events: normalizeObjectArray(store?.feedback_events).length,
+    review_diffs: normalizeObjectArray(store?.review_diffs).length,
+    reflection_candidates: normalizeObjectArray(store?.reflection_candidates).length,
+    hints: normalizeObjectArray(store?.hints).length
   };
 }
 
