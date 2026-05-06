@@ -24,7 +24,8 @@ export function commitMemoryReviewDecisions(payload = {}) {
     sources: mergeById(store.sources, sourceRefs, "source_id"),
     entities: [...store.entities],
     candidates: mergeById(store.candidates, candidates.map((candidate) => applyCandidateDecision(candidate, decisions.get(candidate.candidate_id))), "candidate_id"),
-    facts: [...store.facts]
+    facts: [...store.facts],
+    review_diffs: [...normalizeArray(store.review_diffs)]
   };
 
   const delta = {
@@ -69,6 +70,15 @@ export function commitMemoryReviewDecisions(payload = {}) {
     }
   }
 
+  if (decisions.size > 0) {
+    next.review_diffs.push(buildReviewDiff({
+      candidates,
+      decisions,
+      processedAt,
+      operator: payload.operator
+    }));
+  }
+
   const write = writeMemoryStore({
     storePath: memoryStorePath,
     store: next,
@@ -88,6 +98,51 @@ export function commitMemoryReviewDecisions(payload = {}) {
       summary: `Committed ${delta.facts_added} memory fact(s). Deferred or rejected ${delta.candidates_rejected_or_deferred} candidate(s).`
     }
   };
+}
+
+function buildReviewDiff({ candidates, decisions, processedAt, operator }) {
+  const reviewedCandidates = candidates.filter((candidate) => decisions.has(candidate.candidate_id));
+  const reviewDecisions = reviewedCandidates.map((candidate) => decisions.get(candidate.candidate_id));
+  const sourceIds = Array.from(new Set(reviewedCandidates.map((candidate) => normalizeString(candidate.source_id)).filter(Boolean)));
+  return {
+    review_diff_id: stableMemoryId("review_diff", [
+      processedAt,
+      normalizeString(operator),
+      reviewedCandidates.map((candidate) => candidate.candidate_id).join("|")
+    ]),
+    created_at: processedAt,
+    operator: normalizeString(operator) || "user",
+    candidate_count: reviewedCandidates.length,
+    accepted_count: reviewDecisions.filter((decision) => decision.decision === "accepted").length,
+    edited_count: reviewDecisions.filter((decision) => decision.decision === "edited").length,
+    rejected_or_deferred_count: reviewDecisions.filter((decision) => decision.decision === "rejected" || decision.decision === "deferred").length,
+    source_ids: sourceIds,
+    field_diffs: reviewedCandidates.flatMap((candidate) =>
+      buildCandidateFieldDiffs(candidate, decisions.get(candidate.candidate_id))
+    )
+  };
+}
+
+function buildCandidateFieldDiffs(candidate, decision) {
+  const proposedValue = normalizeObject(candidate.proposed_value);
+  const overrideValue = normalizeObject(decision?.overrides?.proposed_value);
+  if (!Object.keys(overrideValue).length) {
+    return Object.entries(proposedValue).map(([key, value]) => ({
+      candidate_id: candidate.candidate_id,
+      field: `fact.${key}`,
+      action: decision?.decision || "unknown",
+      proposed_value: value,
+      committed_value: value
+    }));
+  }
+  const keys = Array.from(new Set([...Object.keys(proposedValue), ...Object.keys(overrideValue)]));
+  return keys.map((key) => ({
+    candidate_id: candidate.candidate_id,
+    field: `fact.${key}`,
+    action: Object.hasOwn(overrideValue, key) && overrideValue[key] !== proposedValue[key] ? "edit" : decision?.decision || "unknown",
+    proposed_value: proposedValue[key] ?? null,
+    committed_value: Object.hasOwn(overrideValue, key) ? overrideValue[key] : proposedValue[key] ?? null
+  }));
 }
 
 function ensureEntity(entities, candidate, decision, processedAt) {

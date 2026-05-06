@@ -36,6 +36,7 @@ CoStar 的核心闭环是：
    - 把来源可追溯的长期事实写入同一套 atomic memory store。
    - 所有长期事实先进入候选项，再由用户确认后提交。
    - briefing 可以展示引用了哪些 memory facts。
+   - 记录用户校正、review diff、归因候选和可复用 extraction hints。
    - memory lint 可以检查过期承诺、僵尸事实、孤立实体、可能冲突和知识缺口。
 
 ## Host-model 模式
@@ -67,6 +68,8 @@ node bin/costar.mjs memory lint --store costar-core/memory/runtime/stores/memory
 ```
 
 详细说明见 [Memory V0.3](docs/memory-v0.3.md)。
+
+V0.3.1 增加轻量反馈闭环：CoStar 会记录 review 前后的差异、用户对事实或产物的反馈、经用户确认的错误归因，以及后续可注入 capture / briefing 的 active hints。宿主模型负责把自然语言反馈翻译成结构化候选，CoStar 负责持久化、约束和复用。
 
 ## 快速开始
 
