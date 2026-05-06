@@ -9,7 +9,8 @@ CoStar V0.3 adds an atomic memory layer for source-backed, reviewable, and reusa
 - Users can review, accept, edit, reject, or defer memory candidates before durable write.
 - Briefing can retrieve confirmed memory facts and report `facts_included` plus `memory_evidence`.
 - Briefing artifact refs are written back to the same memory store, including which facts were used.
-- V0.3.1 adds feedback events, review diffs, reflection candidates, and confirmed extraction hints.
+- V0.3.2 keeps feedback events, review diffs, and feedback reports as the stable default loop.
+- Reflection candidates and confirmed extraction hints remain experimental and disabled by default until enough review-diff evidence exists.
 - `costar memory lint` can find stale commitments, zombie facts, isolated entities, likely conflicts, and knowledge gaps.
 
 ## Data Model
@@ -51,18 +52,22 @@ V0.3 keeps the same review / commit discipline as V0.2:
 
 ## Feedback Loop
 
-V0.3.1 keeps the host-model boundary: the host model may translate natural-language
+V0.3.2 keeps the host-model boundary: the host model may translate natural-language
 feedback into structured JSON, but CoStar stores and constrains the result.
 
-The minimum loop is:
+The stable default loop is:
 
 1. A user accepts, edits, rejects, or adds information during review.
 2. CoStar records a `review_diff` that captures the proposed value, committed value, and decision pattern.
 3. A user can mark a fact or artifact as `useful`, `wrong`, `stale`, `missing`, or `needs_merge`.
 4. CoStar writes a `feedback_event`, updates fact quality counters, and may create a `reflection_candidate`.
-5. The user confirms or edits the reflection candidate.
-6. CoStar turns the confirmed reflection into an active extraction `hint`.
-7. Hosts can call `memory_hints_get` before later capture or briefing runs.
+5. CoStar exposes `memory_feedback_report` so users and builders can see repeated correction patterns.
+
+Reflection candidates and extraction hints are dormant experimental capabilities.
+Hosts must not call `memory_reflection_prepare_cards`, `memory_reflection_commit`,
+or `memory_hints_get` in the default user workflow. They are reserved for later
+experiments after enough review-diff samples exist to justify governed hint
+creation and conflict handling.
 
 This is not model self-grading. The durable reward signal comes from user
 behavior, user correction, source evidence, and post-conversation review.
