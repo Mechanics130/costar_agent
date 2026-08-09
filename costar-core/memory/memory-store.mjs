@@ -6,7 +6,7 @@ import {
   writeJsonStore
 } from "../stores/json-store-utils.mjs";
 
-export const MEMORY_STORE_VERSION = "0.3.0";
+export const MEMORY_STORE_VERSION = "0.4.0";
 
 export function createEmptyMemoryStore(version = MEMORY_STORE_VERSION) {
   return {
@@ -22,7 +22,8 @@ export function createEmptyMemoryStore(version = MEMORY_STORE_VERSION) {
     feedback_events: [],
     review_diffs: [],
     reflection_candidates: [],
-    hints: []
+    hints: [],
+    episodes: []
   };
 }
 
@@ -66,7 +67,8 @@ export function normalizeMemoryStore(value, storePath = "") {
     feedback_events: normalizeObjectArray(source.feedback_events),
     review_diffs: normalizeObjectArray(source.review_diffs),
     reflection_candidates: normalizeObjectArray(source.reflection_candidates),
-    hints: normalizeObjectArray(source.hints)
+    hints: normalizeObjectArray(source.hints),
+    episodes: normalizeObjectArray(source.episodes)
   };
 }
 
@@ -82,7 +84,8 @@ export function countMemoryRecords(store) {
     feedback_events: normalizeObjectArray(store?.feedback_events).length,
     review_diffs: normalizeObjectArray(store?.review_diffs).length,
     reflection_candidates: normalizeObjectArray(store?.reflection_candidates).length,
-    hints: normalizeObjectArray(store?.hints).length
+    hints: normalizeObjectArray(store?.hints).length,
+    episodes: normalizeObjectArray(store?.episodes).length
   };
 }
 

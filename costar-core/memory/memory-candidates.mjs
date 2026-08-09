@@ -15,6 +15,12 @@ export function buildMemoryCandidatesFromIngestion(payload = {}) {
   const profiles = Array.isArray(payload.person_profiles) ? payload.person_profiles : [];
   const candidates = [];
 
+  // --- Episode creation (borrowed from Graphiti's EpisodicNode) ---
+  // An episode stores the raw original data and serves as the provenance root.
+  // Every fact candidate extracted from this ingestion will reference the episode.
+  const episode = createEpisodeFromPayload(payload, sourceRefs);
+  const episodeId = episode ? episode.episode_id : null;
+
   profiles.forEach((profile, index) => {
     const personName = normalizeString(profile?.person_name);
     if (!personName) return;
@@ -24,17 +30,25 @@ export function buildMemoryCandidatesFromIngestion(payload = {}) {
       target_entity_hint: buildTargetEntityHint(profile),
       source_id: sourceId,
       source_excerpt: evidence || "Source evidence pending user review.",
-      review_status: "pending"
+      review_status: "pending",
+      episode_id: episodeId
     };
     candidates.push(buildEntityCandidate(profile, base, index));
     candidates.push(...buildFactCandidates(profile, base));
   });
 
-  return {
+  const result = {
     status: "success",
     source_refs: sourceRefs,
     candidates
   };
+
+  // Attach the episode so the commit flow can persist it alongside candidates
+  if (episode) {
+    result.episode = episode;
+  }
+
+  return result;
 }
 
 export function createSourceRefs(payload = {}) {
@@ -144,7 +158,9 @@ function buildFactCandidate({ profile, base, field, factType, value, confidence 
     proposed_value: {
       fact_type: factType,
       field,
-      value
+      value,
+      // Attach episode_id so the committed fact can reference its source episode
+      episode_ids: base.episode_id ? [base.episode_id] : []
     },
     confidence: normalizeCandidateConfidence(confidence),
     source_id: base.source_id,
@@ -241,6 +257,59 @@ function normalizeInteger(value) {
   return Number.isInteger(number) && number >= 0 ? number : 0;
 }
 
+/**
+ * Create an Episode from the ingestion payload.
+ *
+ * Borrowed from Graphiti's EpisodicNode concept: an episode is the raw
+ * original data (message text, JSON, etc.) that serves as the provenance
+ * root. Every fact extracted from this episode can trace back to it.
+ *
+ * @param {object} payload - the ingestion payload
+ * @param {Array} sourceRefs - normalized source refs
+ * @returns {object|null} - an episode object, or null if no source
+ */
+function createEpisodeFromPayload(payload, sourceRefs) {
+  const firstSource = sourceRefs[0];
+  if (!firstSource) return null;
+
+  // Determine content and content_type
+  let content = "";
+  let contentType = "text";
+
+  if (Array.isArray(payload.input?.messages) && payload.input.messages.length > 0) {
+    content = payload.input.messages
+      .map((m) => `${normalizeString(m.role || m.role_type || "unknown")}: ${normalizeString(m.content)}`)
+      .join("\n");
+    contentType = "message";
+  } else if (payload.input?.raw_text) {
+    content = normalizeString(payload.input.raw_text);
+    contentType = "text";
+  } else if (payload.input?.json_data) {
+    content = JSON.stringify(payload.input.json_data);
+    contentType = "json";
+  } else {
+    content = normalizeString(payload.input?.source_title) || "No content captured.";
+  }
+
+  const episodeId = stableMemoryId("episode", [
+    firstSource.source_id,
+    normalizeString(firstSource.source_date || firstSource.ingested_at),
+    content.slice(0, 100)
+  ]);
+
+  return {
+    episode_id: episodeId,
+    source_id: firstSource.source_id,
+    content,
+    content_type: contentType,
+    valid_at: normalizeString(firstSource.source_date) || normalizeString(firstSource.ingested_at) || new Date().toISOString(),
+    created_at: new Date().toISOString(),
+    source_description: normalizeString(payload.input?.source_title) || normalizeString(firstSource.source_title) || "Ingestion episode",
+    extracted_entity_ids: [],
+    extracted_fact_ids: []
+  };
+}
+
 function normalizeArray(value) {
   return Array.isArray(value) ? value : [];
 }
@@ -248,3 +317,4 @@ function normalizeArray(value) {
 function normalizeString(value) {
   return String(value ?? "").trim();
 }
+

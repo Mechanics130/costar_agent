@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { stableMemoryId } from "./memory-ids.mjs";
 import { loadMemoryStore, writeMemoryStore } from "./memory-store.mjs";
+import { generateEmbedding } from "./embedding-utils.mjs";
 
 export function commitMemoryReviewDecisions(payload = {}) {
   const memoryStorePath = normalizeString(payload.memory_store_path || payload.store_path);
@@ -25,6 +26,7 @@ export function commitMemoryReviewDecisions(payload = {}) {
     entities: [...store.entities],
     candidates: mergeById(store.candidates, candidates.map((candidate) => applyCandidateDecision(candidate, decisions.get(candidate.candidate_id))), "candidate_id"),
     facts: [...store.facts],
+    episodes: [...store.episodes],
     review_diffs: [...normalizeArray(store.review_diffs)]
   };
 
@@ -32,6 +34,8 @@ export function commitMemoryReviewDecisions(payload = {}) {
     sources_added: countNewById(store.sources, sourceRefs, "source_id"),
     entities_added: 0,
     facts_added: 0,
+    facts_invalidated: 0,
+    episodes_created: 0,
     candidates_accepted: 0,
     candidates_edited: 0,
     candidates_rejected_or_deferred: 0
@@ -64,6 +68,14 @@ export function commitMemoryReviewDecisions(payload = {}) {
       if (entityAdded) delta.entities_added += 1;
       const fact = buildFact(candidate, decision, processedAt, payload.operator);
       if (!next.facts.some((item) => item.fact_id === fact.fact_id)) {
+        // --- Temporal contradiction detection (borrowed from Graphiti's resolve_edge_contradictions) ---
+        // Before adding the new fact, check if it contradicts existing active facts
+        // of the same entity + same fact_type. If so, invalidate the old facts
+        // by setting invalid_at = new fact's valid_at (instead of deleting them).
+        const invalidated = invalidateContradictedFacts(next.facts, fact);
+        if (invalidated.length > 0) {
+          delta.facts_invalidated += invalidated.length;
+        }
         next.facts.push(fact);
         delta.facts_added += 1;
       }
@@ -92,10 +104,11 @@ export function commitMemoryReviewDecisions(payload = {}) {
     committed_records: {
       sources: delta.sources_added,
       entities: delta.entities_added,
-      facts: delta.facts_added
+      facts: delta.facts_added,
+      facts_invalidated: delta.facts_invalidated
     },
     user_feedback: {
-      summary: `Committed ${delta.facts_added} memory fact(s). Deferred or rejected ${delta.candidates_rejected_or_deferred} candidate(s).`
+      summary: `Committed ${delta.facts_added} memory fact(s). Invalidated ${delta.facts_invalidated} superseded fact(s). Deferred or rejected ${delta.candidates_rejected_or_deferred} candidate(s).`
     }
   };
 }
@@ -171,6 +184,7 @@ function ensureEntity(entities, candidate, decision, processedAt) {
     canonical_name: canonicalName,
     aliases: normalizeStringArray(proposedValue.aliases),
     key_attributes: {},
+    name_embedding: null,
     first_seen_at: processedAt,
     last_updated_at: processedAt,
     status: normalizeString(proposedValue.status) || "active",
@@ -187,16 +201,29 @@ function buildFact(candidate, decision, processedAt, operator) {
   const factType = normalizeFactType(proposedValue.fact_type);
   const value = normalizeString(proposedValue.value);
   const confidence = normalizeConfidence(decision.overrides?.confidence || candidate.confidence);
+
+  // --- Temporal fields (borrowed from Graphiti's EntityEdge) ---
+  // valid_at: when the fact became true in the real world.
+  // Falls back to date_observed, then to the commit time.
+  // invalid_at: when the fact stopped being true (set by temporal invalidation, not at creation).
+  const validAt = normalizeString(proposedValue.valid_at)
+    || normalizeString(proposedValue.date_observed)
+    || processedAt;
+
   return {
     fact_id: stableMemoryId("fact", [entityId, factType, value]),
     entity_id: entityId,
     fact_type: factType,
     value,
+    value_embedding: null,
     confidence,
     source_id: normalizeString(decision.overrides?.source_id || candidate.source_id),
     source_excerpt: normalizeString(decision.overrides?.source_excerpt || candidate.source_excerpt),
     date_observed: normalizeString(proposedValue.date_observed),
     date_committed: processedAt,
+    valid_at: validAt,
+    invalid_at: null,
+    episode_ids: normalizeStringArray(proposedValue.episode_ids),
     status: "active",
     superseded_by: null,
     review: {
@@ -212,6 +239,65 @@ function buildFact(candidate, decision, processedAt, operator) {
       user_marked_wrong_count: 0
     }
   };
+}
+
+/**
+ * Temporal contradiction detection — borrowed from Graphiti's
+ * resolve_edge_contradictions + resolve_extracted_edge.
+ *
+ * Three-layer hybrid architecture:
+ *   1. Rule: exact text match (normalized) → skip (duplicate, not contradiction)
+ *   2. Rule: same entity + same fact_type + different value → potential contradiction
+ *   3. Rule: temporal validation — only invalidate if old fact's valid_at < new fact's valid_at
+ *
+ * When a contradiction is detected, the old fact's invalid_at is set to
+ * the new fact's valid_at. The old fact is NOT deleted — it retains its
+ * full history for time-travel queries.
+ *
+ * @param {Array} existingFacts - facts already in the store (mutated in place)
+ * @param {object} newFact - the newly committed fact
+ * @returns {Array} - list of invalidated facts (for delta reporting)
+ */
+function invalidateContradictedFacts(existingFacts, newFact) {
+  const newValidAt = normalizeString(newFact.valid_at);
+  const invalidated = [];
+
+  for (const fact of existingFacts) {
+    // Only check active facts for the same entity + same fact_type
+    if (normalizeString(fact.status) !== "active") continue;
+    if (normalizeString(fact.entity_id) !== normalizeString(newFact.entity_id)) continue;
+    if (normalizeString(fact.fact_type) !== normalizeString(newFact.fact_type)) continue;
+
+    // Layer 1: exact text match after normalization → duplicate, not contradiction
+    if (normalizeFactText(fact.value) === normalizeFactText(newFact.value)) continue;
+
+    // Layer 2: different value for same entity+fact_type → potential contradiction
+    // Skip if the old fact already has invalid_at set (already superseded)
+    if (normalizeString(fact.invalid_at)) continue;
+
+    // Layer 3: temporal validation — only invalidate if old fact's valid_at
+    // is earlier than (or equal to) the new fact's valid_at.
+    // This mirrors Graphiti's resolve_edge_contradictions logic:
+    //   if old.valid_at < new.valid_at → new fact invalidates old fact
+    const oldValidAt = normalizeString(fact.valid_at) || normalizeString(fact.date_observed);
+    if (!oldValidAt || !newValidAt) continue;
+    if (oldValidAt > newValidAt) continue;
+
+    // Invalidate the old fact
+    fact.invalid_at = newValidAt;
+    fact.status = "superseded";
+    fact.superseded_by = newFact.fact_id;
+    invalidated.push(fact);
+  }
+
+  return invalidated;
+}
+
+function normalizeFactText(value) {
+  return String(value ?? "")
+    .toLowerCase()
+    .replace(/[\s]+/g, " ")
+    .trim();
 }
 
 function applyCandidateDecision(candidate, decision) {

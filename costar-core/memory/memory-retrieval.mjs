@@ -1,13 +1,15 @@
 // SPDX-License-Identifier: Apache-2.0
 import { stableMemoryId } from "./memory-ids.mjs";
 import { loadMemoryStore, writeMemoryStore } from "./memory-store.mjs";
+import { cosineSimilarity, generateEmbedding, rrfFusion, embeddingsAvailable } from "./embedding-utils.mjs";
 
-export function searchFactsForBriefing({
+export async function searchFactsForBriefing({
   storePath,
   personName,
   personRef = "",
   conversationGoal = "",
-  limit = 8
+  limit = 8,
+  atTime = ""  // optional time-travel query: only return facts valid at this ISO timestamp
 } = {}) {
   const memoryStorePath = normalizeString(storePath);
   if (!memoryStorePath) {
@@ -21,17 +23,53 @@ export function searchFactsForBriefing({
   }
 
   const sourceById = new Map(normalizeArray(store.sources).map((source) => [source.source_id, source]));
-  const scoredFacts = normalizeArray(store.facts)
+
+  // --- Time window filtering (borrowed from Graphiti's bi-temporal model) ---
+  // If atTime is provided, only return facts that were valid at that moment:
+  //   valid_at <= atTime AND (invalid_at IS NULL OR invalid_at > atTime)
+  // If atTime is not provided, only return currently valid facts:
+  //   invalid_at IS NULL OR invalid_at > now
+  const queryTime = normalizeString(atTime) || new Date().toISOString();
+
+  const activeFacts = normalizeArray(store.facts)
     .filter((fact) => factMatchesTarget(fact, targetEntity.entity_id))
     .filter((fact) => normalizeString(fact.status) === "active")
+    .filter((fact) => isFactValidAt(fact, queryTime));
+
+  // --- Hybrid retrieval: keyword matching + semantic search (borrowed from Graphiti's COMBINED_HYBRID_SEARCH_RRF) ---
+  // Layer 1: Keyword-based scoring (existing CoStar logic)
+  const keywordResults = activeFacts
     .map((fact) => toBriefingFact(fact, sourceById.get(fact.source_id), conversationGoal))
     .filter(Boolean)
-    .sort((left, right) => right.score - left.score || left.fact_id.localeCompare(right.fact_id))
-    .slice(0, Math.max(1, Number(limit) || 8));
+    .sort((left, right) => right.score - left.score || left.fact_id.localeCompare(right.fact_id));
+
+  // Layer 2: Semantic search via cosine similarity (if embeddings available)
+  let finalResults = keywordResults;
+
+  if (embeddingsAvailable() && conversationGoal) {
+    const queryEmbedding = await generateEmbedding(conversationGoal);
+    if (queryEmbedding) {
+      const semanticResults = activeFacts
+        .map((fact) => {
+          const embedding = Array.isArray(fact.value_embedding) ? fact.value_embedding : null;
+          const sim = cosineSimilarity(queryEmbedding, embedding);
+          return { ...toBriefingFact(fact, sourceById.get(fact.source_id), conversationGoal), semanticScore: sim };
+        })
+        .filter((item) => item.semanticScore > 0)
+        .sort((left, right) => right.semanticScore - left.semanticScore);
+
+      // RRF fusion: merge keyword and semantic rankings
+      const keywordList = keywordResults.map((item) => ({ item, id: item.fact_id }));
+      const semanticList = semanticResults.map((item) => ({ item, id: item.fact_id }));
+      finalResults = rrfFusion([keywordList, semanticList]).slice(0, Math.max(1, Number(limit) || 8));
+    }
+  } else {
+    finalResults = keywordResults.slice(0, Math.max(1, Number(limit) || 8));
+  }
 
   return {
     target_entity: summarizeEntity(targetEntity),
-    facts_included: scoredFacts
+    facts_included: finalResults
   };
 }
 
@@ -159,6 +197,9 @@ function toBriefingFact(fact, source, conversationGoal) {
     source_title: normalizeString(source?.source_title),
     source_excerpt: normalizeString(fact.source_excerpt),
     date_observed: normalizeString(fact.date_observed),
+    valid_at: normalizeString(fact.valid_at),
+    invalid_at: normalizeString(fact.invalid_at),
+    episode_ids: normalizeArray(fact.episode_ids).map((id) => normalizeString(id)).filter(Boolean),
     score: scoreFact(fact, conversationGoal)
   };
 }
@@ -200,6 +241,32 @@ function summarizeEntity(entity) {
     canonical_name: normalizeString(entity.canonical_name),
     aliases: normalizeArray(entity.aliases).map(normalizeString).filter(Boolean)
   };
+}
+
+/**
+ * Bi-temporal validity check — borrowed from Graphiti's time-travel query.
+ *
+ * A fact is valid at time T if:
+ *   - valid_at <= T  (the fact was already true)
+ *   - invalid_at IS NULL OR invalid_at > T  (the fact hadn't been superseded yet)
+ *
+ * If valid_at is missing, fall back to date_observed.
+ * If both are missing, the fact is considered always valid (backward compat).
+ */
+function isFactValidAt(fact, queryTime) {
+  const validAt = normalizeString(fact.valid_at) || normalizeString(fact.date_observed);
+  const invalidAt = normalizeString(fact.invalid_at);
+
+  // Backward compatibility: if no temporal data, consider it valid
+  if (!validAt) return true;
+
+  // valid_at must be <= queryTime
+  if (validAt > queryTime) return false;
+
+  // invalid_at must be null or > queryTime
+  if (invalidAt && invalidAt <= queryTime) return false;
+
+  return true;
 }
 
 function normalizeConfidence(value) {

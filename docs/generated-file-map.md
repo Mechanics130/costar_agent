@@ -6,7 +6,7 @@ Branch and commit metadata are intentionally omitted so the file stays stable af
 
 ## Repository Snapshot
 
-- Tracked / public candidate files counted: 266
+- Tracked / public candidate files counted: 267
 
 ## Top-Level Map
 
@@ -16,7 +16,7 @@ Branch and commit metadata are intentionally omitted so the file stays stable af
 | `(root)` | 17 | Repository metadata and entry docs |
 | `assets` | 3 | Branding and public assets |
 | `bin` | 1 | CLI entrypoint |
-| `costar-core` | 84 | Shared core, stores, host-model tools, commits, MCP bridge |
+| `costar-core` | 85 | Shared core, stores, host-model tools, commits, MCP bridge |
 | `docs` | 16 | Public architecture, support, testing, and product notes |
 | `examples` | 13 | Public mock examples |
 | `integrations` | 43 | Host adapters for Claude, Codex, and OpenClaw |
@@ -140,6 +140,7 @@ Branch and commit metadata are intentionally omitted so the file stays stable af
 - `costar-core/mcp/claude-final-user-pack-smoke.mjs`
 - `costar-core/mcp/costar-mcp-server.mjs`
 - `costar-core/mcp/mcp-smoke.mjs`
+- `costar-core/memory/embedding-utils.mjs`
 - `costar-core/memory/memory-briefing-smoke.mjs`
 - `costar-core/memory/memory-candidates-smoke.mjs`
 - `costar-core/memory/memory-candidates.mjs`

@@ -50,7 +50,8 @@ try {
     feedback_events: 0,
     review_diffs: 0,
     reflection_candidates: 0,
-    hints: 0
+    hints: 0,
+    episodes: 0
   });
   assert.equal(loadMemoryStore({ storePath }).sources[0].source_id, "src_test");
   console.log("memory-store-smoke passed");

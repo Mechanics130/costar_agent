@@ -27,6 +27,7 @@ try {
     canonical_name: "Riley Chen",
     aliases: ["Riley"],
     key_attributes: {},
+    name_embedding: null,
     first_seen_at: "2026-04-30T00:00:00.000Z",
     last_updated_at: "2026-04-30T00:00:00.000Z",
     status: "active",
@@ -37,11 +38,15 @@ try {
     entity_id: "ent_riley",
     fact_type: "concern",
     value: "Riley cares about launch rollback risk.",
+    value_embedding: null,
     confidence: "confirmed",
     source_id: "src_launch_review",
     source_excerpt: "Riley asked for rollback plan twice.",
     date_observed: "2026-04-30",
     date_committed: "2026-04-30T00:00:00.000Z",
+    valid_at: "2026-04-30",
+    invalid_at: null,
+    episode_ids: [],
     status: "active",
     superseded_by: null,
     review: {
@@ -59,7 +64,7 @@ try {
   });
   writeMemoryStore({ storePath: memoryStorePath, store });
 
-  const hits = searchFactsForBriefing({
+  const hits = await searchFactsForBriefing({
     storePath: memoryStorePath,
     personName: "Riley Chen",
     conversationGoal: "Prepare launch review and rollback plan.",

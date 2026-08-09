@@ -17,7 +17,8 @@
     "feedback_events",
     "review_diffs",
     "reflection_candidates",
-    "hints"
+    "hints",
+    "episodes"
   ],
   "properties": {
     "version": { "type": "string" },
@@ -32,7 +33,8 @@
     "feedback_events": { "type": "array", "items": { "$ref": "#/$defs/feedback_event" } },
     "review_diffs": { "type": "array", "items": { "$ref": "#/$defs/review_diff" } },
     "reflection_candidates": { "type": "array", "items": { "$ref": "#/$defs/reflection_candidate" } },
-    "hints": { "type": "array", "items": { "$ref": "#/$defs/extraction_hint" } }
+        "hints": { "type": "array", "items": { "$ref": "#/$defs/extraction_hint" } },
+    "episodes": { "type": "array", "items": { "$ref": "#/$defs/episode" } }
   },
   "$defs": {
     "source_ref": {
@@ -62,6 +64,7 @@
         "canonical_name": { "type": "string" },
         "aliases": { "type": "array", "items": { "type": "string" } },
         "key_attributes": { "type": "object" },
+        "name_embedding": { "type": "array", "items": { "type": "number" }, "description": "Embedding vector for semantic entity dedup" },
         "first_seen_at": { "type": "string" },
         "last_updated_at": { "type": "string" },
         "status": { "type": "string", "enum": ["active", "archived", "merged"] },
@@ -115,11 +118,15 @@
           "enum": ["role", "preference", "concern", "style", "constraint", "commitment", "history", "need", "issue", "attitude_intent"]
         },
         "value": { "type": "string" },
+        "value_embedding": { "type": "array", "items": { "type": "number" }, "description": "Embedding vector for semantic fact retrieval" },
         "confidence": { "type": "string", "enum": ["confirmed", "inferred", "speculative"] },
         "source_id": { "type": "string" },
         "source_excerpt": { "type": "string" },
         "date_observed": { "type": "string" },
         "date_committed": { "type": "string" },
+        "valid_at": { "type": "string", "description": "When the fact became true in the real world (ISO 8601)" },
+        "invalid_at": { "type": ["string", "null"], "description": "When the fact stopped being true (set by temporal invalidation)" },
+        "episode_ids": { "type": "array", "items": { "type": "string" }, "description": "Episodes this fact was extracted from (provenance chain)" },
         "status": { "type": "string", "enum": ["active", "flagged", "superseded", "archived"] },
         "superseded_by": { "type": ["string", "null"] },
         "review": { "type": "object" },
@@ -244,6 +251,22 @@
         "status": { "type": "string", "enum": ["active", "archived"] },
         "usage_count": { "type": "integer", "minimum": 0 },
         "last_used_at": { "type": ["string", "null"] }
+      }
+    },
+    "episode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["episode_id", "source_id", "content", "content_type", "created_at"],
+      "properties": {
+        "episode_id": { "type": "string" },
+        "source_id": { "type": "string" },
+        "content": { "type": "string", "description": "Raw original data (message text, JSON, etc.)" },
+        "content_type": { "type": "string", "enum": ["message", "json", "text"], "description": "Type of the episode content" },
+        "valid_at": { "type": "string", "description": "When the event occurred in the real world" },
+        "created_at": { "type": "string", "description": "When the episode was ingested into the system" },
+        "source_description": { "type": "string", "description": "Human-readable description of the data source" },
+        "extracted_entity_ids": { "type": "array", "items": { "type": "string" } },
+        "extracted_fact_ids": { "type": "array", "items": { "type": "string" } }
       }
     }
   }

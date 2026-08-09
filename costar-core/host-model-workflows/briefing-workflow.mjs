@@ -17,7 +17,7 @@ export async function runHostModelBriefingWorkflow(payload) {
   const profile = __briefing_internal.resolveTargetProfile(request);
   const context = __briefing_internal.deriveBriefingContext(request, profile);
   const memoryStorePath = normalizeString(payload.memory_store_path || payload.store_path);
-  const memoryHits = searchFactsForBriefing({
+  const memoryHits = await searchFactsForBriefing({
     storePath: memoryStorePath,
     personName: profile.person_name || request.person_name,
     personRef: profile.person_ref || request.person_ref,

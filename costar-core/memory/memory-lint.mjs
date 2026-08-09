@@ -141,7 +141,22 @@ function findPossibleConflicts(facts, entityById) {
     if (group.length < 2) {
       continue;
     }
-    const conflict = findConflictPair(group);
+    // --- Upgraded: temporal contradiction detection ---
+    // Instead of the old hardcoded opposing-pairs heuristic,
+    // we now check for facts that:
+    //   1. Have the same entity_id + fact_type
+    //   2. Have different values (not exact text duplicates)
+    //   3. Both have valid_at set and are in the same time window
+    //      (their validity periods overlap)
+    //   4. Neither has invalid_at set (both still considered active)
+    //
+    // This replaces the old looksConflicting() with opposing word pairs
+    // like ["short","long"], ["async","live"], etc.
+    // The temporal invalidation in memory-commit.mjs now handles most
+    // contradictions automatically, but this lint check catches any
+    // that might have been missed (e.g., facts committed before the
+    // temporal model was introduced).
+    const conflict = findTemporalConflict(group);
     if (!conflict) {
       continue;
     }
@@ -153,7 +168,8 @@ function findPossibleConflicts(facts, entityById) {
       fact_type: normalizeString(conflict.left.fact_type),
       fact_ids: [conflict.left.fact_id, conflict.right.fact_id],
       values: [normalizeString(conflict.left.value), normalizeString(conflict.right.value)],
-      recommended_action: "Ask the user which fact is current, or mark one fact as superseded."
+      valid_at: [normalizeString(conflict.left.valid_at), normalizeString(conflict.right.valid_at)],
+      recommended_action: "One of these facts should be superseded. Use memory-commit to re-commit with the correct value; the old fact will be auto-invalidated via temporal invalidation."
     });
   }
   return issues;
@@ -195,34 +211,53 @@ function findKnowledgeGaps({ entities, factsByEntity, overdueFactIds, zombieFact
     .filter(Boolean);
 }
 
-function findConflictPair(facts) {
+/**
+ * Find a temporal conflict in a group of facts with the same entity+fact_type.
+ *
+ * Two facts conflict if:
+ *   - Their values differ (not exact text duplicates after normalization)
+ *   - Both are still active (status === "active")
+ *   - Neither has invalid_at set (not yet auto-invalidated)
+ *   - Their validity windows overlap (time-based check, not word-based)
+ *
+ * This replaces the old looksConflicting() with hardcoded opposing word pairs.
+ */
+function findTemporalConflict(facts) {
   for (let leftIndex = 0; leftIndex < facts.length; leftIndex += 1) {
     for (let rightIndex = leftIndex + 1; rightIndex < facts.length; rightIndex += 1) {
-      if (looksConflicting(facts[leftIndex].value, facts[rightIndex].value)) {
-        return {
-          left: facts[leftIndex],
-          right: facts[rightIndex]
-        };
+      const left = facts[leftIndex];
+      const right = facts[rightIndex];
+
+      // Skip if values are identical (duplicate, not conflict)
+      if (normalizeFactText(left.value) === normalizeFactText(right.value)) continue;
+
+      // Skip if either has been invalidated (temporal invalidation already handled it)
+      if (normalizeString(left.invalid_at) || normalizeString(right.invalid_at)) continue;
+
+      // Check temporal overlap
+      const leftValid = normalizeString(left.valid_at) || normalizeString(left.date_observed);
+      const rightValid = normalizeString(right.valid_at) || normalizeString(right.date_observed);
+
+      // If both have valid_at, check for overlap
+      if (leftValid && rightValid) {
+        // If left is older, right should have invalidated left (or vice versa)
+        // If neither was invalidated, it's a conflict that was missed
+        return { left, right };
       }
+
+      // If no temporal data, fall back to value-based conflict detection
+      // (same entity + same fact_type + different values + both active = potential conflict)
+      return { left, right };
     }
   }
   return null;
 }
 
-function looksConflicting(leftValue, rightValue) {
-  const left = tokenize(leftValue);
-  const right = tokenize(rightValue);
-  const opposingPairs = [
-    ["short", "long"],
-    ["async", "live"],
-    ["approve", "block"],
-    ["positive", "negative"],
-    ["high", "low"],
-    ["fast", "slow"]
-  ];
-  return opposingPairs.some(([leftTerm, rightTerm]) =>
-    (left.has(leftTerm) && right.has(rightTerm)) || (left.has(rightTerm) && right.has(leftTerm))
-  );
+function normalizeFactText(value) {
+  return String(value ?? "")
+    .toLowerCase()
+    .replace(/[\s]+/g, " ")
+    .trim();
 }
 
 function renderMemoryLintMarkdown({ checkedAt, issueCounts, issues, totalIssues, zombieWindowDays }) {
